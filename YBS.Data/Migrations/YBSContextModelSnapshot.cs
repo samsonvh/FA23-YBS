@@ -10,7 +10,7 @@ using YBS.Data.Context;
 
 namespace YBS.Data.Migrations
 {
-    [DbContext(typeof(YBSContext))]
+    [DbContext(typeof(YBSDbContext))]
     partial class YBSContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
