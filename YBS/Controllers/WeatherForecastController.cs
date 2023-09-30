@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using YBS.Data.Context;
 
 namespace YBS.Controllers
 {
@@ -6,6 +7,8 @@ namespace YBS.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
+        private YBSDbContext _context;
+
         private static readonly string[] Summaries = new[]
         {
         "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
@@ -13,9 +16,10 @@ namespace YBS.Controllers
 
         private readonly ILogger<WeatherForecastController> _logger;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(ILogger<WeatherForecastController> logger, YBSDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         [HttpGet(Name = "GetWeatherForecast")]

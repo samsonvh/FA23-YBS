@@ -12,8 +12,8 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSDbContext))]
-    [Migration("20230929102157_Initial-Migration")]
-    partial class InitialMigration
+    [Migration("20230930061347_Test-Init")]
+    partial class TestInit
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
