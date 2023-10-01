@@ -5,18 +5,19 @@ using YBS.Data.Models;
 
 namespace YBS.Data.Context
 {
-public class YBSDbContext : DbContext
+public class YBSContext : DbContext
     {
-        public YBSDbContext(DbContextOptions<YBSDbContext> options) : base(options)
+        public YBSContext(DbContextOptions<YBSContext> options) : base(options)
         {
         
         }
        public DbSet<Account> Accounts { get; set; }
        public DbSet<Member> Members { get; set; }
        public DbSet<Company> Companies { get; set; }
+       public DbSet<Role> Role { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSDbContext).Assembly);
+            modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);
             base.OnModelCreating(modelBuilder);
         }
     }

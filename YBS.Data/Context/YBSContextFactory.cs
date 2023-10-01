@@ -4,21 +4,21 @@ using Microsoft.Extensions.Configuration;
 
 namespace YBS.Data.Context
 {
-    public class YBSDbContextFactory : IDesignTimeDbContextFactory<YBSDbContext>
+    public class YBSContextFactory : IDesignTimeDbContextFactory<YBSContext>
     {
-        YBSDbContext IDesignTimeDbContextFactory<YBSDbContext>.CreateDbContext(string[] args)
+        YBSContext IDesignTimeDbContextFactory<YBSContext>.CreateDbContext(string[] args)
         {
-            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+            string env = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
             string dir = Directory.GetParent(Directory.GetCurrentDirectory()).ToString() + "/YBS";
             IConfigurationRoot configuration = new ConfigurationBuilder()
                 .SetBasePath(dir)
                 .AddJsonFile($"appsettings.{env}.json")
                 .Build();
             var connectionStrings = configuration.GetConnectionString("YBSContext");
-            var optionsBuilder = new DbContextOptionsBuilder<YBSDbContext>();
+            var optionsBuilder = new DbContextOptionsBuilder<YBSContext>();
             optionsBuilder.UseSqlServer(connectionStrings);
 
-            return new YBSDbContext(optionsBuilder.Options);
+            return new YBSContext(optionsBuilder.Options);
         }
     }
 }

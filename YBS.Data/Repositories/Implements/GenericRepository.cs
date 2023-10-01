@@ -11,8 +11,8 @@ namespace YBS.Data.Repositories.Implements
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly YBSDbContext _context;
-        public GenericRepository(YBSDbContext context)
+        protected readonly YBSContext _context;
+        public GenericRepository(YBSContext context)
         {
             _context = context;
         }
@@ -45,6 +45,7 @@ namespace YBS.Data.Repositories.Implements
         {   
             _context.Set<T>().RemoveRange(entities);
         }
+
         public void Update(T entity)
         {
             _context.Set<T>().Update(entity);
@@ -52,6 +53,11 @@ namespace YBS.Data.Repositories.Implements
         public void UpdateRange(IEnumerable<T> entities)
         {
             _context.Set<T>().UpdateRange(entities);
+        }
+
+        public  Task<int> SaveChange()
+        {
+            return  _context.SaveChangesAsync();
         }
     }
 }

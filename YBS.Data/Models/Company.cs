@@ -1,4 +1,6 @@
-﻿namespace YBS.Data.Models
+﻿using YBS.Data.Extensions.Enums;
+
+namespace YBS.Data.Models
 {
     public class Company
     {
@@ -14,6 +16,6 @@
         public string? LinkedInURL { get; set; }
         public DateTime ContractStartDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public string? Status { get; set; }
+        public CompanyStatus Status { get; set; }
     }
 }

@@ -22,12 +22,6 @@ namespace YBS.Data.Configs
             builder.Property(x => x.DurationUnit).HasMaxLength(10).HasColumnType("varchar").IsRequired();
             builder.Property(x => x.Price).HasColumnType("float").IsRequired();
             builder.Property(x => x.Unit).HasMaxLength(10).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.Type).HasMaxLength(15).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.Status).HasMaxLength(15).HasColumnType("varchar").IsRequired();
-
-
-
-
         }
     }
 }

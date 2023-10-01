@@ -1,4 +1,5 @@
-﻿namespace YBS.Data.Models
+﻿using YBS.Data.Extensions.Enums;
+namespace YBS.Data.Models
 {
     public class Route
     {
@@ -16,6 +17,6 @@
         public float Price { get; set; }
         public string Unit { get; set; }
         public string Type { get; set; }
-        public string Status { get; set; }
+        public RouteStatus Status { get; set; }
     }
 }

@@ -1,6 +1,6 @@
 ﻿using YBS.Data.Models;
 
-namespace YBS.Request
+namespace YBS.Data.Dtos
 {
     public class AccountGetDto
     {

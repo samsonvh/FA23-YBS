@@ -24,7 +24,6 @@ namespace YBS.Data.Configs
             builder.Property(x => x.LinkedInURL).HasMaxLength(255).HasColumnType("varchar");
             builder.Property(x => x.ContractStartDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.LastModifiedDate).HasColumnType("date").IsRequired();
-            builder.Property(x => x.Status).HasMaxLength(15).HasColumnType("varchar").IsRequired();
 
         }
     }
