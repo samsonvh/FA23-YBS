@@ -18,6 +18,6 @@ namespace YBS.Data.Request.CompanyRequest
         public string? InstagramURL { get; set; }
         public string? LinkedInURL { get; set; }
         public DateTime ContractStartDate { get; set; }
-        public string? Status { get; set; }
+        public DateTime LastModifiedDate { get; set; }
     }
 }

@@ -125,7 +125,8 @@ namespace YBS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.HasIndex("HotLine")
                         .IsUnique();
@@ -247,7 +248,8 @@ namespace YBS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountId");
+                    b.HasIndex("AccountId")
+                        .IsUnique();
 
                     b.HasIndex("IdentityNumber")
                         .IsUnique();
@@ -352,9 +354,7 @@ namespace YBS.Data.Migrations
                 {
                     b.HasOne("YBS.Data.Models.Role", "Role")
                         .WithMany("Accounts")
-                        .HasForeignKey("RoleID")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("RoleID");
 
                     b.Navigation("Role");
                 });
@@ -362,10 +362,8 @@ namespace YBS.Data.Migrations
             modelBuilder.Entity("YBS.Data.Models.Company", b =>
                 {
                     b.HasOne("YBS.Data.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithOne("Company")
+                        .HasForeignKey("YBS.Data.Models.Company", "AccountId");
 
                     b.Navigation("Account");
                 });
@@ -384,10 +382,8 @@ namespace YBS.Data.Migrations
             modelBuilder.Entity("YBS.Data.Models.Member", b =>
                 {
                     b.HasOne("YBS.Data.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("AccountId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .WithOne("Member")
+                        .HasForeignKey("YBS.Data.Models.Member", "AccountId");
 
                     b.Navigation("Account");
                 });
@@ -401,6 +397,15 @@ namespace YBS.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Account", b =>
+                {
+                    b.Navigation("Company")
+                        .IsRequired();
+
+                    b.Navigation("Member")
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Company", b =>

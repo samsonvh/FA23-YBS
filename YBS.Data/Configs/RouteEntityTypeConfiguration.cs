@@ -30,6 +30,7 @@ namespace YBS.Data.Configs
                 .WithMany(c => c.Routes)
                 .HasForeignKey(x => x.CompanyId);
 
+
         }
     }
 }

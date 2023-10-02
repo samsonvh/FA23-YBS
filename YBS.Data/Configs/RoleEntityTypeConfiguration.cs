@@ -14,6 +14,11 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Name).HasMaxLength(10).IsRequired();
             builder.HasIndex(x => x.Name).IsUnique();
             builder.HasMany(x => x.Accounts).WithOne(x => x.Role).HasForeignKey(x => x.RoleID);
+
+            builder.HasMany(x => x.Accounts)
+                .WithOne(a => a.Role)
+                .HasForeignKey(a => a.RoleID)
+                .IsRequired(false);
         }
     }
 }

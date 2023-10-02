@@ -42,8 +42,7 @@ namespace YBS.Data.Migrations
                         name: "FK_Account_Role_RoleID",
                         column: x => x.RoleID,
                         principalTable: "Role",
-                        principalColumn: "ID",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "ID");
                 });
 
             migrationBuilder.CreateTable(
@@ -72,8 +71,7 @@ namespace YBS.Data.Migrations
                         name: "FK_Company_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -103,8 +101,7 @@ namespace YBS.Data.Migrations
                         name: "FK_Member_Account_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Account",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -182,7 +179,8 @@ namespace YBS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Company_AccountId",
                 table: "Company",
-                column: "AccountId");
+                column: "AccountId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Company_HotLine",
@@ -198,7 +196,8 @@ namespace YBS.Data.Migrations
             migrationBuilder.CreateIndex(
                 name: "IX_Member_AccountId",
                 table: "Member",
-                column: "AccountId");
+                column: "AccountId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Member_IdentityNumber",

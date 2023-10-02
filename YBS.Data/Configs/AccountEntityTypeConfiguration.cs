@@ -27,6 +27,18 @@ namespace YBS.Data.Configs
                 x => x.ToString(),
                 x => (AccountStatus)Enum.Parse(typeof(AccountStatus), x)
             );
+
+            //company
+            builder.HasOne(x => x.Company)
+                .WithOne(c => c.Account)
+                .HasForeignKey<Company>(c => c.AccountId)
+                .IsRequired(false); //make foreign key optional
+
+            //member
+            builder.HasOne(x => x.Member)
+                .WithOne(m => m.Account)
+                .HasForeignKey<Member>(m => m.AccountId)
+                .IsRequired(false); //make foreign key optional
         }
     }
 }
