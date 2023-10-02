@@ -7,6 +7,5 @@ namespace YBS.Services.Interfaces
     {
         Task CreateDock (DockCreateRequest request);
         Task UpdateDock (DockUpdateRequest request);
-        Task<CommonResponses> Search ();
     }
 }
