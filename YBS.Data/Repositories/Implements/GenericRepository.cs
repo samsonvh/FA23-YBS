@@ -33,9 +33,9 @@ namespace YBS.Data.Repositories.Implements
         {
             return _context.Set<T>();
         }
-        public T GetById(int id)
+        public async Task<T> GetById(int id)
         {
-            return _context.Set<T>().Find(id);
+            return await _context.Set<T>().FindAsync(id);
         }
         public void Remove(T entity)
         {
@@ -45,6 +45,12 @@ namespace YBS.Data.Repositories.Implements
         {   
             _context.Set<T>().RemoveRange(entities);
         }
+
+        public async Task<int> SaveChangesAsync()
+        {
+            return await _context.SaveChangesAsync();
+        }
+
         public void Update(T entity)
         {
             _context.Set<T>().Update(entity);
@@ -53,5 +59,7 @@ namespace YBS.Data.Repositories.Implements
         {
             _context.Set<T>().UpdateRange(entities);
         }
+
+     
     }
 }

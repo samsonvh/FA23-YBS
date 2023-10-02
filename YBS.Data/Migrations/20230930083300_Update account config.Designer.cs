@@ -12,8 +12,8 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSDbContext))]
-    [Migration("20230929102157_Initial-Migration")]
-    partial class InitialMigration
+    [Migration("20230930083300_Update account config")]
+    partial class Updateaccountconfig
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -29,6 +29,8 @@ namespace YBS.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -191,20 +193,13 @@ namespace YBS.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
                     b.HasIndex("IdentityNumber")
                         .IsUnique();
 
                     b.ToTable("Member", (string)null);
-                });
-
-            modelBuilder.Entity("YBS.Data.Models.Account", b =>
-                {
-                    b.HasOne("YBS.Data.Models.Member", "Member")
-                        .WithOne("Account")
-                        .HasForeignKey("YBS.Data.Models.Account", "Id")
-                        .HasPrincipalKey("YBS.Data.Models.Member", "AccountId");
-
-                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Company", b =>
@@ -216,15 +211,21 @@ namespace YBS.Data.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("YBS.Data.Models.Member", b =>
+                {
+                    b.HasOne("YBS.Data.Models.Account", "Account")
+                        .WithOne("Member")
+                        .HasForeignKey("YBS.Data.Models.Member", "AccountId");
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
                 {
                     b.Navigation("Company")
                         .IsRequired();
-                });
 
-            modelBuilder.Entity("YBS.Data.Models.Member", b =>
-                {
-                    b.Navigation("Account")
+                    b.Navigation("Member")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

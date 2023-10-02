@@ -5,40 +5,16 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace YBS.Data.Migrations
 {
-    public partial class InitialMigration : Migration
+    public partial class Updateaccountconfig : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Member",
+                name: "Account",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountId = table.Column<int>(type: "int", nullable: false),
-                    FullName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
-                    DateOfbirth = table.Column<DateTime>(type: "date", nullable: false),
-                    Nationality = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    Gender = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
-                    Address = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
-                    IdentityNumber = table.Column<string>(type: "varchar(12)", maxLength: 12, nullable: false),
-                    MembershipStartDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    MembershipExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false),
-                    MemberSinceDate = table.Column<DateTime>(type: "date", nullable: false),
-                    LastModifiedDate = table.Column<DateTime>(type: "date", nullable: false),
-                    Status = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Member", x => x.Id);
-                    table.UniqueConstraint("AK_Member_AccountId", x => x.AccountId);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Account",
-                columns: table => new
-                {
-                    Id = table.Column<int>(type: "int", nullable: false),
                     Username = table.Column<string>(type: "varchar(150)", maxLength: 150, nullable: false),
                     Email = table.Column<string>(type: "varchar(200)", maxLength: 200, nullable: false),
                     Password = table.Column<string>(type: "varchar(500)", maxLength: 500, nullable: false),
@@ -49,11 +25,6 @@ namespace YBS.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Account", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Account_Member_Id",
-                        column: x => x.Id,
-                        principalTable: "Member",
-                        principalColumn: "AccountId");
                 });
 
             migrationBuilder.CreateTable(
@@ -84,6 +55,35 @@ namespace YBS.Data.Migrations
                         principalColumn: "Id");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Member",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    FullName = table.Column<string>(type: "nvarchar(150)", maxLength: 150, nullable: false),
+                    DateOfbirth = table.Column<DateTime>(type: "date", nullable: false),
+                    Nationality = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    Gender = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: false),
+                    Address = table.Column<string>(type: "varchar(100)", maxLength: 100, nullable: false),
+                    IdentityNumber = table.Column<string>(type: "varchar(12)", maxLength: 12, nullable: false),
+                    MembershipStartDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    MembershipExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false),
+                    MemberSinceDate = table.Column<DateTime>(type: "date", nullable: false),
+                    LastModifiedDate = table.Column<DateTime>(type: "date", nullable: false),
+                    Status = table.Column<string>(type: "varchar(15)", maxLength: 15, nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Member", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Member_Account_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Account",
+                        principalColumn: "Id");
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_Account_Email",
                 table: "Account",
@@ -103,6 +103,12 @@ namespace YBS.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
+                name: "IX_Member_AccountId",
+                table: "Member",
+                column: "AccountId",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Member_IdentityNumber",
                 table: "Member",
                 column: "IdentityNumber",
@@ -115,10 +121,10 @@ namespace YBS.Data.Migrations
                 name: "Company");
 
             migrationBuilder.DropTable(
-                name: "Account");
+                name: "Member");
 
             migrationBuilder.DropTable(
-                name: "Member");
+                name: "Account");
         }
     }
 }

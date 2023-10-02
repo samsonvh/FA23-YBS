@@ -14,6 +14,7 @@ public class YBSDbContext : DbContext
        public DbSet<Account> Accounts { get; set; }
        public DbSet<Member> Members { get; set; }
        public DbSet<Company> Companies { get; set; }
+       public DbSet<Route> Routes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSDbContext).Assembly);

@@ -23,7 +23,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Status).HasMaxLength(15).HasColumnType("varchar").IsRequired();
 
             builder.HasOne(x => x.Company).WithOne(c => c.Account).HasForeignKey<Company>(c => c.AccountId).IsRequired(false);
-            builder.HasOne(x => x.Member).WithOne(m => m.Account).HasPrincipalKey<Member>(m => m.AccountId).IsRequired(false);
+            builder.HasOne(x => x.Member).WithOne(m => m.Account).HasForeignKey<Member>(m => m.AccountId).IsRequired(false);
         }
     }
 }

@@ -15,5 +15,6 @@
         public DateTime ContractStartDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public string? Status { get; set; }
+        public ICollection<Route> Routes { get; set; } = new List<Route>();
     }
 }

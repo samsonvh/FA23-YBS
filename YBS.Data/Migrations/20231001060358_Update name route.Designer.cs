@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YBS.Data.Context;
 
@@ -11,9 +12,10 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSDbContext))]
-    partial class YBSContextModelSnapshot : ModelSnapshot
+    [Migration("20231001060358_Update name route")]
+    partial class Updatenameroute
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -27,6 +29,8 @@ namespace YBS.Data.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -189,20 +193,73 @@ namespace YBS.Data.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("AccountId")
+                        .IsUnique();
+
                     b.HasIndex("IdentityNumber")
                         .IsUnique();
 
                     b.ToTable("Member", (string)null);
                 });
 
-            modelBuilder.Entity("YBS.Data.Models.Account", b =>
+            modelBuilder.Entity("YBS.Data.Models.Route", b =>
                 {
-                    b.HasOne("YBS.Data.Models.Member", "Member")
-                        .WithOne("Account")
-                        .HasForeignKey("YBS.Data.Models.Account", "Id")
-                        .HasPrincipalKey("YBS.Data.Models.Member", "AccountId");
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
 
-                    b.Navigation("Member");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Beginning")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Destination")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("DurationTime")
+                        .HasColumnType("int");
+
+                    b.Property<string>("DurationUnit")
+                        .IsRequired()
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
+
+                    b.Property<TimeSpan>("EndingTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<TimeSpan>("PickupTime")
+                        .HasColumnType("time");
+
+                    b.Property<TimeSpan>("StartingTime")
+                        .HasColumnType("time");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
+
+                    b.Property<string>("Type")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("Route", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Company", b =>
@@ -214,16 +271,38 @@ namespace YBS.Data.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("YBS.Data.Models.Member", b =>
+                {
+                    b.HasOne("YBS.Data.Models.Account", "Account")
+                        .WithOne("Member")
+                        .HasForeignKey("YBS.Data.Models.Member", "AccountId");
+
+                    b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Route", b =>
+                {
+                    b.HasOne("YBS.Data.Models.Company", "Company")
+                        .WithMany("Routes")
+                        .HasForeignKey("CompanyId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Company");
+                });
+
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
                 {
                     b.Navigation("Company")
                         .IsRequired();
+
+                    b.Navigation("Member")
+                        .IsRequired();
                 });
 
-            modelBuilder.Entity("YBS.Data.Models.Member", b =>
+            modelBuilder.Entity("YBS.Data.Models.Company", b =>
                 {
-                    b.Navigation("Account")
-                        .IsRequired();
+                    b.Navigation("Routes");
                 });
 #pragma warning restore 612, 618
         }
