@@ -79,20 +79,20 @@ namespace YBS.Services.Implements
             if (payload != null)
             {
 
-                Account? account = await  _accountRepository.Find(account => account.Email == payload.Email).FirstOrDefaultAsync().ConfigureAwait(false);
+                Account? account = await  _accountRepository.Find(account => account.Email == payload.Email)
+                .Include(account => account.Role)
+                .FirstOrDefaultAsync().ConfigureAwait(false);
                 payload.Subject = Hash(payload.Subject);
-                string? issuer, audience;
-
+                string? issuer, audience,token;
+                JwtSecurityToken tokenGenerated;
                 switch (account.Status)
                 {
                     case AccountStatus.INACTIVE:
-                        account.Password = payload.Subject;
                         account.Status = AccountStatus.ACTIVE;
                         await _accountRepository.SaveChange();
-                        if (account.Password == payload.Subject)
-                        {
-                            var tokenGenerated = GenerateJWTToken(account);
-                            string token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
+          
+                             tokenGenerated = GenerateJWTToken(account);
+                             token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
                             return new AuthResponse()
                             {
                                 AccessToken = token,
@@ -100,13 +100,10 @@ namespace YBS.Services.Implements
                                 FullName = payload.Name,
                                 ImgUrl = payload.Picture
                             };
-                        }
-                        break;
                     case AccountStatus.ACTIVE:
-                        if (account.Password == payload.Subject)
-                        {
-                            var tokenGenerated = GenerateJWTToken(account);
-                            string token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
+                    
+                             tokenGenerated = GenerateJWTToken(account);
+                             token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
                             return new AuthResponse()
                             {
                                 AccessToken = token,
@@ -114,19 +111,15 @@ namespace YBS.Services.Implements
                                 FullName = payload.Name,
                                 ImgUrl= payload.Picture
                             };
-                        }
-                        break;
                     case AccountStatus.BAN:
                         throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
-                    default:
-                        return null;
                 }
 
             }
             else {
                 throw new APIException((int)HttpStatusCode.NotFound,"You are not membership");
             }
-            return null;
+            throw new APIException((int)HttpStatusCode.InternalServerError,"Internal Server Error");
         }
 
         private async Task<GoogleJsonWebSignature.Payload?> GetPayload(string idToken)

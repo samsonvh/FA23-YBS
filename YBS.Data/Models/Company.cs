@@ -15,7 +15,6 @@ namespace YBS.Data.Models
         public string? InstagramURL { get; set; }
         public string? LinkedInURL { get; set; }
         public DateTime ContractStartDate { get; set; }
-        public DateTime LastModifiedDate { get; set; }
         public ICollection<Route> Routes { get; set; } = new List<Route>();
         public CompanyStatus Status { get; set; }
     }

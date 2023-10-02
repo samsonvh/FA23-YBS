@@ -65,7 +65,8 @@ namespace YBS.Services.Implements
             Company? company = await _companyRepository.Find(x => x.Id == id).FirstOrDefaultAsync();
             if (company != null)
             {
-                company.Status = CompanyStatus.ACTIVE;
+               
+               company.Status = 0;
                 _companyRepository.Update(company);
                 await _companyRepository.SaveChange();
                 return true;

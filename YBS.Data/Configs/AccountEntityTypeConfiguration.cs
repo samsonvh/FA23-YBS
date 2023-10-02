@@ -21,7 +21,7 @@ namespace YBS.Data.Configs
             builder.HasOne(x => x.Role).WithMany(x => x.Accounts).HasForeignKey(x => x.RoleID);
             builder.Property(x => x.RoleID).IsRequired();
             builder.Property(x => x.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
-
+            
             builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
             .HasConversion(
                 x => x.ToString(),

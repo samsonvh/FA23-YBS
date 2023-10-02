@@ -19,8 +19,6 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Lattiude).IsRequired();
             builder.Property(x => x.Longtiude).IsRequired();
             builder.Property(x => x.Description).HasMaxLength(255).IsRequired(false);
-            
-            builder.Property(x => x.LastModifiedDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
             .HasConversion(
                 x => x.ToString(),
