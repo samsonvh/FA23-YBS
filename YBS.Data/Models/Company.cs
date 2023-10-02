@@ -2,7 +2,7 @@
 
 namespace YBS.Data.Models
 {
-    public class Company
+    public class Company : BaseModel
     {
         public int Id { get; set; }
         public int AccountId { get; set; }

@@ -2,7 +2,7 @@
 
 namespace YBS.Data.Models
 {
-    public class Member
+    public class Member : BaseModel
     {
         public int Id { get; set; }
         public int AccountId { get; set; }
@@ -16,7 +16,6 @@ namespace YBS.Data.Models
         public DateTime MembershipStartDate { get; set; }
         public DateTime MembershipExpiredDate { get; set; }
         public DateTime MemberSinceDate { get; set; }
-        public DateTime LastModifiedDate { get; set; }
         public MemberStatus Status { get; set; }
     }
 }

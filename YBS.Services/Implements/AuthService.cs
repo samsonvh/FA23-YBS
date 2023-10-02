@@ -13,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using YBS.Data.Requests;
+using YBS.Data.Requests.LoginRequests;
 namespace YBS.Services.Implements
 {
     public class AuthService : IAuthService
@@ -27,9 +28,9 @@ namespace YBS.Services.Implements
             _configuration = configuration;
         }
 
-        public async Task<AuthResponse> Login(LoginModelRequest request)
+        public async Task<AuthResponse> Login(LoginRequest request)
         {
-            var existAccount = await _accountRepository.Find(x => x.Email == request.email && x.Password == request.Password)
+            var existAccount = await _accountRepository.Find(x => x.Email == request.Email && x.Password == request.Password)
             .Include(x => x.Role)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);

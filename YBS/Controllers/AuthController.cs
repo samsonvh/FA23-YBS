@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
 using YBS.Data.Requests;
+using YBS.Data.Requests.LoginRequests;
 using YBS.Services.Interfaces;
 
 namespace YBS.Controllers
@@ -19,7 +20,7 @@ namespace YBS.Controllers
             return Ok(await _authService.LoginWithGoogle (idToken));
         }
         [HttpPost("Login")]
-        public async Task<IActionResult> Login ([FromBody] LoginModelRequest request)
+        public async Task<IActionResult> Login ([FromBody] LoginRequest request)
         {
             return Ok(await _authService.Login(request));
         }

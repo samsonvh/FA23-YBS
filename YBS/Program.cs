@@ -68,8 +68,7 @@ builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     });
 
 builder.Services.AddScoped<IAuthService,AuthService>();
-builder.Services.AddScoped<IGenericRepository<Account>,GenericRepository<Account>>();
-builder.Services.AddScoped<IGenericRepository<Member>,GenericRepository<Member>>();
+builder.Services.AddScoped(typeof(IGenericRepository<>),typeof(GenericRepository<>));
 builder.Services.AddCors(options => options.AddDefaultPolicy(builder =>
                                                      builder.AllowAnyOrigin()
                                                             .AllowAnyMethod()

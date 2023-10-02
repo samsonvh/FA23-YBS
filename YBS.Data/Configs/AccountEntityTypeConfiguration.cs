@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Reflection.Metadata.Ecma335;
+using YBS.Data.Extensions.Enums;
 using YBS.Data.Models;
 
 
@@ -20,6 +21,11 @@ namespace YBS.Data.Configs
             builder.HasOne(x => x.Role).WithMany(x => x.Accounts).HasForeignKey(x => x.RoleID);
             builder.Property(x => x.RoleID).IsRequired();
             builder.Property(x => x.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
+            builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
+            .HasConversion(
+                x => x.ToString(),
+                x => (AccountStatus)Enum.Parse(typeof(AccountStatus), x)
+            );
         }
     }
 }

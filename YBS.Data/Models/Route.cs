@@ -1,7 +1,7 @@
 ﻿using YBS.Data.Extensions.Enums;
 namespace YBS.Data.Models
 {
-    public class Route
+    public class Route : BaseModel
     {
         public int Id { get; set; } 
         public int CompanyId { get; set; }
