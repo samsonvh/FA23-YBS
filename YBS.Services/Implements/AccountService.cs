@@ -24,7 +24,7 @@ namespace YBS.Services.Implements
         }
         public async Task<AccountDto> GetById(int id)
         {
-            var account = await _accountRepository.GetById(id);
+            var account =  _accountRepository.GetById(id);
             return _mapper.Map<AccountDto>(account);
         }
     }

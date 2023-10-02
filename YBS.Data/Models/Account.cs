@@ -1,15 +1,14 @@
-﻿namespace YBS.Data.Models
+﻿using YBS.Data.Extensions.Enums;
+
+namespace YBS.Data.Models
 {
-    public class Account
+    public class Account : BaseModel
     {
         public int Id { get; set; }
-        public string Username { get; set; }
+        public int RoleID { get; set; }
+        public Role Role { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }    
-        public string Role { get; set; }
-        public DateTime CreationDate { get; set; }
-        public Company Company { get; set; }
-        public Member Member { get; set; }
-        public string Status { get; set; }
+        public AccountStatus Status { get; set; }
     }
 }

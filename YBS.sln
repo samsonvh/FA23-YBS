@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.6.33829.357
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YBS", "YBS/YBS.csproj", "{CB207C83-B45E-4227-91EE-5A4F82F20CDD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YBS", "YBS\YBS.csproj", "{CB207C83-B45E-4227-91EE-5A4F82F20CDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YBS.Services", "YBS.Services\YBS.Services.csproj", "{0DE5E337-220A-43D8-8DFA-2BE02037CDB7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YBS.Services", "YBS.Services\YBS.Services.csproj", "{0DE5E337-220A-43D8-8DFA-2BE02037CDB7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YBS.Data", "YBS.Data\YBS.Data.csproj", "{F965CB11-6442-40FF-840A-A12E855F3AEB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YBS.Data", "YBS.Data\YBS.Data.csproj", "{F965CB11-6442-40FF-840A-A12E855F3AEB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

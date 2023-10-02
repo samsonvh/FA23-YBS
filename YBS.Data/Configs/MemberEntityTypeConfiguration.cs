@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YBS.Data.Extensions.Enums;
 using YBS.Data.Models;
 
 namespace YBS.Data.Configs
@@ -23,8 +24,11 @@ namespace YBS.Data.Configs
             builder.Property(x => x.MembershipExpiredDate).HasColumnType("datetime").IsRequired();
             builder.Property(x => x.MemberSinceDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.LastModifiedDate).HasColumnType("date").IsRequired();
-            builder.Property(x => x.Status).HasMaxLength(15).HasColumnType("varchar").IsRequired();
-
+            builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
+            .HasConversion(
+                x => x.ToString(),
+                x => (MemberStatus)Enum.Parse(typeof(MemberStatus), x)
+            );
         }
     }
 }

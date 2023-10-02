@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Dtos;
+using YBS.Data.Extensions.Enums;
 using YBS.Data.Models;
 using YBS.Data.Repositories.Interfaces;
 using YBS.Services.Interfaces;
@@ -32,9 +33,9 @@ namespace YBS.Services.Implements
                 Route? route = _mapper.Map<Route>(request);
                 if (route != null)
                 {
-                    route.Status = "ACTIVE";
+                    route.Status = RouteStatus.AVAILABLE;
                     _routeRepository.Add(route);
-                    await _routeRepository.SaveChangesAsync();
+                    await _routeRepository.SaveChange();
                     _logger.LogInformation("Create route successfully.");
                     return _mapper.Map<RouteDto>(route);
                 }

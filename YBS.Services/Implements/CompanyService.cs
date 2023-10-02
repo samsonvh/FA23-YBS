@@ -7,6 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Dtos;
+using YBS.Data.Extensions.Enums;
 using YBS.Data.Models;
 using YBS.Data.Repositories.Interfaces;
 using YBS.Data.Request.CompanyRequest;
@@ -32,9 +33,9 @@ namespace YBS.Services.Implements
                 Company? company = _mapper.Map<Company>(request);
                 if (company != null)
                 {
-                    company.Status = "ACTIVE";
+                    company.Status = CompanyStatus.ACTIVE;
                     _companyRepository.Add(company);
-                    await _companyRepository.SaveChangesAsync();
+                    await _companyRepository.SaveChange();
                     return _mapper.Map<CompanyDto>(company);
                 }
                 return null;
@@ -53,7 +54,7 @@ namespace YBS.Services.Implements
             {
                 company = _mapper.Map(request, company);
                 _companyRepository.Update(company);
-                await _companyRepository.SaveChangesAsync();
+                await _companyRepository.SaveChange();
                 return _mapper.Map<CompanyDto>(company);
             }
             return null;
@@ -64,9 +65,9 @@ namespace YBS.Services.Implements
             Company? company = await _companyRepository.Find(x => x.Id == id).FirstOrDefaultAsync();
             if (company != null)
             {
-                company.Status = status;
+                company.Status = CompanyStatus.ACTIVE;
                 _companyRepository.Update(company);
-                await _companyRepository.SaveChangesAsync();
+                await _companyRepository.SaveChange();
                 return true;
             }
             return false;
@@ -74,7 +75,7 @@ namespace YBS.Services.Implements
 
         public async Task<CompanyDto> GetCompanyDetail(int id)
         {
-            Company? company = await _companyRepository.GetById(id);
+            Company? company =  _companyRepository.GetById(id);
             return _mapper.Map<CompanyDto>(company);
         }
     }

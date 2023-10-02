@@ -9,7 +9,7 @@ namespace YBS.Data.Repositories.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {
-        Task<T> GetById(int id);
+        T GetById(int id);
         IQueryable<T> GetAll();
         IQueryable<T> Find(Expression<Func<T, bool>> expression);
         void Add(T entity);
@@ -18,7 +18,6 @@ namespace YBS.Data.Repositories.Interfaces
         void RemoveRange(IEnumerable<T> entities);
         void Update(T entity);
         void UpdateRange(IEnumerable<T> entities);
-
-        Task<int> SaveChangesAsync();
+        Task<int> SaveChange ();
     }
 }

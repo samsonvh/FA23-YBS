@@ -11,8 +11,8 @@ namespace YBS.Data.Repositories.Implements
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly YBSDbContext _context;
-        public GenericRepository(YBSDbContext context)
+        protected readonly YBSContext _context;
+        public GenericRepository(YBSContext context)
         {
             _context = context;
         }
@@ -25,32 +25,6 @@ namespace YBS.Data.Repositories.Implements
         {
             _context.Set<T>().AddRange(entities);
         }
-        public IQueryable<T> Find(Expression<Func<T, bool>> expression)
-        {
-            return _context.Set<T>().Where(expression);
-        }
-        public IQueryable<T> GetAll()
-        {
-            return _context.Set<T>();
-        }
-        public async Task<T> GetById(int id)
-        {
-            return await _context.Set<T>().FindAsync(id);
-        }
-        public void Remove(T entity)
-        {
-            _context.Set<T>().Remove(entity);
-        }
-        public void RemoveRange(IEnumerable<T> entities)
-        {   
-            _context.Set<T>().RemoveRange(entities);
-        }
-
-        public async Task<int> SaveChangesAsync()
-        {
-            return await _context.SaveChangesAsync();
-        }
-
         public void Update(T entity)
         {
             _context.Set<T>().Update(entity);
@@ -60,6 +34,37 @@ namespace YBS.Data.Repositories.Implements
             _context.Set<T>().UpdateRange(entities);
         }
 
-     
+        public void Remove(T entity)
+        {
+            _context.Set<T>().Remove(entity);
+        }
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _context.Set<T>().RemoveRange(entities);
+        }
+
+        public Task<int> SaveChange()
+        {
+            return _context.SaveChangesAsync();
+        }
+
+        public T GetById(int id)
+        {
+            return _context.Set<T>().Find(id);
+        }
+
+        public IQueryable<T> GetAll()
+        {
+            return _context.Set<T>();
+        }
+
+        public IQueryable<T> Find(Expression<Func<T, bool>> expression)
+        {
+            return _context.Set<T>().Where(expression);
+        }
+
+
+
+
     }
 }
