@@ -75,7 +75,7 @@ namespace YBS.Services.Implements
 
         public async Task<CompanyDto> GetCompanyDetail(int id)
         {
-            Company? company =  _companyRepository.GetById(id);
+            Company? company =  await _companyRepository.GetById(id);
             return _mapper.Map<CompanyDto>(company);
         }
     }

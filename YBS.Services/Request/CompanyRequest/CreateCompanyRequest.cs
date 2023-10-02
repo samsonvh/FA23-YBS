@@ -19,6 +19,5 @@ namespace YBS.Data.Request.CompanyRequest
         public string? LinkedInURL { get; set; }
         public DateTime ContractStartDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public string? Status { get; set; }
     }
 }

@@ -48,9 +48,9 @@ namespace YBS.Data.Repositories.Implements
             return _context.SaveChangesAsync();
         }
 
-        public T GetById(int id)
+        public async Task<T> GetById(int id)
         {
-            return _context.Set<T>().Find(id);
+            return await _context.Set<T>().FindAsync(id);
         }
 
         public IQueryable<T> GetAll()
