@@ -62,13 +62,17 @@ namespace YBS.Services.Implements
 
         public async Task<bool> ChangeStatus(int id, string status)
         {
-            Company? company = await _companyRepository.Find(x => x.Id == id).FirstOrDefaultAsync();
-            if (company != null)
+            if (Enum.TryParse(status, out CompanyStatus newStatus))
             {
-                company.Status = CompanyStatus.ACTIVE;
-                _companyRepository.Update(company);
-                await _companyRepository.SaveChange();
-                return true;
+                Company? company = await _companyRepository.Find(x => x.Id == id).FirstOrDefaultAsync();
+
+                if (company != null)
+                {
+                    company.Status = newStatus;
+                    _companyRepository.Update(company);
+                    await _companyRepository.SaveChange();
+                    return true;
+                }
             }
             return false;
         }

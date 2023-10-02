@@ -18,6 +18,6 @@ namespace YBS.Data.Repositories.Interfaces
         void RemoveRange(IEnumerable<T> entities);
         void Update(T entity);
         void UpdateRange(IEnumerable<T> entities);
-        Task<int> SaveChange ();
+        Task<int> SaveChange();
     }
 }
