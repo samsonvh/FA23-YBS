@@ -1,4 +1,4 @@
-using YBS.Data.Extensions.Enums;
+using YBS.Data.Enums;
 namespace YBS.Data.Models
 {
     public class Dock : BaseModel
@@ -12,6 +12,6 @@ namespace YBS.Data.Models
         public float Longtiude { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-        public DockStatus Status { get; set; }
+        public EnumDockStatus Status { get; set; }
     }
 }

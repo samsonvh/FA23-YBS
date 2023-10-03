@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YBS.Data.Extensions.Enums;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 
 namespace YBS.Data.Configs
@@ -22,7 +22,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
             .HasConversion(
                 x => x.ToString(),
-                x => (DockStatus)Enum.Parse(typeof(DockStatus), x)
+                x => (EnumDockStatus)Enum.Parse(typeof(EnumDockStatus), x)
             );
         }
     }

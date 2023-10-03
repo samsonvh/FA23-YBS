@@ -1,4 +1,4 @@
-﻿using YBS.Data.Extensions.Enums;
+﻿using YBS.Data.Enums;
 
 namespace YBS.Data.Models
 {
@@ -11,6 +11,6 @@ namespace YBS.Data.Models
         public Role Role { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }    
-        public AccountStatus Status { get; set; }
+        public EnumAccountStatus Status { get; set; }
     }
 }

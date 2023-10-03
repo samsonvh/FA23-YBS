@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using YBS.Data.Configs;
-using YBS.Data.DateTracking;
 using YBS.Data.Models;
+using YBS.Util.DateTracking;
 
 namespace YBS.Data.Context
 {

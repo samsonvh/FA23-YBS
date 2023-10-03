@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using System.Reflection.Metadata.Ecma335;
-using YBS.Data.Extensions.Enums;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 
 
@@ -25,7 +25,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
             .HasConversion(
                 x => x.ToString(),
-                x => (AccountStatus)Enum.Parse(typeof(AccountStatus), x)
+                x => (EnumAccountStatus)Enum.Parse(typeof(EnumAccountStatus), x)
             );
 
             //company

@@ -29,6 +29,7 @@
   <ItemGroup>
   <ProjectReference Include="..\YBS.Data\YBS.Data.csproj" />
   <ProjectReference Include="..\YBS.Services\YBS.Services.csproj" />
+  <ProjectReference Include="..\YBS.Util\YBS.Util.csproj" />
   </ItemGroup>
 
 

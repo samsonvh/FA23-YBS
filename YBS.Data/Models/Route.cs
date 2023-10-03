@@ -1,5 +1,5 @@
 
-﻿using YBS.Data.Extensions.Enums;
+﻿using YBS.Data.Enums;
 namespace YBS.Data.Models
 {
     public class Route : BaseModel
@@ -19,7 +19,7 @@ namespace YBS.Data.Models
         public float Price { get; set; }
         public string Unit { get; set; }
         public string Type { get; set; }
-        public RouteStatus Status { get; set; }
+        public EnumRouteStatus Status { get; set; }
 
     }
 }

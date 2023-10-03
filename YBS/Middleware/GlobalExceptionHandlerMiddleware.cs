@@ -5,7 +5,7 @@ using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using YBS.Data.Responses;
 
-namespace YBS.Services.Middleware
+namespace YBS.Middleware
 {
     public class GlobalExceptionHandlerMiddleware
     {

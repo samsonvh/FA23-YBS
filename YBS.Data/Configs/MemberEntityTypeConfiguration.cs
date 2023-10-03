@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YBS.Data.Extensions.Enums;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 
 namespace YBS.Data.Configs
@@ -19,7 +19,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Gender).HasColumnType("varchar").HasMaxLength(15).IsRequired()
             .HasConversion(
                 x => x.ToString(),
-                x => (Gender)Enum.Parse(typeof(Gender), x)
+                x => (EnumGender)Enum.Parse(typeof(EnumGender), x)
             );
             builder.Property(x => x.Address).HasMaxLength(100).HasColumnType("varchar").IsRequired();
             builder.Property(x => x.IdentityNumber).HasMaxLength(12).HasColumnType("varchar").IsRequired();
@@ -30,7 +30,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
             .HasConversion(
                 x => x.ToString(),
-                x => (MemberStatus)Enum.Parse(typeof(MemberStatus), x)
+                x => (EnumMemberStatus)Enum.Parse(typeof(EnumMemberStatus), x)
             );
         }
     }

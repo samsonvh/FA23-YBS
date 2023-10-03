@@ -9,6 +9,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YBS.Services", "YBS.Service
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YBS.Data", "YBS.Data\YBS.Data.csproj", "{F965CB11-6442-40FF-840A-A12E855F3AEB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YBS.Util", "YBS.Util\YBS.Util.csproj", "{72BC672C-0301-4503-BB58-205EC8DDBF28}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{F965CB11-6442-40FF-840A-A12E855F3AEB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F965CB11-6442-40FF-840A-A12E855F3AEB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F965CB11-6442-40FF-840A-A12E855F3AEB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72BC672C-0301-4503-BB58-205EC8DDBF28}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72BC672C-0301-4503-BB58-205EC8DDBF28}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72BC672C-0301-4503-BB58-205EC8DDBF28}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72BC672C-0301-4503-BB58-205EC8DDBF28}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

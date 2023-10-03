@@ -1,4 +1,4 @@
-﻿using YBS.Data.Extensions.Enums;
+﻿using YBS.Data.Enums;
 
 namespace YBS.Data.Models
 {
@@ -16,6 +16,6 @@ namespace YBS.Data.Models
         public string? LinkedInURL { get; set; }
         public DateTime ContractStartDate { get; set; }
         public ICollection<Route> Routes { get; set; } = new List<Route>();
-        public CompanyStatus Status { get; set; }
+        public EnumCompanyStatus Status { get; set; }
     }
 }
