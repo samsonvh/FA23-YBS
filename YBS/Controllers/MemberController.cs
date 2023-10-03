@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using YBS.Services.DataHandler.Requests.MemberRequests;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Controllers
@@ -12,10 +13,11 @@ namespace YBS.Controllers
         {
             _memberService = memberService;
         }
-        // [HttpPost("GoogleLogin")]
-        // public async Task<IActionResult> Create(string idToken)
-        // {
-        //     return Ok(await _memberService.LoginWithGoogle (idToken));
-        // }
+        [HttpPost]
+        public async Task<IActionResult> Create(MemberCreateRequest request)
+        {
+            await _memberService.Create(request);
+            return Ok();
+        }
     }
 }
