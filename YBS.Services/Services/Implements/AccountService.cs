@@ -31,21 +31,47 @@ namespace YBS.Services.Services.Implements
             _mapper = mapper;
 
         }
+
+        // public Task<AccountDto> Create(AccountCreateRequest request)
+        // {
+        //     throw new NotImplementedException();
+        // }
+
         public async Task<AccountDto> GetById(int id)
         {
             var account = await _unitOfWork.AccountRepository.GetById(id);
             return _mapper.Map<AccountDto>(account);
         }
 
-        // public async Task<DefaultPageResponse<Account>> Search(AccountSearchRequest request)
-        // {
-        //     var query =  _unitOfWork.AccountRepository.Find(account => (string.IsNullOrWhiteSpace(request.Email) || account.Email.Contains(request.Email)));
-        //     var data = string.IsNullOrEmpty(request.OrderBy) ? query.OrderBy(x => x.)
-        //     // return new DefaultPageResponse<Account>()
-        //     // {
-        //     //     Data = listAccount,
-
-        //     // }
-        // }
+        public async Task<DefaultPageResponse<AccountDto>> Search(AccountSearchRequest request)
+        {
+            var query =  _unitOfWork.AccountRepository.Find(account => (string.IsNullOrWhiteSpace(request.Email) || account.Email.Contains(request.Email)) && !account.IsDeleted)
+            .Select(account => new AccountDto()
+            {
+                Email = account.Email,
+                CreationDate = account.CreationDate,
+                Role = account.Role.Name,
+                Status = account.Status,
+            });
+            var data = !string.IsNullOrEmpty(request.OrderBy) ? query.SortDesc(request.OrderBy,request.Direction) : query.OrderBy(account => account.Email);
+            var totalItem = data.Count();
+            if (totalItem == 0)
+            {
+                throw new APIException((int)HttpStatusCode.NotFound, "No Account Available");
+            }
+            if (request.PageIndex >= 0 )
+            {
+                data =  data.Skip((int)((request.PageIndex -1) * request.PageSize)).Take((int)request.PageSize);
+            }
+            var dataPaging = await data.ToListAsync();
+            var result = new DefaultPageResponse<AccountDto>()
+            {
+                Data = dataPaging,
+                PageCount = totalItem,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize ?? 0,
+            };
+            return result;
+        }
     }
 }

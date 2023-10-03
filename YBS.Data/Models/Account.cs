@@ -12,8 +12,10 @@ namespace YBS.Data.Models
         public Member Member { get; set; }
         public Role Role { get; set; }
         public string Email { get; set; }
+        public string PhoneNumber { get; set; }
         public EnumAccountStatus Status { get; set; }
         public DateTime CreationDate { get ; set; }
         public DateTime? LastModifiedDate { get ; set; }
+        public bool IsDeleted { get; set; }
     }
 }

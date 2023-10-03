@@ -7,5 +7,6 @@ namespace YBS.Data.Models
     {
         public DateTime CreationDate { get; set; }
         public DateTime? LastModifiedDate { get; set; }
+        public bool IsDeleted { get; set; }
     }
 }

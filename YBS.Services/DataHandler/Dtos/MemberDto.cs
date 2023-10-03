@@ -1,9 +1,8 @@
-﻿using YBS.Data.Enums;
-using YBS.Data.Models;
+using YBS.Data.Enums;
 
 namespace YBS.Services.DataHandler.Dtos
 {
-    public class AccountDto
+    public class MemberDto
     {
         public int Id { get; set; }
         public string Email { get; set; }

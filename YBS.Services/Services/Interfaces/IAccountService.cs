@@ -14,9 +14,9 @@ namespace YBS.Services.Services.Interfaces
     public interface IAccountService
     {
         Task<AccountDto> GetById(int id);
-        // Task<DefaultPageResponse<Account>> Search (AccountSearchRequest request);
-        /*        Task<AccountDto> Create(CompanyCreateRequest request);
-        */
+        Task<DefaultPageResponse<AccountDto>> Search (AccountSearchRequest request);
+        
+        
     }
 }
 

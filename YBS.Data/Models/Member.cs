@@ -18,5 +18,7 @@ namespace YBS.Data.Models
         public DateTime MembershipExpiredDate { get; set; }
         public DateTime MemberSinceDate { get; set; }
         public EnumMemberStatus Status { get; set; }
+        public ICollection<Wallet> Wallets { get; set; } = new List<Wallet>();
+        // public ICollection<Booking> Bookings { get; set; } = new List<Booking>();
     }
 }
