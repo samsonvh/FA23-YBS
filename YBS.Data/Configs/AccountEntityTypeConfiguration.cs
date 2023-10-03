@@ -24,11 +24,6 @@ namespace YBS.Data.Configs
             builder.Property(x => x.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
 
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
-            /*builder.Property(x => x.Status).IsRequired()
-            .HasConversion(
-                 v => v.ToString(), // Convert the enum to a string for JSON serialization
-                 v => (AccountStatus)Enum.Parse(typeof(AccountStatus), v) // Parse the string back to enum
-            );*/
 
             //company
             builder.HasOne(x => x.Company)

@@ -2,8 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using YBS.Data.Configs;
-using YBS.Data.DateTracking;
 using YBS.Data.Models;
+using YBS.Util.DateTracking;
 
 namespace YBS.Data.Context
 {
@@ -18,6 +18,8 @@ public class YBSContext : DbContext
        public DbSet<Company> Companies { get; set; }
        public DbSet<Role> Role { get; set; }
        public DbSet<Dock> Docks { get; set; }
+       public DbSet<Activity> Activities { get; set; }
+
         public override Task<int> SaveChangesAsync (CancellationToken cancellationToken = default) 
         {
             IEnumerable<EntityEntry> modified = ChangeTracker.Entries().Where(e => e.State == EntityState.Modified || e.State == EntityState.Added);

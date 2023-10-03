@@ -5,11 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Data.DesignPattern.UniOfWork.Interfaces;
 using YBS.Data.Models;
-using YBS.Data.Repositories.Interfaces;
-using YBS.Data.UniOfWork.Interfaces;
-using YBS.Dtos;
+
+using YBS.Services.DataHandler.Dtos;
 using YBS.Services.Services.Interfaces;
+
 
 namespace YBS.Services.Services.Implements
 {

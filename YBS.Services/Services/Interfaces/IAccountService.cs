@@ -4,8 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YBS.Data.Request;
-using YBS.Dtos;
+using YBS.Services.DataHandler.Dtos;
 
 namespace YBS.Services.Services.Interfaces
 {

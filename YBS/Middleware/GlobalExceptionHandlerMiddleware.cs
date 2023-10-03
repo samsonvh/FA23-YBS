@@ -3,10 +3,9 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using YBS.Data.Responses;
-using YBS.Services.Dtos.Response;
+using YBS.Services.DataHandler.Responses;
 
-namespace YBS.Services.Middleware
+namespace YBS.Middleware
 {
     public class GlobalExceptionHandlerMiddleware
     {

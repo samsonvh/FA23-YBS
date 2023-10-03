@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 
 namespace YBS.Data.Configs

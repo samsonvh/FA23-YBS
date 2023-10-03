@@ -8,13 +8,14 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using YBS.Data.Dtos;
+using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Data.DesignPattern.UniOfWork.Interfaces;
 using YBS.Data.Enums;
 using YBS.Data.Models;
-using YBS.Data.Repositories.Interfaces;
-using YBS.Data.Request.CompanyRequest;
-using YBS.Data.UniOfWork.Interfaces;
+using YBS.Services.DataHandler.Dtos;
+using YBS.Services.DataHandler.Requests.CompanyRequests;
 using YBS.Services.Services.Interfaces;
+
 
 namespace YBS.Services.Services.Implements
 {
@@ -39,7 +40,7 @@ namespace YBS.Services.Services.Implements
                 Company? company = _mapper.Map<Company>(request);
                 if (company != null)
                 {
-                    company.Status = CompanyStatusEnum.ACTIVE;
+                    company.Status = EnumCompanyStatus.ACTIVE;
                     _companyRepository.Add(company);
                     await _unitOfWork.Commit();
                     _logger.LogInformation("Create company succesfully.");
@@ -71,7 +72,7 @@ namespace YBS.Services.Services.Implements
 
         public async Task<bool> ChangeStatus(int id, string status)
         {
-            if (Enum.TryParse(status, out CompanyStatusEnum newStatus))
+            if (Enum.TryParse(status, out EnumCompanyStatus newStatus))
             {
                 var company = await _unitOfWork.CompanyRepository.Find(company => company.Id == id).FirstOrDefaultAsync();
 

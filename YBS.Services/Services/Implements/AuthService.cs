@@ -1,6 +1,5 @@
 using YBS.Data.Models;
-using YBS.Data.Repositories.Interfaces;
-using YBS.Data.Responses;
+
 using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +9,11 @@ using System.Net;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using YBS.Data.Requests;
-using YBS.Data.Requests.LoginRequests;
 using YBS.Services.Services.Interfaces;
 using YBS.Data.Enums;
-
+using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Services.DataHandler.Responses;
+using YBS.Services.DataHandler.Requests.LoginRequests;
 namespace YBS.Services.Services.Implements
 {
     public class AuthService : IAuthService
@@ -44,19 +43,19 @@ namespace YBS.Services.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Member does not exist");
             }
-            if (existMember.Status == MemberStatusEnum.BAN || existAccount.Status == AccountStatusEnum.BAN)
+            if (existMember.Status == EnumMemberStatus.BAN || existAccount.Status == EnumAccountStatus.BAN)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
             }
-            if (existAccount.Status == AccountStatusEnum.INACTIVE)
+            if (existAccount.Status == EnumAccountStatus.INACTIVE)
             {
-                existAccount.Status = AccountStatusEnum.ACTIVE;
+                existAccount.Status = EnumAccountStatus.ACTIVE;
                 _accountRepository.Update(existAccount);
 
             }
-            if (existMember.Status == MemberStatusEnum.INACTIVE)
+            if (existMember.Status == EnumMemberStatus.INACTIVE)
             {
-                existMember.Status = MemberStatusEnum.ACTIVE;
+                existMember.Status = EnumMemberStatus.ACTIVE;
                 _memberRepository.Update(existMember);
             }
             await _accountRepository.SaveChange();
@@ -82,18 +81,16 @@ namespace YBS.Services.Services.Implements
 
                 Account? account = await _accountRepository.Find(account => account.Email == payload.Email).FirstOrDefaultAsync().ConfigureAwait(false);
                 payload.Subject = Hash(payload.Subject);
-                string? issuer, audience;
-
+                string? issuer, audience,token;
+                JwtSecurityToken tokenGenerated;
                 switch (account.Status)
                 {
-                    case AccountStatusEnum.INACTIVE:
-                        account.Password = payload.Subject;
-                        account.Status = AccountStatusEnum.ACTIVE;
+                    case EnumAccountStatus.INACTIVE:
+                        account.Status = EnumAccountStatus.ACTIVE;
                         await _accountRepository.SaveChange();
-                        if (account.Password == payload.Subject)
-                        {
-                            var tokenGenerated = GenerateJWTToken(account);
-                            string token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
+          
+                             tokenGenerated = GenerateJWTToken(account);
+                             token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
                             return new AuthResponse()
                             {
                                 AccessToken = token,
@@ -101,13 +98,10 @@ namespace YBS.Services.Services.Implements
                                 FullName = payload.Name,
                                 ImgUrl = payload.Picture
                             };
-                        }
-                        break;
-                    case AccountStatusEnum.ACTIVE:
-                        if (account.Password == payload.Subject)
-                        {
-                            var tokenGenerated = GenerateJWTToken(account);
-                            string token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
+                    case EnumAccountStatus.ACTIVE:
+                    
+                             tokenGenerated = GenerateJWTToken(account);
+                             token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
                             return new AuthResponse()
                             {
                                 AccessToken = token,
@@ -115,12 +109,9 @@ namespace YBS.Services.Services.Implements
                                 FullName = payload.Name,
                                 ImgUrl = payload.Picture
                             };
-                        }
-                        break;
-                    case AccountStatusEnum.BAN:
+
+                    case EnumAccountStatus.BAN:
                         throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
-                    default:
-                        return null;
                 }
 
             }
@@ -128,7 +119,7 @@ namespace YBS.Services.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "You are not membership");
             }
-            return null;
+            throw new APIException((int)HttpStatusCode.InternalServerError,"Internal Server Error");
         }
 
         private async Task<GoogleJsonWebSignature.Payload?> GetPayload(string idToken)

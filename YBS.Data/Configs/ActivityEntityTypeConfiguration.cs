@@ -13,7 +13,7 @@ namespace YBS.Data.Configs
     {
         public void Configure(EntityTypeBuilder<Activity> builder)
         {
-            builder.ToTable("Route");
+            builder.ToTable("Activity");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
@@ -24,17 +24,6 @@ namespace YBS.Data.Configs
             builder.Property(x => x.OccuringTime).HasColumnType("time").IsRequired();
             builder.Property(x => x.OrderIndex).HasColumnType("int").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
-
-            builder.HasOne(x => x.StartDock)
-                 .WithMany(d => d.Activities)
-                 .HasForeignKey(d => d.StartDockId)
-                 .IsRequired(false);
-
-            builder.HasOne(x => x.EndDock)
-                .WithMany(d => d.Activities)
-                .HasForeignKey(d => d.EndDockId)
-                .IsRequired(false);
-
         }
     }
 }

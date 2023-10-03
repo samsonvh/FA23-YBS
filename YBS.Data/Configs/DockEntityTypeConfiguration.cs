@@ -22,10 +22,6 @@ namespace YBS.Data.Configs
             builder.Property(x => x.LastModifiedDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
 
-            builder.HasMany(x => x.Activities)
-                .WithOne(a => a.StartDock)
-                .HasForeignKey(a => a.StartDockId)
-                .IsRequired(false);
         }
     }
 }

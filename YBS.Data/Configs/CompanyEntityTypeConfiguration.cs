@@ -26,6 +26,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.ContractStartDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
 
+
             builder.HasMany(c => c.Docks)
                 .WithOne(d => d.Company)
                 .HasForeignKey(d => d.CompanyId);

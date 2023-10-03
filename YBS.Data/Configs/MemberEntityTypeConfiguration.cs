@@ -16,7 +16,11 @@ namespace YBS.Data.Configs
             builder.Property(x => x.FullName).HasMaxLength(150).IsRequired();
             builder.Property(x => x.DateOfbirth).HasColumnType("date").IsRequired();
             builder.Property(x => x.Nationality).HasMaxLength(100).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.Gender).HasMaxLength(6).IsRequired();
+            builder.Property(x => x.Gender).HasColumnType("varchar").HasMaxLength(15).IsRequired()
+            .HasConversion(
+                x => x.ToString(),
+                x => (EnumGender)Enum.Parse(typeof(EnumGender), x)
+            );
             builder.Property(x => x.Address).HasMaxLength(100).HasColumnType("varchar").IsRequired();
             builder.Property(x => x.IdentityNumber).HasMaxLength(12).HasColumnType("varchar").IsRequired();
             builder.HasIndex(x => x.IdentityNumber).IsUnique();
@@ -26,6 +30,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.LastModifiedDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
           
+
         }
     }
 }

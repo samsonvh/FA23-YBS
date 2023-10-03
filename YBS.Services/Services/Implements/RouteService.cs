@@ -5,12 +5,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YBS.Data.Dtos;
+using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Data.DesignPattern.UniOfWork.Interfaces;
 using YBS.Data.Enums;
 using YBS.Data.Models;
-using YBS.Data.Repositories.Interfaces;
-using YBS.Data.UniOfWork.Interfaces;
-using YBS.Services.Request.RouteRequest;
+using YBS.Services.DataHandler.Dtos;
+using YBS.Services.DataHandler.Requests.RouteRequests;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Services.Services.Implements
@@ -36,7 +36,7 @@ namespace YBS.Services.Services.Implements
                 Route? route = _mapper.Map<Route>(request);
                 if (route != null)
                 {
-                    route.Status = RouteStatusEnum.AVAILABLE;
+                    route.Status = EnumRouteStatus.AVAILABLE;
                     _routeRepository.Add(route);
                     await _routeRepository.SaveChange();
                     _logger.LogInformation("Create route successfully.");
@@ -52,8 +52,8 @@ namespace YBS.Services.Services.Implements
 
         }
 
-        public Task<RouteDto> GetById(int id)
+      /*  public Task<RouteDto> GetById(int id)
         {
-        }
+        }*/
     }
 }

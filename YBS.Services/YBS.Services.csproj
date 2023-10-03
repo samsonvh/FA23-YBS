@@ -20,6 +20,7 @@
 
   <ItemGroup>
   <ProjectReference Include="..\YBS.Data\YBS.Data.csproj" />
+  <ProjectReference Include="..\YBS.Util\YBS.Util.csproj" />
 </ItemGroup>
 
 </Project>

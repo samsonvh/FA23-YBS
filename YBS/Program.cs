@@ -6,16 +6,16 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-using YBS.Data.Repositories.Implements;
-using YBS.Data.Repositories.Interfaces;
 using YBS.Services.AutoMapper;
 using YBS.Data.Models;
-using YBS.Services.Middleware;
 using YBS.Data.Context;
+using YBS.Middleware;
 using YBS.Services.Services.Interfaces;
 using YBS.Services.Services.Implements;
-using YBS.Data.UniOfWork.Interfaces;
-using YBS.Data.UniOfWork.Implements;
+using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Data.DesignPattern.Repositories.Implements;
+using YBS.Data.DesignPattern.UniOfWork.Interfaces;
+using YBS.Data.DesignPattern.UniOfWork.Implements;
 
 var builder = WebApplication.CreateBuilder(args);
 

@@ -23,6 +23,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.DurationUnit).HasMaxLength(10).HasColumnType("varchar").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
           
+
              builder.HasOne(x => x.Company)
                 .WithMany(c => c.Routes)
                 .HasForeignKey(x => x.CompanyId);

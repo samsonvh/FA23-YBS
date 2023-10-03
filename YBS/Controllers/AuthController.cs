@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
-using YBS.Data.Requests;
-using YBS.Data.Requests.LoginRequests;
+using YBS.Services.DataHandler.Requests.LoginRequests;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Controllers
