@@ -16,12 +16,21 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
             builder.Property(x => x.Address).HasMaxLength(100).IsRequired();
-            builder.Property(x => x.Lattiude).IsRequired();
-            builder.Property(x => x.Longtiude).IsRequired();
+            builder.Property(x => x.Lattiude).HasColumnType("float").IsRequired();
+            builder.Property(x => x.Longtiude).HasColumnType("float").IsRequired();
             builder.Property(x => x.Description).HasMaxLength(255).IsRequired(false);
+            builder.Property(x => x.ImageUrl).HasMaxLength(255);
             builder.Property(x => x.LastModifiedDate).HasColumnType("date").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
 
+            builder.HasMany(x => x.DockActivities)
+                .WithOne(d => d.Dock)
+                .HasForeignKey(d => d.DockId)
+                .IsRequired(false);
+
+            builder.HasMany(x => x.DockYachtTypes)
+                .WithOne(d => d.Dock)
+                .HasForeignKey(d => d.DockId);
         }
     }
 }
