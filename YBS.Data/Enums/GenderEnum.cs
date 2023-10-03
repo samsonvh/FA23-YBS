@@ -1,6 +1,6 @@
 namespace YBS.Data.Enums
 {
-    public enum Gender
+    public enum GenderEnum
     {
         MALE = 0,
         FEMALE = 1,

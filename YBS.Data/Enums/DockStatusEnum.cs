@@ -1,6 +1,6 @@
 namespace YBS.Data.Enums
 {
-    public enum DockStatus
+    public enum DockStatusEnum
     {
         UNAVAILABLE = 0,
         AVAILABLE = 1,

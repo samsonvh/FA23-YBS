@@ -1,6 +1,6 @@
 namespace YBS.Data.Enums
 {
-    public enum AccountStatus
+    public enum CompanyStatusEnum
     {
         INACTIVE = 0,
         ACTIVE = 1,
