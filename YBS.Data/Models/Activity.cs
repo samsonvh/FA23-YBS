@@ -12,16 +12,13 @@ namespace YBS.Data.Models
         public int Id { get; set; }
         public int RouteId { get; set; }
         public Route Route { get; set; }
-/*        public int? StartDockId { get; set; }
-        public Dock StartDock { get; set; }
-        public int? EndDockId { get; set; }
-        public Dock EndDock { get; set; }*/
         public string StartCoordinate { get; set; }
         public string EndCoordinate { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
         public TimeSpan OccuringTime { get; set; }
         public int OrderIndex { get; set; }
-        public ActivityStatusEnum Status { get; set; }
+        public EnumActivityStatus Status { get; set; }
+        public ICollection<DockActivity> DockActivities { get; set; } = new List<DockActivity>();
     }
 }
