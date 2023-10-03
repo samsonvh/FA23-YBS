@@ -1,4 +1,4 @@
-namespace YBS.Data.Requests.DockRequests
+namespace YBS.Services.DataHandler.Requests.DockRequests
 {
     public class DockCreateRequest
     {

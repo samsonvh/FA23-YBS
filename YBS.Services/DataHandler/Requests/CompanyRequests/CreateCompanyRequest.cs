@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Models;
 
-namespace YBS.Data.Requests.CompanyRequests
+namespace YBS.Services.DataHandler.Requests.CompanyRequests
 {
     public class CreateCompanyRequest
     {

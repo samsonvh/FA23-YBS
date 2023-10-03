@@ -9,7 +9,7 @@ using YBS.Data.DesignPattern.Repositories.Interfaces;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Services.DataHandler.Dtos;
-using YBS.Services.Requests.RouteRequests;
+using YBS.Services.DataHandler.Requests.RouteRequests;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Services.Services.Implements
@@ -46,7 +46,7 @@ namespace YBS.Services.Services.Implements
                 _logger.LogError(ex, "Error create route.");
                 throw new Exception("Fail to create route", ex);
             }
-           
+
         }
     }
 }

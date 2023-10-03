@@ -1,6 +1,6 @@
 using System.Text.Json;
 
-namespace YBS.Data.Responses
+namespace YBS.Services.DataHandler.Responses
 {
     public class APIException : Exception
     {

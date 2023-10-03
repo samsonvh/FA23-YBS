@@ -1,6 +1,7 @@
-using YBS.Data.Responses;
-using YBS.Data.Requests;
-using YBS.Data.Requests.LoginRequests;
+
+
+using YBS.Services.DataHandler.Requests.LoginRequests;
+using YBS.Services.DataHandler.Responses;
 
 namespace YBS.Services.Services.Interfaces
 {

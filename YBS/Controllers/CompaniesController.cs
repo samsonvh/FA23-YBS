@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using YBS.Data.Requests.CompanyRequests;
+using YBS.Services.DataHandler.Requests.CompanyRequests;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Controllers

@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Mvc;
 using YBS.Services.Services.Interfaces;
 
-
 namespace YBS.Controllers
 {
     [Route("api/accounts")]

@@ -1,5 +1,5 @@
 
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,8 @@ namespace YBS.Services.Services.Interfaces
     public interface IAccountService
     {
         Task<AccountDto> GetById(int id);
-/*        Task<AccountDto> Create(CompanyCreateRequest request);
-*/    }
+        /*        Task<AccountDto> Create(CompanyCreateRequest request);
+        */
+    }
 }
 

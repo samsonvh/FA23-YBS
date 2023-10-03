@@ -1,7 +1,5 @@
 
-using YBS.Services.Requests;
-
-namespace YBS.Data.Requests.AccountRequests
+namespace YBS.Services.DataHandler.Requests.AccountRequests
 {
     public class AccountSearchRequest : PageRequest
     {

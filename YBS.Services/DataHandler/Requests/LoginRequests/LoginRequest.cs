@@ -1,4 +1,4 @@
-namespace YBS.Data.Requests.LoginRequests
+namespace YBS.Services.DataHandler.Requests.LoginRequests
 {
     public class LoginRequest 
     {

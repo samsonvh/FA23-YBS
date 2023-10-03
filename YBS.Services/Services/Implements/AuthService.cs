@@ -1,22 +1,19 @@
 using YBS.Data.Models;
 
-using YBS.Data.Responses;
-
 using Google.Apis.Auth;
 using Microsoft.Extensions.Configuration;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Cryptography;
 using System.Text;
 using System.Net;
-
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using YBS.Data.Requests;
-using YBS.Data.Requests.LoginRequests;
 using YBS.Services.Services.Interfaces;
 using YBS.Data.Enums;
 using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Services.DataHandler.Responses;
+using YBS.Services.DataHandler.Requests.LoginRequests;
 namespace YBS.Services.Services.Implements
 {
     public class AuthService : IAuthService
@@ -33,28 +30,28 @@ namespace YBS.Services.Services.Implements
 
         public async Task<AuthResponse> Login(LoginRequest request)
         {
-            var existAccount = await _accountRepository.Find(x => x.Email == request.Email && x.Password == request.Password)
+            var existAccount = await _accountRepository.Find(accouunt => accouunt.Email == request.Email && accouunt.Password == request.Password)
             .Include(x => x.Role)
             .FirstOrDefaultAsync()
             .ConfigureAwait(false);
             if (existAccount == null)
             {
-                throw new APIException ((int)HttpStatusCode.NotFound, "Email or Password is not correct");
+                throw new APIException((int)HttpStatusCode.NotFound, "Email or Password is not correct");
             }
             var existMember = await _memberRepository.Find(x => x.AccountId == existAccount.Id).FirstOrDefaultAsync().ConfigureAwait(false);
             if (existMember == null)
             {
-                throw new APIException ((int)HttpStatusCode.NotFound, "Member does not exist");
+                throw new APIException((int)HttpStatusCode.NotFound, "Member does not exist");
             }
             if (existMember.Status == EnumMemberStatus.BAN || existAccount.Status == EnumAccountStatus.BAN)
             {
-                throw new APIException ((int)HttpStatusCode.BadRequest,"You can not login, your account is banned");
+                throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
             }
             if (existAccount.Status == EnumAccountStatus.INACTIVE)
             {
                 existAccount.Status = EnumAccountStatus.ACTIVE;
                 _accountRepository.Update(existAccount);
-                
+
             }
             if (existMember.Status == EnumMemberStatus.INACTIVE)
             {
@@ -62,29 +59,27 @@ namespace YBS.Services.Services.Implements
                 _memberRepository.Update(existMember);
             }
             await _accountRepository.SaveChange();
-            
-            var tokenGenerated = GenerateJWTToken (existAccount);
+
+            var tokenGenerated = GenerateJWTToken(existAccount);
             string token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
             var AuthResponse = new AuthResponse()
             {
-            AccessToken = token,
-            Role = existAccount.Role.Name,
-            FullName = existMember.FullName,
-            ImgUrl = "abc"
+                AccessToken = token,
+                Role = existAccount.Role.Name,
+                FullName = existMember.FullName,
+                ImgUrl = "abc"
             };
-            return AuthResponse ;
+            return AuthResponse;
         }
 
         public async Task<AuthResponse> LoginWithGoogle(string idToken)
         {
-            
-            GoogleJsonWebSignature.Payload? payload =  await GetPayload (idToken);
+
+            GoogleJsonWebSignature.Payload? payload = await GetPayload(idToken);
             if (payload != null)
             {
 
-                Account? account = await  _accountRepository.Find(account => account.Email == payload.Email)
-                .Include(account => account.Role)
-                .FirstOrDefaultAsync().ConfigureAwait(false);
+                Account? account = await _accountRepository.Find(account => account.Email == payload.Email).FirstOrDefaultAsync().ConfigureAwait(false);
                 payload.Subject = Hash(payload.Subject);
                 string? issuer, audience,token;
                 JwtSecurityToken tokenGenerated;
@@ -112,15 +107,16 @@ namespace YBS.Services.Services.Implements
                                 AccessToken = token,
                                 Role = account.Role.Name,
                                 FullName = payload.Name,
-                                ImgUrl= payload.Picture
+                                ImgUrl = payload.Picture
                             };
                     case EnumAccountStatus.BAN:
                         throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
                 }
 
             }
-            else {
-                throw new APIException((int)HttpStatusCode.NotFound,"You are not membership");
+            else
+            {
+                throw new APIException((int)HttpStatusCode.NotFound, "You are not membership");
             }
             throw new APIException((int)HttpStatusCode.InternalServerError,"Internal Server Error");
         }
@@ -158,12 +154,12 @@ namespace YBS.Services.Services.Implements
                 return builder.ToString();
             }
         }
-        private JwtSecurityToken GenerateJWTToken (Account account)
+        private JwtSecurityToken GenerateJWTToken(Account account)
         {
-            var claims = new List<Claim> 
-            { 
-                new Claim("Id", account.Id.ToString()), 
-                new Claim("Role", nameof(account.Role)) 
+            var claims = new List<Claim>
+            {
+                new Claim("Id", account.Id.ToString()),
+                new Claim("Role", nameof(account.Role))
             };
             var issuer = _configuration["JWT:Issuer"];
             var audience = _configuration["JWT:Audience"];
@@ -172,7 +168,7 @@ namespace YBS.Services.Services.Implements
             SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
             var token = new JwtSecurityToken
             (
-              issuer, 
+              issuer,
             audience,
             claims: claims,
             expires: DateTime.Now.AddMinutes(30),

@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using YBS.Data.Responses;
+using YBS.Services.DataHandler.Responses;
 
 namespace YBS.Middleware
 {

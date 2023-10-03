@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.DesignPattern.Repositories.Interfaces;
+using YBS.Data.DesignPattern.UniOfWork.Interfaces;
 using YBS.Data.Models;
 
 using YBS.Services.DataHandler.Dtos;
@@ -16,17 +17,20 @@ namespace YBS.Services.Services.Implements
 {
     public class AccountService : IAccountService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Account> _accountRepository;
         private readonly IMapper _mapper;
-        public AccountService(IGenericRepository<Account> accountRepository, IMapper mapper)
+        private readonly ILogger _logger;
+        public AccountService(IUnitOfWork unitOfWork, IGenericRepository<Account> accountRepository, IMapper mapper)
         {
+            _unitOfWork = unitOfWork;
             _accountRepository = accountRepository;
             _mapper = mapper;
 
         }
         public async Task<AccountDto> GetById(int id)
         {
-            var account =  _accountRepository.GetById(id);
+            var account = await _unitOfWork.AccountRepository.GetById(id);
             return _mapper.Map<AccountDto>(account);
         }
     }

@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Models;
 
-namespace YBS.Services.Requests.RouteRequests
+namespace YBS.Services.DataHandler.Requests.RouteRequests
 {
     public class CreateRouteRequest
     {

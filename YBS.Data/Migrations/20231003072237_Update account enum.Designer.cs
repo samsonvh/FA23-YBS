@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YBS.Data.Context;
 
@@ -11,9 +12,10 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSContext))]
-    partial class YBSContextModelSnapshot : ModelSnapshot
+    [Migration("20231003072237_Update account enum")]
+    partial class Updateaccountenum
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -160,7 +162,8 @@ namespace YBS.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
+                        .IsRequired()
+                        .HasColumnType("date");
 
                     b.Property<float>("Lattiude")
                         .HasColumnType("real");
@@ -212,10 +215,9 @@ namespace YBS.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
+                    b.Property<int>("Gender")
+                        .HasMaxLength(6)
+                        .HasColumnType("int");
 
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
@@ -223,7 +225,8 @@ namespace YBS.Data.Migrations
                         .HasColumnType("varchar(12)");
 
                     b.Property<DateTime?>("LastModifiedDate")
-                        .HasColumnType("datetime2");
+                        .IsRequired()
+                        .HasColumnType("date");
 
                     b.Property<DateTime>("MemberSinceDate")
                         .HasColumnType("date");

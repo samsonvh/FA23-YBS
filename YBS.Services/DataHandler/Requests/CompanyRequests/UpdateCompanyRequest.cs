@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YBS.Data.Requests.CompanyRequests
+namespace YBS.Services.DataHandler.Requests.CompanyRequests
 {
     public class UpdateCompanyRequest
     {

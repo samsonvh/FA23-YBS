@@ -1,6 +1,5 @@
 
-
-namespace YBS.Data.Responses
+namespace YBS.Services.DataHandler.Responses
 {
     public class AuthResponse 
     {

@@ -20,6 +20,8 @@ using YBS.Services.Services.Interfaces;
 using YBS.Services.Services.Implements;
 using YBS.Data.DesignPattern.Repositories.Interfaces;
 using YBS.Data.DesignPattern.Repositories.Implements;
+using YBS.Data.DesignPattern.UniOfWork.Interfaces;
+using YBS.Data.DesignPattern.UniOfWork.Implements;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -32,7 +34,12 @@ builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepositor
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
-builder.Services.AddLogging();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddLogging(builder =>
+{
+    builder.AddConsole();
+                        
+});
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

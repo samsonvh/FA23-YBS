@@ -1,8 +1,9 @@
 ﻿using AutoMapper;
 using YBS.Data.Models;
-using YBS.Data.Requests.CompanyRequests;
 using YBS.Services.DataHandler.Dtos;
-using YBS.Services.Requests.RouteRequests;
+using YBS.Services.DataHandler.Requests.CompanyRequests;
+using YBS.Services.DataHandler.Requests.RouteRequests;
+
 
 namespace YBS.Services.AutoMapper
 {

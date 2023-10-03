@@ -1,6 +1,4 @@
-using YBS.Services.Requests;
-
-namespace YBS.Data.Requests.DockRequests
+namespace YBS.Services.DataHandler.Requests.DockRequests
 {
     public class DockSearchRequest : PageRequest
     {
