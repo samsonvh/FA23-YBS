@@ -30,6 +30,14 @@ namespace YBS.Data.Configs
             builder.HasMany(c => c.Docks)
                 .WithOne(d => d.Company)
                 .HasForeignKey(d => d.CompanyId);
+
+            builder.HasMany(c => c.Yachts)
+                .WithOne(d => d.Company)
+                .HasForeignKey(d => d.CompanyId);
+
+            builder.HasMany(c => c.Services)
+                .WithOne(d => d.Company)
+                .HasForeignKey(d => d.CompanyId);
         }
     }
 }

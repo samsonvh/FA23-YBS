@@ -24,6 +24,12 @@ namespace YBS.Data.Configs
             builder.Property(x => x.OccuringTime).HasColumnType("time").IsRequired();
             builder.Property(x => x.OrderIndex).HasColumnType("int").IsRequired();
             builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
+
+            // Define the one-to-many relationship with DockActivity
+            builder.HasMany(x => x.DockActivities)
+                .WithOne(d => d.Activity)
+                .HasForeignKey(d => d.ActivityId)
+                .IsRequired(false);
         }
     }
 }
