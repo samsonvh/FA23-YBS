@@ -1,19 +1,14 @@
 
 using Microsoft.AspNetCore.Hosting;
-
 using System.Text;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
-
-
 using YBS.Data.Repositories.Implements;
 using YBS.Data.Repositories.Interfaces;
 using YBS.Services.AutoMapper;
-
 using YBS.Data.Models;
 using YBS.Services.Middleware;
 using YBS.Data.Context;

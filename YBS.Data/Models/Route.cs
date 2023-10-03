@@ -16,11 +16,11 @@ namespace YBS.Data.Models
         public TimeSpan EndingTime { get; set; }
         public int DurationTime { get; set; }
         public string DurationUnit { get; set; }
-
         public float Price { get; set; }
         public string Unit { get; set; }
         public string Type { get; set; }
-        public RouteStatus Status { get; set; }
+        public RouteStatusEnum Status { get; set; }
+        public ICollection<Activity> Activities { get; set; }
 
     }
 }

@@ -9,6 +9,7 @@ using YBS.Data.Dtos;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.Repositories.Interfaces;
+using YBS.Data.UniOfWork.Interfaces;
 using YBS.Services.Request.RouteRequest;
 using YBS.Services.Services.Interfaces;
 
@@ -16,12 +17,14 @@ namespace YBS.Services.Services.Implements
 {
     public class RouteService : IRouteService
     {
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Route> _routeRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<Route> _logger;
 
-        public RouteService(IGenericRepository<Route> routeRepository, IMapper mapper, ILogger<Route> logger)
+        public RouteService(IUnitOfWork unitOfWork, IGenericRepository<Route> routeRepository, IMapper mapper, ILogger<Route> logger)
         {
+            _unitOfWork = unitOfWork;
             _routeRepository = routeRepository;
             _mapper = mapper;
             _logger = logger;
@@ -33,7 +36,7 @@ namespace YBS.Services.Services.Implements
                 Route? route = _mapper.Map<Route>(request);
                 if (route != null)
                 {
-                    route.Status = RouteStatus.AVAILABLE;
+                    route.Status = RouteStatusEnum.AVAILABLE;
                     _routeRepository.Add(route);
                     await _routeRepository.SaveChange();
                     _logger.LogInformation("Create route successfully.");
@@ -47,6 +50,10 @@ namespace YBS.Services.Services.Implements
                 throw new Exception("Fail to create route", ex);
             }
 
+        }
+
+        public Task<RouteDto> GetById(int id)
+        {
         }
     }
 }

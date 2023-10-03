@@ -11,7 +11,7 @@ namespace YBS.Services.Services.Interfaces
     public interface IRouteService
     {
         Task<RouteDto> Create(CreateRouteRequest request);
-        /*        Task<RouteDto> GetById(int id);
-        */
+        Task<RouteDto> GetById(int id);
+
     }
 }

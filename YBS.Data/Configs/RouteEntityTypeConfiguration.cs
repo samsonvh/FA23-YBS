@@ -21,16 +21,15 @@ namespace YBS.Data.Configs
             builder.Property(x => x.EndingTime).HasColumnType("time").IsRequired();
             builder.Property(x => x.DurationTime).HasColumnType("int").IsRequired();
             builder.Property(x => x.DurationUnit).HasMaxLength(10).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
-            .HasConversion(
-                x => x.ToString(),
-                x => (RouteStatus)Enum.Parse(typeof(RouteStatus), x)
-            );
+            builder.Property(x => x.Status).HasMaxLength(15).IsRequired();
+          
              builder.HasOne(x => x.Company)
                 .WithMany(c => c.Routes)
                 .HasForeignKey(x => x.CompanyId);
 
-
+            builder.HasMany(x => x.Activities)
+                .WithOne(a => a.Route)
+                .HasForeignKey(a => a.RouteId);
         }
     }
 }

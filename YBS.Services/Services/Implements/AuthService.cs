@@ -44,19 +44,19 @@ namespace YBS.Services.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Member does not exist");
             }
-            if (existMember.Status == MemberStatus.BAN || existAccount.Status == AccountStatus.BAN)
+            if (existMember.Status == MemberStatusEnum.BAN || existAccount.Status == AccountStatusEnum.BAN)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
             }
-            if (existAccount.Status == AccountStatus.INACTIVE)
+            if (existAccount.Status == AccountStatusEnum.INACTIVE)
             {
-                existAccount.Status = AccountStatus.ACTIVE;
+                existAccount.Status = AccountStatusEnum.ACTIVE;
                 _accountRepository.Update(existAccount);
 
             }
-            if (existMember.Status == MemberStatus.INACTIVE)
+            if (existMember.Status == MemberStatusEnum.INACTIVE)
             {
-                existMember.Status = MemberStatus.ACTIVE;
+                existMember.Status = MemberStatusEnum.ACTIVE;
                 _memberRepository.Update(existMember);
             }
             await _accountRepository.SaveChange();
@@ -86,9 +86,9 @@ namespace YBS.Services.Services.Implements
 
                 switch (account.Status)
                 {
-                    case AccountStatus.INACTIVE:
+                    case AccountStatusEnum.INACTIVE:
                         account.Password = payload.Subject;
-                        account.Status = AccountStatus.ACTIVE;
+                        account.Status = AccountStatusEnum.ACTIVE;
                         await _accountRepository.SaveChange();
                         if (account.Password == payload.Subject)
                         {
@@ -103,7 +103,7 @@ namespace YBS.Services.Services.Implements
                             };
                         }
                         break;
-                    case AccountStatus.ACTIVE:
+                    case AccountStatusEnum.ACTIVE:
                         if (account.Password == payload.Subject)
                         {
                             var tokenGenerated = GenerateJWTToken(account);
@@ -117,7 +117,7 @@ namespace YBS.Services.Services.Implements
                             };
                         }
                         break;
-                    case AccountStatus.BAN:
+                    case AccountStatusEnum.BAN:
                         throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
                     default:
                         return null;

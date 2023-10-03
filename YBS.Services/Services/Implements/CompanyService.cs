@@ -39,7 +39,7 @@ namespace YBS.Services.Services.Implements
                 Company? company = _mapper.Map<Company>(request);
                 if (company != null)
                 {
-                    company.Status = CompanyStatus.ACTIVE;
+                    company.Status = CompanyStatusEnum.ACTIVE;
                     _companyRepository.Add(company);
                     await _unitOfWork.Commit();
                     _logger.LogInformation("Create company succesfully.");
@@ -71,7 +71,7 @@ namespace YBS.Services.Services.Implements
 
         public async Task<bool> ChangeStatus(int id, string status)
         {
-            if (Enum.TryParse(status, out CompanyStatus newStatus))
+            if (Enum.TryParse(status, out CompanyStatusEnum newStatus))
             {
                 var company = await _unitOfWork.CompanyRepository.Find(company => company.Id == id).FirstOrDefaultAsync();
 

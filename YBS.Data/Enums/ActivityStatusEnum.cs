@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 
 namespace YBS.Data.Enums
 {
-    public class ActivityStatusEnum
+    public enum ActivityStatusEnum
     {
+        AVAILABLE,
+        CANCEL
     }
 }

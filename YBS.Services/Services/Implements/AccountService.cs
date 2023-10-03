@@ -18,7 +18,6 @@ namespace YBS.Services.Services.Implements
         private readonly IUnitOfWork _unitOfWork;
         private readonly IGenericRepository<Account> _accountRepository;
         private readonly IMapper _mapper;
-        private readonly ILogger _logger;
         public AccountService(IUnitOfWork unitOfWork, IGenericRepository<Account> accountRepository, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
