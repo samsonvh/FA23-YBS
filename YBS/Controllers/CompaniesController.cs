@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS.Data.Request.CompanyRequest;
-using YBS.Services.Interfaces;
+using YBS.Services.Services.Interfaces;
 
 namespace YBS.Controllers
 {

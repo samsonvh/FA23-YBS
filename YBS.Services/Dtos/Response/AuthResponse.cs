@@ -1,4 +1,3 @@
-using YBS.Data.Extensions.Enums;
 
 namespace YBS.Data.Responses
 {

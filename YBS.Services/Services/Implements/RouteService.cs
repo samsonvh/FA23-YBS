@@ -6,13 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Dtos;
-using YBS.Data.Extensions.Enums;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.Repositories.Interfaces;
-using YBS.Services.Interfaces;
 using YBS.Services.Request.RouteRequest;
+using YBS.Services.Services.Interfaces;
 
-namespace YBS.Services.Implements
+namespace YBS.Services.Services.Implements
 {
     public class RouteService : IRouteService
     {
@@ -46,7 +46,7 @@ namespace YBS.Services.Implements
                 _logger.LogError(ex, "Error create route.");
                 throw new Exception("Fail to create route", ex);
             }
-           
+
         }
     }
 }

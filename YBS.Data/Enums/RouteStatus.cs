@@ -1,4 +1,4 @@
-namespace YBS.Data.Extensions.Enums
+namespace YBS.Data.Enums
 {
     public enum RouteStatus
     {

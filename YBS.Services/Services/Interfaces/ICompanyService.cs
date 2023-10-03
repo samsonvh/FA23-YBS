@@ -5,10 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Dtos;
 using YBS.Data.Request.CompanyRequest;
-using YBS.Data.Response;
 using YBS.Dtos;
 
-namespace YBS.Services.Interfaces
+namespace YBS.Services.Services.Interfaces
 {
     public interface ICompanyService
     {

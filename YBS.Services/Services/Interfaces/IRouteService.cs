@@ -6,11 +6,12 @@ using System.Threading.Tasks;
 using YBS.Data.Dtos;
 using YBS.Services.Request.RouteRequest;
 
-namespace YBS.Services.Interfaces
+namespace YBS.Services.Services.Interfaces
 {
     public interface IRouteService
     {
         Task<RouteDto> Create(CreateRouteRequest request);
-/*        Task<RouteDto> GetById(int id);
-*/    }
+        /*        Task<RouteDto> GetById(int id);
+        */
+    }
 }

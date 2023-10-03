@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace YBS.Data.Response
+namespace YBS.Services.Dtos.Response
 {
     public class DefaultPageResponse<T>
     {

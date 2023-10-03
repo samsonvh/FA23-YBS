@@ -1,4 +1,4 @@
-﻿using YBS.Data.Extensions.Enums;
+﻿using YBS.Data.Enums;
 
 namespace YBS.Data.Models
 {
