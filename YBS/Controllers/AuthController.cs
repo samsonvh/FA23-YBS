@@ -18,10 +18,10 @@ namespace YBS.Controllers
         {
             return Ok(await _authService.LoginWithGoogle (idToken));
         }
-        [HttpPost("Login")]
+      /*  [HttpPost("Login")]
         public async Task<IActionResult> Login ([FromBody] LoginRequest request)
         {
             return Ok(await _authService.Login(request));
-        }
+        }*/
     }
 }

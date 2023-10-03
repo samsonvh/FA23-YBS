@@ -8,6 +8,6 @@ namespace YBS.Services.Services.Interfaces
     public interface IAuthService
     {
         Task<AuthResponse> LoginWithGoogle (string idToken);
-        Task<AuthResponse> Login (LoginRequest request);
-    }
+/*        Task<AuthResponse> Login (LoginRequest request);
+*/    }
 }
