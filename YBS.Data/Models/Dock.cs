@@ -12,7 +12,8 @@ namespace YBS.Data.Models
         public float Longtiude { get; set; }
         public string Description { get; set; }
         public string ImageUrl { get; set; }
-/*        public ICollection<Activity> Activities { get; set; }
-*/        public EnumDockStatus Status { get; set; }
+        public EnumDockStatus Status { get; set; }
+        public ICollection<DockActivity> DockActivities { get; set; } = new List<DockActivity>();
+        public ICollection<DockYachtType> DockYachtTypes { get; set; } = new List<DockYachtType>();
     }
 }

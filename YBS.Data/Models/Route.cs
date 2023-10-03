@@ -18,8 +18,9 @@ namespace YBS.Data.Models
         public float Price { get; set; }
         public string Unit { get; set; }
         public string Type { get; set; }
-        public ICollection<Activity> Activities { get; set; }
         public EnumRouteStatus Status { get; set; }
+        public ICollection<Activity> Activities { get; set; } = new List<Activity>();
+        public ICollection<RouteYachtType> RouteYachtTypes { get; set; } = new List<RouteYachtType>();
 
     }
 }

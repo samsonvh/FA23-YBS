@@ -28,7 +28,7 @@ namespace YBS.Services.Services.Implements
             _configuration = configuration;
         }
 
-        public async Task<AuthResponse> Login(LoginRequest request)
+       /* public async Task<AuthResponse> Login(LoginRequest request)
         {
             var existAccount = await _accountRepository.Find(accouunt => accouunt.Email == request.Email && accouunt.Password == request.Password)
             .Include(x => x.Role)
@@ -70,7 +70,7 @@ namespace YBS.Services.Services.Implements
                 ImgUrl = "abc"
             };
             return AuthResponse;
-        }
+        }*/
 
         public async Task<AuthResponse> LoginWithGoogle(string idToken)
         {
