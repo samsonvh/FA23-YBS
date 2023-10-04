@@ -18,6 +18,7 @@ namespace YBS.Data.Configs
             builder.Property(x => x.Id).ValueGeneratedOnAdd();
             builder.Property(x => x.Email).HasMaxLength(200).HasColumnType("varchar").IsRequired();
             builder.HasIndex(x => x.Email).IsUnique();
+            builder.Property(x => x.PhoneNumber).HasMaxLength(15).HasColumnType("nvarchar").IsRequired();
             builder.HasOne(x => x.Role).WithMany(x => x.Accounts).HasForeignKey(x => x.RoleID);
             builder.Property(x => x.RoleID).IsRequired();
             builder.Property(x => x.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();

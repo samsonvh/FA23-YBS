@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Services.DataHandler.Requests.AccountRequests;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Controllers
@@ -23,6 +24,12 @@ namespace YBS.Controllers
                 return NotFound();
             }
             return Ok(account);
+        }
+        [HttpGet("Search")]
+        public async Task<IActionResult> Search ([FromQuery] AccountSearchRequest request)
+        {
+            var accountList = await _accountService.Search(request);
+            return Ok(accountList);
         }
 
 

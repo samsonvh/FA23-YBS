@@ -1,6 +1,6 @@
 namespace YBS.Data.Enums
 {
-    public enum EnumRoleEnum
+    public enum EnumRole
     {
         ADMIN = 0,
         COMPANY = 1,

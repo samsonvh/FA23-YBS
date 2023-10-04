@@ -12,8 +12,8 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSContext))]
-    [Migration("20231003180305_Add migration activity, dock, dockActivity, yacht, yachtType, routeYachtType")]
-    partial class AddmigrationactivitydockdockActivityyachtyachtTyperouteYachtType
+    [Migration("20231004044556_Init Migration")]
+    partial class InitMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -32,6 +32,12 @@ namespace YBS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
+                    b.Property<int>("AccessFailedCount")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ConcurrencyStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("date")
@@ -42,15 +48,53 @@ namespace YBS.Data.Migrations
                         .HasMaxLength(200)
                         .HasColumnType("varchar(200)");
 
+                    b.Property<bool>("EmailConfirmed")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
+
+                    b.Property<bool>("LockoutEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTimeOffset?>("LockoutEnd")
+                        .HasColumnType("datetimeoffset");
+
+                    b.Property<string>("NormalizedEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("NormalizedUserName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PasswordHash")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasMaxLength(15)
+                        .HasColumnType("nvarchar(15)");
+
+                    b.Property<bool>("PhoneNumberConfirmed")
+                        .HasColumnType("bit");
 
                     b.Property<int>("RoleID")
                         .HasColumnType("int");
 
+                    b.Property<string>("SecurityStamp")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<int>("Status")
                         .HasMaxLength(15)
                         .HasColumnType("int");
+
+                    b.Property<bool>("TwoFactorEnabled")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("UserName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -145,6 +189,9 @@ namespace YBS.Data.Migrations
                         .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
@@ -177,6 +224,44 @@ namespace YBS.Data.Migrations
                     b.ToTable("Company", (string)null);
                 });
 
+            modelBuilder.Entity("YBS.Data.Models.Deposit", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<float>("DepositAmount")
+                        .HasColumnType("real");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("MembershipPackageID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("WalletID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("MembershipPackageID");
+
+                    b.HasIndex("WalletID");
+
+                    b.ToTable("Deposit");
+                });
+
             modelBuilder.Entity("YBS.Data.Models.Dock", b =>
                 {
                     b.Property<int>("Id")
@@ -202,17 +287,21 @@ namespace YBS.Data.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .IsRequired()
                         .HasColumnType("date");
 
-                    b.Property<float>("Lattiude")
-                        .HasColumnType("real");
+                    b.Property<double>("Lattiude")
+                        .HasColumnType("float");
 
-                    b.Property<float>("Longtiude")
-                        .HasColumnType("real");
+                    b.Property<double>("Longtiude")
+                        .HasColumnType("float");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -309,15 +398,20 @@ namespace YBS.Data.Migrations
                         .HasMaxLength(150)
                         .HasColumnType("nvarchar(150)");
 
-                    b.Property<string>("Gender")
-                        .IsRequired()
+                    b.Property<int>("Gender")
                         .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("int");
 
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
                         .HasMaxLength(12)
                         .HasColumnType("varchar(12)");
+
+                    b.Property<string>("ImageUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .IsRequired()
@@ -328,6 +422,9 @@ namespace YBS.Data.Migrations
 
                     b.Property<DateTime>("MembershipExpiredDate")
                         .HasColumnType("datetime");
+
+                    b.Property<int?>("MembershipPackageID")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("MembershipStartDate")
                         .HasColumnType("datetime");
@@ -349,7 +446,87 @@ namespace YBS.Data.Migrations
                     b.HasIndex("IdentityNumber")
                         .IsUnique();
 
+                    b.HasIndex("MembershipPackageID");
+
                     b.ToTable("Member", (string)null);
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("EffectiveTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<float>("Point")
+                        .HasColumnType("real");
+
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("MembershipPackage");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Payment", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<int>("BookingID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentMethod")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<float>("TotalPrice")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.ToTable("Payment");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Role", b =>
@@ -408,6 +585,9 @@ namespace YBS.Data.Migrations
                     b.Property<TimeSpan>("EndingTime")
                         .HasColumnType("time");
 
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
@@ -419,9 +599,6 @@ namespace YBS.Data.Migrations
                     b.Property<TimeSpan>("PickupTime")
                         .HasColumnType("time");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
-
                     b.Property<TimeSpan>("StartingTime")
                         .HasColumnType("time");
 
@@ -431,11 +608,8 @@ namespace YBS.Data.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Unit")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(15)
+                        .HasColumnType("varchar(15)");
 
                     b.HasKey("Id");
 
@@ -452,15 +626,16 @@ namespace YBS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
                     b.Property<string>("Unit")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.Property<int>("YachtTypeId")
                         .HasColumnType("int");
@@ -471,7 +646,7 @@ namespace YBS.Data.Migrations
 
                     b.HasIndex("YachtTypeId");
 
-                    b.ToTable("RouteYachtType");
+                    b.ToTable("RouteYachtType", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Service", b =>
@@ -486,32 +661,112 @@ namespace YBS.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
-                    b.Property<float>("Price")
-                        .HasColumnType("real");
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(50)
+                        .HasColumnType("varchar(50)");
 
                     b.Property<string>("Unit")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(10)
+                        .HasColumnType("varchar(10)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Service");
+                    b.ToTable("Service", (string)null);
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Transaction", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<float>("Amount")
+                        .HasColumnType("real");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("CreationDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime?>("LastModifiedDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("PaymentID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Type")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WalletID")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("PaymentID");
+
+                    b.HasIndex("WalletID");
+
+                    b.ToTable("Transaction");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Wallet", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<float>("Balance")
+                        .HasColumnType("real");
+
+                    b.Property<int>("MemberID")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ID");
+
+                    b.HasIndex("MemberID");
+
+                    b.ToTable("Wallet");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Yacht", b =>
@@ -522,8 +777,8 @@ namespace YBS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<float>("BEAM")
-                        .HasColumnType("real");
+                    b.Property<double>("BEAM")
+                        .HasColumnType("float");
 
                     b.Property<int>("Cabin")
                         .HasColumnType("int");
@@ -534,37 +789,45 @@ namespace YBS.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("DRAFT")
-                        .HasColumnType("real");
+                    b.Property<double>("DRAFT")
+                        .HasColumnType("float");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<string>("FuelCapacity")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(20)
+                        .HasColumnType("varchar(20)");
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(255)
+                        .HasColumnType("varchar(255)");
 
-                    b.Property<float>("LOA")
-                        .HasColumnType("real");
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("bit");
+
+                    b.Property<double>("LOA")
+                        .HasColumnType("float");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("MaximumGuestLimit")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                        .HasMaxLength(100)
+                        .HasColumnType("varchar(100)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -581,7 +844,7 @@ namespace YBS.Data.Migrations
 
                     b.HasIndex("YachtTypeId");
 
-                    b.ToTable("Yacht");
+                    b.ToTable("Yacht", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.YachtType", b =>
@@ -639,6 +902,25 @@ namespace YBS.Data.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("YBS.Data.Models.Deposit", b =>
+                {
+                    b.HasOne("YBS.Data.Models.MembershipPackage", "MembershipPackage")
+                        .WithMany("Deposits")
+                        .HasForeignKey("MembershipPackageID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YBS.Data.Models.Wallet", "Wallet")
+                        .WithMany("Deposits")
+                        .HasForeignKey("WalletID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("MembershipPackage");
+
+                    b.Navigation("Wallet");
+                });
+
             modelBuilder.Entity("YBS.Data.Models.Dock", b =>
                 {
                     b.HasOne("YBS.Data.Models.Company", "Company")
@@ -690,6 +972,10 @@ namespace YBS.Data.Migrations
                         .WithOne("Member")
                         .HasForeignKey("YBS.Data.Models.Member", "AccountId");
 
+                    b.HasOne("YBS.Data.Models.MembershipPackage", null)
+                        .WithMany("Members")
+                        .HasForeignKey("MembershipPackageID");
+
                     b.Navigation("Account");
                 });
 
@@ -732,6 +1018,36 @@ namespace YBS.Data.Migrations
                         .IsRequired();
 
                     b.Navigation("Company");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Transaction", b =>
+                {
+                    b.HasOne("YBS.Data.Models.Payment", "Payment")
+                        .WithMany()
+                        .HasForeignKey("PaymentID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("YBS.Data.Models.Wallet", "Wallet")
+                        .WithMany("Transactions")
+                        .HasForeignKey("WalletID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Payment");
+
+                    b.Navigation("Wallet");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Wallet", b =>
+                {
+                    b.HasOne("YBS.Data.Models.Member", "Member")
+                        .WithMany("Wallets")
+                        .HasForeignKey("MemberID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Member");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Yacht", b =>
@@ -785,6 +1101,18 @@ namespace YBS.Data.Migrations
                     b.Navigation("DockYachtTypes");
                 });
 
+            modelBuilder.Entity("YBS.Data.Models.Member", b =>
+                {
+                    b.Navigation("Wallets");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
+                {
+                    b.Navigation("Deposits");
+
+                    b.Navigation("Members");
+                });
+
             modelBuilder.Entity("YBS.Data.Models.Role", b =>
                 {
                     b.Navigation("Accounts");
@@ -795,6 +1123,13 @@ namespace YBS.Data.Migrations
                     b.Navigation("Activities");
 
                     b.Navigation("RouteYachtTypes");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Wallet", b =>
+                {
+                    b.Navigation("Deposits");
+
+                    b.Navigation("Transactions");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.YachtType", b =>
