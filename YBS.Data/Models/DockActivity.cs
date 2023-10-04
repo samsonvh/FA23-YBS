@@ -12,9 +12,9 @@ namespace YBS.Data.Models
         public int Id { get; set; }
         public int? ActivityId { get; set; }
         public Activity Activity { get; set; }  
-        public int? DockId { get; set; }
+        public int DockId { get; set; }
         public Dock Dock { get; set; }  
-        public EnumTypeDockActivity Type { get; set; }
-        public EnumDockTypeStatus Status { get; set; }
+        public EnumTypeDockActivity? Type { get; set; }
+        public EnumDockTypeStatus? Status { get; set; }
     }
 }

@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YBS.Data.Context;
 
@@ -11,9 +12,10 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSContext))]
-    partial class YBSContextModelSnapshot : ModelSnapshot
+    [Migration("20231003180305_Add migration activity, dock, dockActivity, yacht, yachtType, routeYachtType")]
+    partial class AddmigrationactivitydockdockActivityyachtyachtTyperouteYachtType
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -200,18 +202,17 @@ namespace YBS.Data.Migrations
 
                     b.Property<string>("ImageUrl")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .IsRequired()
                         .HasColumnType("date");
 
-                    b.Property<double>("Lattiude")
-                        .HasColumnType("float");
+                    b.Property<float>("Lattiude")
+                        .HasColumnType("real");
 
-                    b.Property<double>("Longtiude")
-                        .HasColumnType("float");
+                    b.Property<float>("Longtiude")
+                        .HasColumnType("real");
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -418,6 +419,9 @@ namespace YBS.Data.Migrations
                     b.Property<TimeSpan>("PickupTime")
                         .HasColumnType("time");
 
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
+
                     b.Property<TimeSpan>("StartingTime")
                         .HasColumnType("time");
 
@@ -427,8 +431,11 @@ namespace YBS.Data.Migrations
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
@@ -445,16 +452,15 @@ namespace YBS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<int>("RouteId")
                         .HasColumnType("int");
 
                     b.Property<string>("Unit")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("YachtTypeId")
                         .HasColumnType("int");
@@ -465,7 +471,7 @@ namespace YBS.Data.Migrations
 
                     b.HasIndex("YachtTypeId");
 
-                    b.ToTable("RouteYachtType", (string)null);
+                    b.ToTable("RouteYachtType");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Service", b =>
@@ -480,35 +486,32 @@ namespace YBS.Data.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("Type")
                         .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("varchar(50)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Unit")
                         .IsRequired()
-                        .HasMaxLength(10)
-                        .HasColumnType("varchar(10)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Service", (string)null);
+                    b.ToTable("Service");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Yacht", b =>
@@ -519,8 +522,8 @@ namespace YBS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<double>("BEAM")
-                        .HasColumnType("float");
+                    b.Property<float>("BEAM")
+                        .HasColumnType("real");
 
                     b.Property<int>("Cabin")
                         .HasColumnType("int");
@@ -531,42 +534,37 @@ namespace YBS.Data.Migrations
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<double>("DRAFT")
-                        .HasColumnType("float");
+                    b.Property<float>("DRAFT")
+                        .HasColumnType("real");
 
                     b.Property<string>("Description")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FuelCapacity")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Image")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("LOA")
-                        .HasColumnType("float");
+                    b.Property<float>("LOA")
+                        .HasColumnType("real");
 
                     b.Property<DateTime?>("LastModifiedDate")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("Manufacturer")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("MaximumGuestLimit")
                         .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("varchar(100)");
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
@@ -583,7 +581,7 @@ namespace YBS.Data.Migrations
 
                     b.HasIndex("YachtTypeId");
 
-                    b.ToTable("Yacht", (string)null);
+                    b.ToTable("Yacht");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.YachtType", b =>

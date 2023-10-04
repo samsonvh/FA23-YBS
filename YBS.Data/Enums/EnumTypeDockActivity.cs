@@ -8,5 +8,6 @@ namespace YBS.Data.Enums
 {
     public enum EnumTypeDockActivity
     {
+        AVAILABLE
     }
 }
