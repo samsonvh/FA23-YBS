@@ -224,11 +224,11 @@ namespace YBS.Data.Migrations
 
             modelBuilder.Entity("YBS.Data.Models.Deposit", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -251,7 +251,7 @@ namespace YBS.Data.Migrations
                     b.Property<int>("WalletID")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("MembershipPackageID");
 
@@ -421,7 +421,7 @@ namespace YBS.Data.Migrations
                     b.Property<DateTime>("MembershipExpiredDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int?>("MembershipPackageID")
+                    b.Property<int?>("MembershipPackageId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("MembershipStartDate")
@@ -444,18 +444,18 @@ namespace YBS.Data.Migrations
                     b.HasIndex("IdentityNumber")
                         .IsUnique();
 
-                    b.HasIndex("MembershipPackageID");
+                    b.HasIndex("MembershipPackageId");
 
                     b.ToTable("Member", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .HasColumnType("datetime2");
@@ -490,18 +490,18 @@ namespace YBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.ToTable("MembershipPackage");
+                    b.ToTable("MembershipPackage", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Payment", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<int>("BookingID")
                         .HasColumnType("int");
@@ -522,7 +522,7 @@ namespace YBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Payment");
                 });
@@ -692,11 +692,11 @@ namespace YBS.Data.Migrations
 
             modelBuilder.Entity("YBS.Data.Models.Transaction", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<float>("Amount")
                         .HasColumnType("real");
@@ -730,7 +730,7 @@ namespace YBS.Data.Migrations
                     b.Property<int>("WalletID")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("PaymentID");
 
@@ -741,11 +741,11 @@ namespace YBS.Data.Migrations
 
             modelBuilder.Entity("YBS.Data.Models.Wallet", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<float>("Balance")
                         .HasColumnType("real");
@@ -760,7 +760,7 @@ namespace YBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.HasIndex("MemberID");
 
@@ -972,7 +972,7 @@ namespace YBS.Data.Migrations
 
                     b.HasOne("YBS.Data.Models.MembershipPackage", null)
                         .WithMany("Members")
-                        .HasForeignKey("MembershipPackageID");
+                        .HasForeignKey("MembershipPackageId");
 
                     b.Navigation("Account");
                 });

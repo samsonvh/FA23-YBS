@@ -13,7 +13,7 @@ namespace YBS.Data.Migrations
                 name: "MembershipPackage",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
@@ -28,14 +28,14 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MembershipPackage", x => x.ID);
+                    table.PrimaryKey("PK_MembershipPackage", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Payment",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     BookingID = table.Column<int>(type: "int", nullable: false),
                     TotalPrice = table.Column<float>(type: "real", nullable: false),
@@ -46,7 +46,7 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Payment", x => x.ID);
+                    table.PrimaryKey("PK_Payment", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -161,7 +161,7 @@ namespace YBS.Data.Migrations
                     MembershipExpiredDate = table.Column<DateTime>(type: "datetime", nullable: false),
                     MemberSinceDate = table.Column<DateTime>(type: "date", nullable: false),
                     Status = table.Column<int>(type: "int", maxLength: 15, nullable: false),
-                    MembershipPackageID = table.Column<int>(type: "int", nullable: true),
+                    MembershipPackageId = table.Column<int>(type: "int", nullable: true),
                     CreationDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     LastModifiedDate = table.Column<DateTime>(type: "date", nullable: false),
                     IsDeleted = table.Column<bool>(type: "bit", nullable: false)
@@ -175,10 +175,10 @@ namespace YBS.Data.Migrations
                         principalTable: "Account",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_Member_MembershipPackage_MembershipPackageID",
-                        column: x => x.MembershipPackageID,
+                        name: "FK_Member_MembershipPackage_MembershipPackageId",
+                        column: x => x.MembershipPackageId,
                         principalTable: "MembershipPackage",
-                        principalColumn: "ID");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -312,7 +312,7 @@ namespace YBS.Data.Migrations
                 name: "Wallet",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MemberID = table.Column<int>(type: "int", nullable: false),
                     Balance = table.Column<float>(type: "real", nullable: false),
@@ -321,7 +321,7 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Wallet", x => x.ID);
+                    table.PrimaryKey("PK_Wallet", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Wallet_Member_MemberID",
                         column: x => x.MemberID,
@@ -414,7 +414,7 @@ namespace YBS.Data.Migrations
                 name: "Deposit",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WalletID = table.Column<int>(type: "int", nullable: false),
                     MembershipPackageID = table.Column<int>(type: "int", nullable: false),
@@ -426,18 +426,18 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Deposit", x => x.ID);
+                    table.PrimaryKey("PK_Deposit", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Deposit_MembershipPackage_MembershipPackageID",
                         column: x => x.MembershipPackageID,
                         principalTable: "MembershipPackage",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Deposit_Wallet_WalletID",
                         column: x => x.WalletID,
                         principalTable: "Wallet",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -445,7 +445,7 @@ namespace YBS.Data.Migrations
                 name: "Transaction",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     WalletID = table.Column<int>(type: "int", nullable: false),
                     PaymentID = table.Column<int>(type: "int", nullable: false),
@@ -460,18 +460,18 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Transaction", x => x.ID);
+                    table.PrimaryKey("PK_Transaction", x => x.Id);
                     table.ForeignKey(
                         name: "FK_Transaction_Payment_PaymentID",
                         column: x => x.PaymentID,
                         principalTable: "Payment",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Transaction_Wallet_WalletID",
                         column: x => x.WalletID,
                         principalTable: "Wallet",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -577,9 +577,9 @@ namespace YBS.Data.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Member_MembershipPackageID",
+                name: "IX_Member_MembershipPackageId",
                 table: "Member",
-                column: "MembershipPackageID");
+                column: "MembershipPackageId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Role_Name",

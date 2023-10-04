@@ -13,7 +13,7 @@ namespace YBS.Data.Configs
     {
         public void Configure(EntityTypeBuilder<MembershipPackage> builder)
         {
-            builder.ToTable("Account");
+            builder.ToTable("MembershipPackage");
             builder.HasKey(x => x.Id);
 
             builder.Property(x => x.Id).ValueGeneratedOnAdd();

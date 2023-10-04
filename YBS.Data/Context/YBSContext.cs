@@ -13,12 +13,13 @@ public class YBSContext : DbContext
         {
         
         }
-       public DbSet<Account> Accounts { get; set; }
-       public DbSet<Member> Members { get; set; }
-       public DbSet<Company> Companies { get; set; }
-       public DbSet<Role> Role { get; set; }
-       public DbSet<Dock> Docks { get; set; }
-       public DbSet<Activity> Activities { get; set; }
+        public DbSet<Account> Accounts { get; set; }
+        public DbSet<Member> Members { get; set; }
+        public DbSet<Company> Companies { get; set; }
+        public DbSet<Role> Role { get; set; }
+        public DbSet<Dock> Docks { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<MembershipPackage> MembershipPackages { get; set; }    
 
         public override Task<int> SaveChangesAsync (CancellationToken cancellationToken = default) 
         {
