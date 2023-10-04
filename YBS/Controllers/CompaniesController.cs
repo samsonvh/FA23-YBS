@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS.Services.DataHandler.Requests.CompanyRequests;
+using YBS.Services.Services.Implements;
 using YBS.Services.Services.Interfaces;
 
 namespace YBS.Controllers
@@ -13,6 +14,13 @@ namespace YBS.Controllers
         public CompaniesController(ICompanyService companyService)
         {
             _companyService = companyService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetAll([FromQuery] SearchCompanyRequest request)
+        {
+            var companyList = await _companyService.GetAllCompanies(request);
+            return Ok(companyList);
         }
 
         [HttpGet("{id}")]

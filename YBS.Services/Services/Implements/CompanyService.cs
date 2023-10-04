@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.DesignPattern.Repositories.Interfaces;
@@ -14,6 +15,7 @@ using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Services.DataHandler.Dtos;
 using YBS.Services.DataHandler.Requests.CompanyRequests;
+using YBS.Services.DataHandler.Responses;
 using YBS.Services.Services.Interfaces;
 
 
@@ -33,6 +35,59 @@ namespace YBS.Services.Services.Implements
             _mapper = mapper;
             _logger = logger;
         }
+
+        public async Task<DefaultPageResponse<CompanyDto>> GetAllCompanies(SearchCompanyRequest request)
+        {
+            _logger.LogInformation("GetAllCompanies method called with request: {@request}", request);
+            var query = _unitOfWork.CompanyRepository.GetAll();
+
+            if (!string.IsNullOrWhiteSpace(request.Name))
+            {
+                query = query.Where(company => company.Name.Contains(request.Name));
+            }
+
+            // Apply sorting based on 'OrderBy' and 'Direction' properties
+            if (!string.IsNullOrEmpty(request.OrderBy))
+            {
+                if (request.Direction)
+                {
+                    query = query.OrderBy(company => company.Status); // Sort in ascending order by default
+                }
+                else
+                {
+                    query = query.OrderByDescending(company => company.Status); // Sort in descending order
+                }
+            }
+
+            var totalItems = await query.CountAsync();
+            if (totalItems == 0)
+            {
+                throw new APIException((int)HttpStatusCode.NotFound, "No Companies Available");
+            }
+
+            var data = await query
+                .Skip((request.PageIndex - 1) * (request.PageSize ?? 10))
+                .Take(request.PageSize ?? 10)
+                .ToListAsync();
+
+            var result = new DefaultPageResponse<CompanyDto>
+            {
+                Data = data.Select(company => new CompanyDto
+                {
+                    Id = company.Id,
+                    Logo = company.Logo,
+                    Name = company.Name,
+                    HotLine = company.HotLine,
+                    Status = company.Status
+                }).ToList(),
+                PageCount = totalItems,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize ?? 10,
+            };
+
+            return result;
+        }
+
         public async Task<CompanyDto> Create(CreateCompanyRequest request)
         {
             try
@@ -104,5 +159,7 @@ namespace YBS.Services.Services.Implements
             }
 
         }
+
+     
     }
 }

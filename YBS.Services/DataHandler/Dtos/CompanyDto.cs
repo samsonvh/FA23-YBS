@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 
 namespace YBS.Services.DataHandler.Dtos
@@ -19,6 +20,6 @@ namespace YBS.Services.DataHandler.Dtos
         public string? LinkedInURL { get; set; }
         public DateTime ContractStartDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public string? Status { get; set; }
+        public EnumCompanyStatus Status { get; set; }
     }
 }
