@@ -31,5 +31,9 @@
   <ProjectReference Include="..\YBS.Services\YBS.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Middleware\" />
+  </ItemGroup>
+
 
 </Project>

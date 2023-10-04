@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using YBS.Services.Interfaces;
+using YBS.Service.Services;
 
-namespace YBS.Controllers
+namespace FA23_YBS_BACKEND.Controllers
 {
     [Route("api/accounts")]
     [ApiController]
@@ -17,14 +17,12 @@ namespace YBS.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var account = await _accountService.GetById(id);
+            var account = await _accountService.GetAccountDetail(id);
             if(account == null)
             {
                 return NotFound();
             }
             return Ok(account);
         }
-
-
     }
 }
