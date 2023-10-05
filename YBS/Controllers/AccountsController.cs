@@ -31,7 +31,7 @@ namespace FA23_YBS_BACKEND.Controllers
             var result = await _accountService.Search(request);
             return Ok(result);
         }
-        [HttpPost]
+        [HttpPost("GoogleLogin")]
         public async Task<IActionResult> GoogleLogin ([FromBody]string idToken)
         {
             var result = await _accountService.GoogleLogin(idToken);

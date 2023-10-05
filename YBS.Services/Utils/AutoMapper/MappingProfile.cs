@@ -13,7 +13,9 @@ namespace YBS.Service.Utils.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Account, AccountDto>();
+            CreateMap<Account, AccountDto>()
+            .ForMember(accountDto => accountDto.Role,account => account.MapFrom(map => map.Role.Name) )
+            ;
         }
     }
 }

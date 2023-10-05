@@ -160,13 +160,16 @@ namespace YBS.Services.Services.Implements
             (string.IsNullOrWhiteSpace(request.Email) || account.Email.Contains(request.Email))
             && (string.IsNullOrWhiteSpace(request.PhoneNumber) || account.PhoneNumber.Contains(request.PhoneNumber)))
             .Include(account => account.Role)
-            .Select (account =>  new AccountDto()
-            {
+            .Select (account =>
+                new AccountDto()
+                {
                Id = account.Id,
                PhoneNumber = account.PhoneNumber,
                Role = account.Role.Name,
                Status = account.Status
-            });
+                }
+            
+             );
             var data = !string.IsNullOrWhiteSpace(request.OrderBy) ?  query.SortDesc(request.OrderBy, request.Direction) : query.OrderBy(account => account.Email);
             var totalCount = data.Count();
             var dataPaging = await data.Skip((request.PageIndex -1) * request.PageSize).Take(request.PageSize).ToListAsync();
