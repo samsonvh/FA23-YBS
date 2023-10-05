@@ -18,6 +18,6 @@ namespace YBS.Data.Models
         public string PhoneNumber { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public EnumStatus Status { get; set; }
+        public EnumAccountStatus Status { get; set; }
     }
 }

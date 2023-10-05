@@ -1,10 +1,11 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using YBS.Service.Services;
+using YBS.Services.Dtos.Requests;
+using YBS.Services.Services;
 
 namespace FA23_YBS_BACKEND.Controllers
 {
-    [Route("api/accounts")]
+    [Route("api/[Controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -23,6 +24,18 @@ namespace FA23_YBS_BACKEND.Controllers
                 return NotFound();
             }
             return Ok(account);
+        }
+        [HttpGet]
+        public async Task<IActionResult> Search ([FromQuery]AccountSearchRequest request)
+        {
+            var result = await _accountService.Search(request);
+            return Ok(result);
+        }
+        [HttpPost]
+        public async Task<IActionResult> GoogleLogin ([FromBody]string idToken)
+        {
+            var result = await _accountService.GoogleLogin(idToken);
+            return Ok(result);
         }
     }
 }

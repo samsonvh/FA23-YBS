@@ -11,8 +11,9 @@ namespace YBS.Service.Dtos
     public class AccountDto
     {
         public int Id { get; set; }
-        public int RoleId { get; set; }
+        public string Role { get; set; }
+        public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public EnumStatus Status { get; set; }
+        public EnumAccountStatus Status { get; set; }
     }
 }

@@ -21,6 +21,6 @@ namespace YBS.Data.Models
         public string? Linkedln { get; set; }
         public DateTime ConstractStartDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public EnumStatus Status { get; set; }
+        public EnumCompanyStatus Status { get; set; }
     }
 }
