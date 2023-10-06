@@ -40,7 +40,7 @@ namespace YBS.Services.Services.Implements
                 { "id", company => company.Id }
             };
         }
-        public async Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest)
+   /*     public async Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest)
         {
             DefaultPageResponse<CompanyListingDto> pageResponse = new DefaultPageResponse<CompanyListingDto>();
             if (pageRequest.PageIndex == null)
@@ -87,7 +87,7 @@ namespace YBS.Services.Services.Implements
             pageResponse.PageSize = pageRequest.PageSize.Value;
             _logger.LogInformation($"GetCompanyList request: PageIndex={pageRequest.PageIndex}, PageSize={pageRequest.PageSize}, OrderBy={pageRequest.OrderBy}, Direction={pageRequest.Direction}, Name={pageRequest.Name}, TotalCount={totalCount}");
             return pageResponse;
-        }
+        }*/
 
         public async Task<CompanyDto> GetById(int id)
         {

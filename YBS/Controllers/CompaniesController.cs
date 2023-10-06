@@ -16,11 +16,11 @@ namespace YBS.Controllers
             _companyService = companyService;
         }
 
-        [HttpGet]
+      /*  [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CompanyPageRequest pageRequest)
         {
             return Ok(await _companyService.GetCompanyList(pageRequest));
-        }
+        }*/
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompanyDetail([FromRoute] int id) 

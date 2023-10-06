@@ -14,8 +14,8 @@ namespace YBS.Services.Services
 {
     public interface ICompanyService
     {
-        Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest);
-        Task<CompanyDto> GetById(int id);
+/*        Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest);
+*/        Task<CompanyDto> GetById(int id);
         Task<bool> ChangeStatus(int id, string status);
     }
 }
