@@ -59,12 +59,13 @@ namespace YBS.Data.Repositories.Implements
 
         public void Update(T entity)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().Update(entity);
         }
 
         public void UpdateRange(IEnumerable<T> entities)
         {
-            throw new NotImplementedException();
+            _context.Set<T>().UpdateRange(entities);
+
         }
     }
 }

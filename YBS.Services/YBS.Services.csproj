@@ -22,9 +22,4 @@
   <ProjectReference Include="..\YBS.Data\YBS.Data.csproj" />
 </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Dtos\Requests\" />
-    <Folder Include="Dtos\Responses\" />
-  </ItemGroup>
-
 </Project>

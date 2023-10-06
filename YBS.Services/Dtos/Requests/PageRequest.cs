@@ -11,6 +11,6 @@ namespace YBS.Services.Dtos.Requests
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; }
         public string? OrderBy { get; set; }
-        public string Direction { get; set; }
+        public string? Direction { get; set; }
     }
 }
