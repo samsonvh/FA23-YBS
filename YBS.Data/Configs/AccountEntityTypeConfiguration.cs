@@ -24,7 +24,7 @@ namespace YBS.Data.Configs
             builder.Property(account => account.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
             builder.Property(account => account.LastModifiedDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
             builder.Property(account => account.UserName).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-           builder.Property(account => account.HashedPassword).IsRequired();
+            builder.Property(account => account.Password).IsRequired();
             builder.Property(account => account.Status).IsRequired();
 
             builder.HasOne(account => account.Role)

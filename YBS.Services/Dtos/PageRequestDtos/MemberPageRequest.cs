@@ -1,6 +1,6 @@
 namespace YBS.Services.Dtos.Requests
 {
-    public class MemberGetAllRequest : PageRequest
+    public class MemberPageRequest : DefaultPageRequest
     { 
         public string? FullName { get; set; }
         public string? Email { get; set; }

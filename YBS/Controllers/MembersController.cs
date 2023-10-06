@@ -1,3 +1,4 @@
+using System.Xml.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS.Services.Dtos.Requests;
@@ -15,11 +16,23 @@ namespace FA23_YBS_BACKEND.Controllers
         {
             _memberService = memberService;
         }
-        [HttpPost]
-        public async  Task<IActionResult> Create([FromBody] MemberCreateRequest request)
+        [HttpPost("Create")]
+        public async Task<IActionResult> Create([FromForm] MemberInputDto request)
         {
             await _memberService.Create(request);
             return Ok("Create Member Successfully");
+        }
+        [HttpGet("GetAll")]
+        public async Task<IActionResult> GetAll([FromQuery] MemberPageRequest request)
+        {
+            var result = await _memberService.GetAll(request);
+            return Ok(result);
+        }
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetMemberDetail(int id)
+        {
+            var result = await _memberService.GetMemberDetail(id);
+            return Ok(result);
         }
     }
 }

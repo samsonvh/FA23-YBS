@@ -8,6 +8,6 @@ namespace YBS.Service.Dtos
         public string FullName { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public EnumMemberStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }

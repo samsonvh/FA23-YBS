@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace YBS.Services.Dtos.Requests
 {
-    public class PageRequest
+    public class DefaultPageRequest
     {
         public int PageIndex { get; set; } = 1;
         public int PageSize { get; set; } = 20;

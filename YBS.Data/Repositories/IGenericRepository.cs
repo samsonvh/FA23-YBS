@@ -18,6 +18,5 @@ namespace YBS.Data.Repositories
         void RemoveRange(IEnumerable<T> entities);
         void Update(T entity);
         void UpdateRange(IEnumerable<T> entities);
-        Task<int> SaveChangesAsync();
     }
 }
