@@ -1,6 +1,6 @@
 namespace YBS.Services.Dtos.Requests
 {
-    public class AccountCreateRequest
+    public class AccountInputDto
     {
         public int RoleId { get; set; }
         public string PhoneNumber { get; set; }

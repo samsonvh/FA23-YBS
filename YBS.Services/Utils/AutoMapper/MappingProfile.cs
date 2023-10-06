@@ -13,9 +13,16 @@ namespace YBS.Service.Utils.AutoMapper
     {
         public MappingProfile()
         {
-            CreateMap<Account, AccountDto>()
-            .ForMember(accountDto => accountDto.Role,account => account.MapFrom(map => map.Role.Name) )
-            ;
+            CreateMap<Account, AccountListingDto>()
+            .ForMember(accountDto => accountDto.Role,config => config.MapFrom(account => account.Role.Name) );
+
+            CreateMap<Member, MemberListingDto>()
+            .ForMember(accountDto => accountDto.Email,config => config.MapFrom(member => member.Account.Email) )
+            .ForMember(accountDto => accountDto.PhoneNumber,config => config.MapFrom(member => member.Account.PhoneNumber) );
+
+            CreateMap<Member, MemberDto>()
+            .ForMember(accountDto => accountDto.Email,config => config.MapFrom(member => member.Account.Email) )
+            .ForMember(accountDto => accountDto.PhoneNumber,config => config.MapFrom(member => member.Account.PhoneNumber) );
         }
     }
 }

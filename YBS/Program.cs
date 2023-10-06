@@ -20,18 +20,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<YBSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("YBSContext")));
-//Set up Identity
-builder.Services.AddIdentity<Account, IdentityRole<int>>()
-    .AddEntityFrameworkStores<YBSContext>();
-
-builder.Services.Configure<IdentityOptions>( options =>
-    {
-        options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-    }
-);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
