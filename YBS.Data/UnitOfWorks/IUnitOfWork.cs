@@ -15,6 +15,6 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepository<Company> CompanyRepository { get; }
         IGenericRepository<Member> MemberRepository { get; }
         IGenericRepository<Role> RoleRepository { get; }
-        Task<int> Commit();
+        Task<int> SaveChangesAsync();
     }
 }

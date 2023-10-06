@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Configuration;
@@ -21,6 +22,7 @@ using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos;
 using YBS.Services.Dtos.Requests;
 using YBS.Services.Dtos.Responses;
+using YBS.Services.Util.Hash;
 
 namespace YBS.Services.Services.Implements
 {
@@ -28,156 +30,64 @@ namespace YBS.Services.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        private readonly IConfiguration _configuration;
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
+        public AccountService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-            _configuration = configuration;
         }
-        public async Task<AccountDto> GetAccountDetail(int id)
+        public async Task<object?> GetAccountDetail(int id)
         {
-            var account = await _unitOfWork.AccountRepository.Find(account => account.Id == id).FirstOrDefaultAsync();
-            return _mapper.Map<AccountDto>(account);
-        }
-
-        public async Task<AuthResponse> GoogleLogin(string idToken)
-        {
-
-            GoogleJsonWebSignature.Payload? payload = await GetPayload(idToken);
-            if (payload != null)
+            var account = await _unitOfWork.AccountRepository.Find(account => account.Id == id).Include(account => account.Role).FirstOrDefaultAsync();
+            if (account == null)
             {
-
-                Account? account = await _unitOfWork.AccountRepository.Find(account => account.Email == payload.Email)
-                .Include(x => x.Role)
-                .FirstOrDefaultAsync().ConfigureAwait(false);
-                payload.Subject = Hash(payload.Subject);
-                string? issuer, audience,token;
-                JwtSecurityToken tokenGenerated;
-                switch (account.Status)
-                {
-                    case EnumAccountStatus.INACTIVE:
-                        account.Status = EnumAccountStatus.ACTIVE;
-                        await _unitOfWork.Commit();
-          
-                             tokenGenerated = GenerateJWTToken(account);
-                             token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
-                            return new AuthResponse()
-                            {
-                                AccessToken = token,
-                                Role = account.Role.Name,
-                                FullName = payload.Name,
-                                ImgUrl = payload.Picture
-                            };
-                    case EnumAccountStatus.ACTIVE:
-                    
-                             tokenGenerated = GenerateJWTToken(account);
-                             token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
-                            return new AuthResponse()
-                            {
-                                AccessToken = token,
-                                Role = account.Role.Name,
-                                FullName = payload.Name,
-                                ImgUrl = payload.Picture
-                            };
-
-                    case EnumAccountStatus.BAN:
-                        throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
-                }
-
+                throw new APIException((int)HttpStatusCode.NotFound, "Account not found");
             }
-            else
+            object? result;
+            switch (account.Role.Name)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "You are not membership");
-            }
-            throw new APIException((int)HttpStatusCode.InternalServerError,"Internal Server Error");
-        }
-
-        private async Task<GoogleJsonWebSignature.Payload?> GetPayload(string idToken)
-        {
-            try
-            {
-                GoogleJsonWebSignature.ValidationSettings settings = new GoogleJsonWebSignature.ValidationSettings
-                {
-                    Audience = new string[]
+                case nameof(EnumRole.COMPANY):
+                    result = await _unitOfWork.CompanyRepository.Find(company => company.AccountId == account.Id)
+                    .Select(company => _mapper.Map<CompanyDto>(company))
+                    .FirstOrDefaultAsync();
+                    if (result == null)
                     {
-                        "276110860572-rom2mfrsb0ikg3cfu6vaou0tbcs6jr3r.apps.googleusercontent.com"
+                        throw new APIException((int)HttpStatusCode.NotFound, "Company Detail not found");
                     }
-                };
-                return await GoogleJsonWebSignature.ValidateAsync(idToken, settings);
+                    break;
+                case nameof(EnumRole.MEMBER):
+                    result = await _unitOfWork.MemberRepository.Find(company => company.AccountId == account.Id)
+                    .Select(member => _mapper.Map<MemberDto>(member))
+                    .FirstOrDefaultAsync();
+                    if (result == null)
+                    {
+                        throw new APIException((int)HttpStatusCode.NotFound, "Member Detail not found");
+                    }
+                    break;
+                default:
+                    throw new APIException((int)HttpStatusCode.InternalServerError, "Internal Server Error");
             }
-            catch
-            {
-                return null;
-            }
-        }
-
-        private string Hash(string text)
-        {
-            using (SHA256 sha256 = SHA256.Create())
-            {
-                byte[] bytes = sha256.ComputeHash(Encoding.UTF8.GetBytes(text));
-
-                StringBuilder builder = new StringBuilder();
-                foreach (byte b in bytes)
-                {
-                    builder.Append(b.ToString("x2"));
-                }
-                return builder.ToString();
-            }
-        }
-        private JwtSecurityToken GenerateJWTToken(Account account)
-        {
-            var claims = new List<Claim>
-            {
-                new Claim("Id", account.Id.ToString()),
-                new Claim("Role", nameof(account.Role))
-            };
-            var issuer = _configuration["JWT:Issuer"];
-            var audience = _configuration["JWT:Audience"];
-            var secretKey = _configuration["JWT:SecretKey"];
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey));
-            SigningCredentials signingCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-            var token = new JwtSecurityToken
-            (
-              issuer,
-            audience,
-            claims: claims,
-            expires: DateTime.Now.AddMinutes(30),
-            signingCredentials: signingCredentials
-            );
-            return token;
-        }
-
-        public Task<AuthResponse> Login(LoginRequest request)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<DefaultPageResponse<AccountDto>> Search(AccountSearchRequest request)
-        {
-            var query = _unitOfWork.AccountRepository.Find(account => 
-            (string.IsNullOrWhiteSpace(request.Email) || account.Email.Contains(request.Email))
-            && (string.IsNullOrWhiteSpace(request.PhoneNumber) || account.PhoneNumber.Contains(request.PhoneNumber)))
-            .Include(account => account.Role)
-            .Select (account =>  new AccountDto()
-            {
-               Id = account.Id,
-               PhoneNumber = account.PhoneNumber,
-               Role = account.Role.Name,
-               Status = account.Status
-            });
-            var data = !string.IsNullOrWhiteSpace(request.OrderBy) ?  query.SortDesc(request.OrderBy, request.Direction) : query.OrderBy(account => account.Email);
-            var totalCount = data.Count();
-            var dataPaging = await data.Skip((request.PageIndex -1) * request.PageSize).Take(request.PageSize).ToListAsync();
-            var result = new DefaultPageResponse<AccountDto>()
-            {
-                 Data = dataPaging,
-                 PageCount = totalCount,
-                 PageIndex = request.PageIndex,
-                 PageSize = request.PageSize,
-            };
             return result;
         }
+      /*  public async Task<DefaultPageResponse<AccountListingDto>> GetAll(AccountPageRequest request)
+        {
+            var query = _unitOfWork.AccountRepository.Find(account =>
+            (string.IsNullOrWhiteSpace(request.Email) || account.Email.Contains(request.Email))
+            && (string.IsNullOrWhiteSpace(request.PhoneNumber) || account.PhoneNumber.Contains(request.PhoneNumber)))
+            .Include(account => account.Role);
+            var data = !string.IsNullOrWhiteSpace(request.OrderBy) ? query.SortDesc(request.OrderBy, request.Direction) : query.OrderBy(account => account.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / request.PageSize + 1;
+            var dataPaging = await data.Skip((request.PageIndex - 1) * request.PageSize).Take(request.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<AccountListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<AccountListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = request.PageIndex,
+                PageSize = request.PageSize,
+            };
+            return result;
+        }*/
     }
 }

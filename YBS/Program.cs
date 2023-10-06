@@ -20,24 +20,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<YBSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("YBSContext")));
-//Set up Identity
-builder.Services.AddIdentity<Account, IdentityRole<int>>()
-    .AddEntityFrameworkStores<YBSContext>();
-
-builder.Services.Configure<IdentityOptions>( options =>
-    {
-        options.Password.RequiredLength = 8;
-        options.Password.RequireDigit = false;
-        options.Password.RequireUppercase = false;
-        options.Password.RequireNonAlphanumeric = false;
-    }
-);
 
 builder.Services.AddAutoMapper(typeof(MappingProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
+/*builder.Services.AddScoped<IAuthService, AuthService>();*/
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

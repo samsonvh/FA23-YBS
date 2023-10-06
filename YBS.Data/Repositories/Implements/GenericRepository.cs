@@ -52,10 +52,6 @@ namespace YBS.Data.Repositories.Implements
             _context.Set<T>().RemoveRange(entities);
         }
 
-        public Task<int> SaveChangesAsync()
-        {
-            return _context.SaveChangesAsync();
-        }
 
         public void Update(T entity)
         {

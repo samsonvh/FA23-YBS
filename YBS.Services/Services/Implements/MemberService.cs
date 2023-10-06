@@ -10,7 +10,7 @@ namespace YBS.Services.Services.Implements
 {
     public class MemberService : IMemberService
     {
-        private readonly IUnitOfWork _unitOfWork;
+      /*  private readonly IUnitOfWork _unitOfWork;
         private readonly UserManager<Account> _userManager;
         public MemberService(IUnitOfWork unitOfWork, UserManager<Account> userManager)
         {
@@ -62,7 +62,7 @@ namespace YBS.Services.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.InternalServerError,"Create Member Fail");
             }
-        }
+        }*/
 
 
     }

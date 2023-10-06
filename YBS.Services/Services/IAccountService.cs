@@ -11,9 +11,7 @@ namespace YBS.Services.Services
 {
     public interface IAccountService
     {
-        Task<AccountDto> GetAccountDetail(int id);
-        Task<DefaultPageResponse<AccountDto>> Search(AccountSearchRequest request);
-        Task<AuthResponse> Login (LoginRequest request);
-        Task<AuthResponse> GoogleLogin (string idToken);
-    }
+        Task<object> GetAccountDetail(int id);
+/*        Task<DefaultPageResponse<AccountListingDto>> GetAll(AccountPageRequest request);
+*/    }
 }

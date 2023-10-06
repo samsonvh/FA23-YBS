@@ -24,12 +24,8 @@ namespace YBS.Data.Configs
             builder.Property(account => account.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
             builder.Property(account => account.LastModifiedDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
             builder.Property(account => account.UserName).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-            builder.Property(account => account.NormalizedUserName).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-            builder.Property(account => account.NormalizedEmail).HasMaxLength(200).HasColumnType("varchar").IsRequired();
-            builder.Property(account => account.PasswordHash).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-            builder.Property(account => account.SecurityStamp).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-            builder.Property(account => account.ConcurrencyStamp).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.Status).IsRequired();
+            builder.Property(account => account.Password).IsRequired();
+            builder.Property(account => account.Status).IsRequired();
 
             builder.HasOne(account => account.Role)
                  .WithMany(account => account.Accounts)

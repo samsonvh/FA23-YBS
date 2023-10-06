@@ -24,8 +24,8 @@ namespace YBS.Data.Configs
             builder.Property(company => company.Logo).HasMaxLength(255).HasColumnType("varchar").IsRequired();
             builder.Property(company => company.FacebookUrl).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
             builder.Property(company => company.InstagramUrl).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
-            builder.Property(company => company.Linkedln).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
-            builder.Property(company => company.ConstractStartDate).HasColumnType("date").IsRequired();
+            builder.Property(company => company.LinkedInUrl).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
+            builder.Property(company => company.ContractStartDate).HasColumnType("date").IsRequired();
             builder.Property(company => company.LastModifiedDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
             builder.Property(company => company.Status).IsRequired();
         }

@@ -72,7 +72,7 @@ namespace YBS.Data.UnitOfWorks.Implements
             }
         }
 
-        public Task<int> Commit()
+        public Task<int> SaveChangesAsync()
         {
             return _context.SaveChangesAsync();
         }

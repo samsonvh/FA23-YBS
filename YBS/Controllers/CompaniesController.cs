@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Services.Dtos.InputDtos;
+using YBS.Services.Dtos.PageRequestDtos;
 using YBS.Services.Services;
 
 namespace YBS.Controllers
@@ -12,6 +14,12 @@ namespace YBS.Controllers
         public CompaniesController(ICompanyService companyService)
         {
             _companyService = companyService;
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Get([FromQuery] CompanyPageRequest pageRequest)
+        {
+            return Ok(await _companyService.GetCompanyList(pageRequest));
         }
 
         [HttpGet("{id}")]

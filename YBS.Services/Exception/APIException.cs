@@ -6,7 +6,7 @@ namespace YBS.Services.Dtos.Responses
     {
         public int StatusCode { get; set; }
         public string Message { get; set; }
-        public string ToJson ()
+        public string ToJson()
         {
             return JsonSerializer.Serialize(this);
         }
@@ -16,4 +16,4 @@ namespace YBS.Services.Dtos.Responses
             this.Message = Message;
         }
     }
-}    
+}

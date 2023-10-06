@@ -13,23 +13,23 @@ namespace Pnl.Util.Common.Extensions
             {
                 return source;
             }
-            string command ;
-            // string command = desc ? "OrderByDescending" : "OrderBy";
-            if (string.IsNullOrEmpty(direction))
+            string command;
+            switch (direction)
             {
-                command = "OrderByDescending";
+                case "asc":
+                    command = "OrderBy";
+                    break;
+                default:
+                    command = "OrderByDescending";
+                    break;
             }
-            else {
-                command = direction;
-            }
-            
-            var parameter = Expression.Parameter(type, "p");
-            var propertyAccess = Expression.MakeMemberAccess(parameter, property);
-            var orderByExpression = Expression.Lambda(propertyAccess, parameter);
+            var parameter = Expression.Parameter(type, "entity"); //entity
+            var propertyAccess = Expression.MakeMemberAccess(parameter, property); //entity.property
+            var orderByExpression = Expression.Lambda(propertyAccess, parameter); //entity => entity.property
             var resultExpression = Expression.Call(typeof(Queryable), command, new Type[]
             {
                 type,property.PropertyType
-            }, source.Expression, Expression.Quote(orderByExpression));
+            }, source.Expression, Expression.Quote(orderByExpression)); //OrderBy/OrderByDescending(entity => entity.property)
             return source.Provider.CreateQuery<TEntity>(resultExpression);
         }
     }

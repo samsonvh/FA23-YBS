@@ -5,7 +5,7 @@ namespace YBS.Services.Services
 {
     public interface IMemberService
     {
-        Task Create (MemberCreateRequest request);
-        
+/*        Task Create (MemberCreateRequest request);
+*/        
     }
 }

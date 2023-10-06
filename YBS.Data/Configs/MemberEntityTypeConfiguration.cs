@@ -17,7 +17,6 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("Member");
             builder.HasKey(member => member.Id);
-
             builder.Property(member => member.Id).ValueGeneratedOnAdd();
             builder.Property(member => member.FullName).HasMaxLength(100).IsRequired();
             builder.Property(member => member.DateOfBirth).HasColumnType("date").IsRequired();
