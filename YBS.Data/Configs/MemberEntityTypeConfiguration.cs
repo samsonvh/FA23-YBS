@@ -1,7 +1,13 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YBS.Data.Extensions.Enums;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics.Metrics;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using YBS.Data.Models;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace YBS.Data.Configs
 {
@@ -10,28 +16,21 @@ namespace YBS.Data.Configs
         public void Configure(EntityTypeBuilder<Member> builder)
         {
             builder.ToTable("Member");
-            builder.HasKey(x => x.Id);
+            builder.HasKey(member => member.Id);
 
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.FullName).HasMaxLength(150).IsRequired();
-            builder.Property(x => x.DateOfbirth).HasColumnType("date").IsRequired();
-            builder.Property(x => x.Nationality).HasMaxLength(100).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.Gender).HasColumnType("varchar").HasMaxLength(15).IsRequired()
-            .HasConversion(
-                x => x.ToString(),
-                x => (Gender)Enum.Parse(typeof(Gender), x)
-            );
-            builder.Property(x => x.Address).HasMaxLength(100).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.IdentityNumber).HasMaxLength(12).HasColumnType("varchar").IsRequired();
-            builder.HasIndex(x => x.IdentityNumber).IsUnique();
-            builder.Property(x => x.MembershipStartDate).HasColumnType("datetime").IsRequired();
-            builder.Property(x => x.MembershipExpiredDate).HasColumnType("datetime").IsRequired();
-            builder.Property(x => x.MemberSinceDate).HasColumnType("date").IsRequired();
-            builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
-            .HasConversion(
-                x => x.ToString(),
-                x => (MemberStatus)Enum.Parse(typeof(MemberStatus), x)
-            );
+            builder.Property(member => member.Id).ValueGeneratedOnAdd();
+            builder.Property(member => member.FullName).HasMaxLength(100).IsRequired();
+            builder.Property(member => member.DateOfBirth).HasColumnType("date").IsRequired();
+            builder.Property(member => member.Nationality).HasMaxLength(100).HasColumnType("varchar").IsRequired();
+            builder.Property(member => member.AvatarUrl).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
+            builder.Property(member => member.Gender).IsRequired();
+            builder.Property(member => member.Address).HasMaxLength(100).IsRequired();
+            builder.Property(member => member.IdentityNumber).HasMaxLength(12).HasColumnType("varchar").IsRequired();
+            builder.Property(member => member.MembershipStartDate).HasColumnType("date").IsRequired();
+            builder.Property(member => member.MembershipExpiredDate).HasColumnType("date").IsRequired();
+            builder.Property(member => member.MemberSinceDate).HasColumnType("date").IsRequired();
+            builder.Property(member => member.LastModifiedDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
+            builder.Property(company => company.Status).IsRequired();
         }
     }
 }

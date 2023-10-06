@@ -1,8 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using YBS.Data.Extensions.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using YBS.Data.Models;
-
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace YBS.Data.Configs
 {
@@ -10,26 +14,20 @@ namespace YBS.Data.Configs
     {
         public void Configure(EntityTypeBuilder<Company> builder)
         {
-
             builder.ToTable("Company");
-            builder.HasKey(x => x.Id);
+            builder.HasKey(company => company.Id);
 
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.Name).HasMaxLength(100).IsRequired();
-            builder.Property(x => x.Address).HasMaxLength(150).IsRequired();
-            builder.Property(x => x.HotLine).HasMaxLength(15).HasColumnType("varchar").IsRequired();
-            builder.HasIndex(x => x.HotLine).IsUnique();
-            builder.Property(x => x.Logo).HasMaxLength(255).HasColumnType("varchar").IsRequired();
-            builder.Property(x => x.FacebookUrl).HasMaxLength(255).HasColumnType("varchar");
-            builder.Property(x => x.InstagramURL).HasMaxLength(255).HasColumnType("varchar");
-            builder.Property(x => x.LinkedInURL).HasMaxLength(255).HasColumnType("varchar");
-            builder.Property(x => x.ContractStartDate).HasColumnType("date").IsRequired();
-            builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
-            .HasConversion(
-                x => x.ToString(),
-                x => (CompanyStatus)Enum.Parse(typeof(CompanyStatus), x)
-            );
-
+            builder.Property(company => company.Id).ValueGeneratedOnAdd();
+            builder.Property(company => company.Name).HasMaxLength(100).IsRequired();
+            builder.Property(company => company.Address).HasMaxLength(150).IsRequired();
+            builder.Property(company => company.HotLine).HasMaxLength(15).HasColumnType("varchar").IsRequired();
+            builder.Property(company => company.Logo).HasMaxLength(255).HasColumnType("varchar").IsRequired();
+            builder.Property(company => company.FacebookUrl).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
+            builder.Property(company => company.InstagramUrl).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
+            builder.Property(company => company.Linkedln).HasMaxLength(255).HasColumnType("varchar").IsRequired(false);
+            builder.Property(company => company.ConstractStartDate).HasColumnType("date").IsRequired();
+            builder.Property(company => company.LastModifiedDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
+            builder.Property(company => company.Status).IsRequired();
         }
     }
 }

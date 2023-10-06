@@ -1,9 +1,12 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System.Reflection.Metadata.Ecma335;
-using YBS.Data.Extensions.Enums;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Principal;
+using System.Text;
+using System.Threading.Tasks;
 using YBS.Data.Models;
-
 
 namespace YBS.Data.Configs
 {
@@ -12,33 +15,29 @@ namespace YBS.Data.Configs
         public void Configure(EntityTypeBuilder<Account> builder)
         {
             builder.ToTable("Account");
-            builder.HasKey(x => x.Id);
+            builder.HasKey(account => account.Id);
 
-            builder.Property(x => x.Id).ValueGeneratedOnAdd();
-            builder.Property(x => x.Email).HasMaxLength(200).HasColumnType("varchar").IsRequired();
-            builder.HasIndex(x => x.Email).IsUnique();
-            builder.Property(x => x.Password).HasMaxLength(500).HasColumnType("varchar").IsRequired();
-            builder.HasOne(x => x.Role).WithMany(x => x.Accounts).HasForeignKey(x => x.RoleID);
-            builder.Property(x => x.RoleID).IsRequired();
-            builder.Property(x => x.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
-            
-            builder.Property(x => x.Status).HasColumnType("varchar").HasMaxLength(15).IsRequired()
-            .HasConversion(
-                x => x.ToString(),
-                x => (AccountStatus)Enum.Parse(typeof(AccountStatus), x)
-            );
+            builder.Property(account => account.Id).ValueGeneratedOnAdd();
+            builder.Property(account => account.Email).HasMaxLength(200).HasColumnType("varchar").IsRequired();
+            builder.HasIndex(account => account.Email).IsUnique();
+            builder.Property(account => account.PhoneNumber).HasMaxLength(15).HasColumnType("varchar").IsRequired();
+            builder.Property(account => account.CreationDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
+            builder.Property(account => account.LastModifiedDate).HasColumnType("date").HasDefaultValueSql("getDate()").IsRequired();
+            builder.Property(account => account.UserName).HasMaxLength(255).HasColumnType("varchar").IsRequired();
+           builder.Property(account => account.HashedPassword).IsRequired();
+            builder.Property(account => account.Status).IsRequired();
 
-            //company
-            builder.HasOne(x => x.Company)
-                .WithOne(c => c.Account)
-                .HasForeignKey<Company>(c => c.AccountId)
-                .IsRequired(false); //make foreign key optional
+            builder.HasOne(account => account.Role)
+                 .WithMany(account => account.Accounts)
+                 .HasForeignKey(account => account.RoleId);
 
-            //member
-            builder.HasOne(x => x.Member)
-                .WithOne(m => m.Account)
-                .HasForeignKey<Member>(m => m.AccountId)
-                .IsRequired(false); //make foreign key optional
+            builder.HasOne(account => account.Company)
+                .WithOne(company => company.Account)
+                .HasForeignKey<Company>(company => company.AccountId);
+
+            builder.HasOne(account => account.Member)
+               .WithOne(member => member.Account)
+               .HasForeignKey<Member>(member => member.AccountId);
         }
     }
 }
