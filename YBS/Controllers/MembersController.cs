@@ -34,5 +34,11 @@ namespace FA23_YBS_BACKEND.Controllers
             var result = await _memberService.GetMemberDetail(id);
             return Ok(result);
         }
+        [HttpPut("Update")]
+        public async Task<IActionResult> Update(MemberInputDto request)
+        {
+             await _memberService.Update(request);
+            return Ok("Update Member Successfully");
+        }
     }
 }

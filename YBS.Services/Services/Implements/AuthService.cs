@@ -140,13 +140,13 @@ namespace YBS.Services.Services.Implements
 
         public async Task<AuthResponse> Login(LoginInputDto request)
         {
-            var existedAccount = await _unitOfWork.AccountRepository.Find(account => account.Email == request.Email)
+            var existedAccount = await _unitOfWork.AccountRepository.Find(account => account.Email == request.Email || account.UserName == request.Email)
             .Include(account => account.Role)
             .FirstOrDefaultAsync();
 
             if (existedAccount == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Email is not correct");
+                throw new APIException((int)HttpStatusCode.NotFound, "Email or Username is not correct");
             }
             var checkPassword = PasswordHashing.VerifyHashedPassword(existedAccount.Password, request.Password);
             if (!checkPassword)

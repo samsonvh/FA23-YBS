@@ -25,7 +25,7 @@ namespace YBS.Service.Utils.AutoMapper
             .ForMember(accountDto => accountDto.Email, config => config.MapFrom(member => member.Account.Email))
             .ForMember(accountDto => accountDto.PhoneNumber, config => config.MapFrom(member => member.Account.PhoneNumber));
 
-            CreateMap<MemberInputDto, Member>();
+            CreateMap<MemberInputDto, Member>().ReverseMap();
 
             CreateMap<MemberInputDto, Account>();
         }

@@ -26,16 +26,16 @@ namespace YBS.Services.Services.Implements
         }
         public async Task Create(MemberInputDto request)
         {
-            var existedMail = await _unitOfWork.AccountRepository.Find(account => account.Email == request.Email).FirstOrDefaultAsync();
-            if (existedMail != null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that email ");
-            }
-            var existedPhone = await _unitOfWork.AccountRepository.Find(account => account.PhoneNumber == request.PhoneNumber).FirstOrDefaultAsync();
-            if (existedPhone != null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that phone number ");
-            }
+            // var existedMail = await _unitOfWork.AccountRepository.Find(account => account.Email == request.Email).FirstOrDefaultAsync();
+            // if (existedMail != null)
+            // {
+            //     throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that email ");
+            // }
+            // var existedPhone = await _unitOfWork.AccountRepository.Find(account => account.PhoneNumber == request.PhoneNumber).FirstOrDefaultAsync();
+            // if (existedPhone != null)
+            // {
+            //     throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that phone number ");
+            // }
             var existedUserName = await _unitOfWork.AccountRepository.Find(account => account.UserName == request.UserName).FirstOrDefaultAsync();
             if (existedUserName != null)
             {
@@ -109,9 +109,47 @@ namespace YBS.Services.Services.Implements
             return result;
         }
 
-        public Task Update(MemberInputDto request)
+        public async Task Update(MemberInputDto request)
         {
-            throw new NotImplementedException();
+            var member = await _unitOfWork.MemberRepository.Find(member => member.Id == request.Id)
+            .Include(member => member.Account).FirstOrDefaultAsync();
+            if (member == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
+            }
+            if (!string.IsNullOrEmpty(request.PhoneNumber))
+            {
+                member.Account.PhoneNumber = request.PhoneNumber;
+            }
+            if (!string.IsNullOrEmpty(request.FullName))
+            {
+                member.FullName = request.FullName;
+            }
+            if (!string.IsNullOrEmpty(request.Nationality))
+            {
+                member.Nationality = request.Nationality;
+            }
+            if (!string.IsNullOrEmpty(request.AvatarUrl))
+            {
+                member.AvatarUrl = request.AvatarUrl;
+            }
+            if (!string.IsNullOrEmpty(request.Address))
+            {
+                member.Address = request.Address;
+            }
+            if (request.DateOfBirth != null)
+            {
+                member.DateOfBirth = (DateTime)request.DateOfBirth;
+            }
+            if (request.Status != null)
+            {
+                member.Status = (EnumMemberStatus)request.Status;
+            }
+            var result = await _unitOfWork.SaveChangesAsync();
+            if (result <= 0)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Error Occur while updating member");
+            }
         }
     }
 }
