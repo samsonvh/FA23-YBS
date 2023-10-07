@@ -19,12 +19,8 @@ namespace FA23_YBS_BACKEND.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var account = await _accountService.GetAccountDetail(id);
-            if (account == null)
-            {
-                return NotFound();
-            }
-            return Ok(account);
+            var result = await _accountService.GetAccountDetail(id);
+            return Ok(result);
         }
         [HttpGet("GetAll")]
         public async Task<IActionResult> GetAll([FromQuery] AccountPageRequest request)
