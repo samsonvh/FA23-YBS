@@ -16,6 +16,7 @@ using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos;
 using YBS.Services.Dtos;
+using YBS.Services.Dtos.InputDtos;
 using YBS.Services.Dtos.ListingDTOs;
 using YBS.Services.Dtos.PageRequestDtos;
 using YBS.Services.Dtos.Requests;
@@ -40,54 +41,44 @@ namespace YBS.Services.Services.Implements
                 { "id", company => company.Id }
             };
         }
-   /*     public async Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest)
+        public async Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest)
         {
             DefaultPageResponse<CompanyListingDto> pageResponse = new DefaultPageResponse<CompanyListingDto>();
-            if (pageRequest.PageIndex == null)
-            {
-                pageRequest.PageIndex = 1;
-            }
-            if (pageRequest.PageSize == null)
-            {
-                pageRequest.PageSize = 10;
-            }
-            if (pageRequest.OrderBy == null)
-            {
-                pageRequest.OrderBy = "id";
-            }
+            pageRequest.PageIndex ??= 1;
+            pageRequest.PageSize ??= 10;
+            pageRequest.OrderBy ??= "id";
             int skippedCount = (int)((pageRequest.PageIndex - 1) * pageRequest.PageSize);
 
-            // Lấy tất cả dữ liệu từ CompanyRepository
+            // get all company
             var query = _unitOfWork.CompanyRepository.Find(company => true);
-
             if (!string.IsNullOrEmpty(pageRequest.Name))
             {
                 query = query.Where(company => company.Name.Contains(pageRequest.Name));
             }
-            // Lọc theo Status nếu Status được cung cấp
+            // filter status
             if (pageRequest.Status != null)
             {
                 query = query.Where(company => company.Status == pageRequest.Status.Value);
             }
-
             int totalCount = await query.CountAsync();
 
-            // Sắp xếp theo OrderBy và thực hiện phân trang
+            string defaultOrderBy = "id";
+            // sort orderBy and pagination
+            string orderBy = orderDict.ContainsKey(pageRequest.OrderBy.ToLower()) ? pageRequest.OrderBy.ToLower() : defaultOrderBy;
             query = pageRequest.Direction == "desc"
-                ? query.OrderByDescending(orderDict[pageRequest.OrderBy.ToLower()])
-                : query.OrderBy(orderDict[pageRequest.OrderBy.ToLower()]);
+                ? query.OrderByDescending(orderDict[orderBy])
+                : query.OrderBy(orderDict[orderBy]);
 
             query = query.Skip(skippedCount).Take(pageRequest.PageSize.Value);
 
             var companies = await query.ToListAsync();
-
             pageResponse.Data = _mapper.Map<List<CompanyListingDto>>(companies);
             pageResponse.PageIndex = (int)pageRequest.PageIndex;
             pageResponse.PageCount = (int)(totalCount / pageRequest.PageSize) + 1;
             pageResponse.PageSize = pageRequest.PageSize.Value;
             _logger.LogInformation($"GetCompanyList request: PageIndex={pageRequest.PageIndex}, PageSize={pageRequest.PageSize}, OrderBy={pageRequest.OrderBy}, Direction={pageRequest.Direction}, Name={pageRequest.Name}, TotalCount={totalCount}");
             return pageResponse;
-        }*/
+        }
 
         public async Task<CompanyDto> GetById(int id)
         {
@@ -104,43 +95,69 @@ namespace YBS.Services.Services.Implements
             return null;
         }
 
-        public async Task<bool> ChangeStatus(int id, string status)
+        public async Task<CompanyDto> Create(CompanyInputDto companyInputDto)
         {
-            var company = await _unitOfWork.CompanyRepository. Find(company => company.Id==id).Include(company => company.Account).FirstOrDefaultAsync();
-            if(company != null)
+            var existedMail = await _unitOfWork.AccountRepository.Find(account => account.Email == companyInputDto.Email).FirstOrDefaultAsync();
+            if (existedMail != null)
             {
-                if(company.Account != null)
-                {
-                    if (company.Account != null)
-                    {
-                        if (Enum.TryParse<EnumAccountStatus>(status, out var accountStatus))
-                        {
-                            company.Account.Status = accountStatus;
-                        }
-                        else
-                        {
-                            _logger.LogWarning($"Invalid account status: {status}. Using default status.");
-                            return false;
-                        }
-                    }
-                }
-                if (Enum.TryParse<EnumCompanyStatus>(status, out var companyStatus))
-                {
-                    _logger.LogInformation($"Change company with status {status} successfully.");
-                    company.Status = companyStatus;
-                }
-                else
-                {
-                    _logger.LogWarning($"Invalid company status: {status}. Using default status.");
-                    return false;
-                }
-
-                await _unitOfWork.SaveChangesAsync();
-                return true;
+                throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that email ");
             }
-            return false;
+            var existedPhone = await _unitOfWork.AccountRepository.Find(account => account.PhoneNumber.Trim() == companyInputDto.PhoneNumber.Trim()).FirstOrDefaultAsync();
+            if (existedPhone != null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that phone number ");
+            }
+            var existedUserName = await _unitOfWork.AccountRepository.Find(account => account.UserName == companyInputDto.UserName).FirstOrDefaultAsync();
+            if (existedUserName != null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that username");
+            }
+            var account = new Account
+            {
+                RoleId = 2,
+                PhoneNumber = companyInputDto.PhoneNumber,
+                Email = companyInputDto.Email,
+                Password = companyInputDto.Password,
+                UserName = companyInputDto.UserName,
+                Status = EnumAccountStatus.ACTIVE
+            };
+            _unitOfWork.AccountRepository.Add(account);
+            await _unitOfWork.SaveChangesAsync();
+            var company = _mapper.Map<Company>(companyInputDto);
+            company.AccountId = account.Id;
+            company.Status = EnumCompanyStatus.ACTIVE;
+            _unitOfWork.CompanyRepository.Add(company);
+            await _unitOfWork.SaveChangesAsync();
+            var companyDto = _mapper.Map<CompanyDto>(company);
+            _logger.LogInformation($"Created company with ID: {companyDto.Id} successfully.");
+            return companyDto;
         }
 
-      
+        public async Task<bool> ChangeStatus(int id, string status)
+        {
+            var company = await _unitOfWork.CompanyRepository
+               .Find(company => company.Id == id)
+               .Include(company => company.Account)
+               .FirstOrDefaultAsync();
+            if (company.Account != null)
+            {
+                if (!Enum.TryParse<EnumAccountStatus>(status, out var accountStatus))
+                {
+                    _logger.LogWarning($"Invalid account status: {status}. Using default status.");
+                    return false; 
+                }
+                company.Account.Status = accountStatus;
+            }
+            if (!Enum.TryParse<EnumCompanyStatus>(status, out var companyStatus))
+            {
+                _logger.LogWarning($"Invalid company status: {status}. Using default status.");
+                return false; 
+            }
+            company.Status = companyStatus;
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
+
+ 
     }
 }

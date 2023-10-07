@@ -16,16 +16,28 @@ namespace YBS.Controllers
             _companyService = companyService;
         }
 
-      /*  [HttpGet]
+        [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CompanyPageRequest pageRequest)
         {
             return Ok(await _companyService.GetCompanyList(pageRequest));
-        }*/
+        }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompanyDetail([FromRoute] int id) 
         {
             return Ok(await _companyService.GetById(id));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] CompanyInputDto companyInputDto)
+        {
+            var company = await _companyService.Create(companyInputDto);
+            if(company != null)
+            {
+                return CreatedAtAction(nameof(GetCompanyDetail), new { id = company.Id }, company);
+
+            }
+            return BadRequest("Failed to create company.");
         }
 
         [HttpPatch("{id}")]

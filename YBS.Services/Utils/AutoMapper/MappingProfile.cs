@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Options;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,7 +8,9 @@ using System.Threading.Tasks;
 using YBS.Data.Models;
 using YBS.Service.Dtos;
 using YBS.Services.Dtos;
+using YBS.Services.Dtos.InputDtos;
 using YBS.Services.Dtos.ListingDTOs;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Database;
 
 namespace YBS.Service.Utils.AutoMapper
 {
@@ -17,9 +20,12 @@ namespace YBS.Service.Utils.AutoMapper
         {
             //company
             CreateMap<Company, CompanyDto>()
-                .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Account.Email))
-                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.Account.PhoneNumber));
+                .ForMember(dest => dest.Email, options => options.MapFrom(company => company.Account.Email))
+                .ForMember(dest => dest.PhoneNumber, options => options.MapFrom(company => company.Account.PhoneNumber));
             CreateMap<Company, CompanyListingDto>();
+            CreateMap<CompanyInputDto, Company>()
+                .ForMember(company => company.Id, options => options.Ignore())
+                .ForMember(company => company.AccountId, options => options.Ignore());
 
             CreateMap<Account, AccountListingDto>()
             .ForMember(accountDto => accountDto.Role, config => config.MapFrom(account => account.Role.Name));

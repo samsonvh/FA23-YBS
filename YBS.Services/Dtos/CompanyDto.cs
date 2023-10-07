@@ -19,6 +19,7 @@ namespace YBS.Service.Dtos
         public DateTime ContractStartDate { get; set; }
         public EnumCompanyStatus Status { get; set; }
 
+
     }
 }
 
