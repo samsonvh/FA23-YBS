@@ -36,38 +36,35 @@ namespace YBS.Services.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that phone number ");
             }
+            var existedUserName = await _unitOfWork.AccountRepository.Find(account => account.UserName == request.UserName).FirstOrDefaultAsync();
+            if (existedUserName != null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "There is already an account with that username");
+            }
+            if (request.Password.Length < 8)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Password must be at least 8 characters");
+            }
             var hashedPassword = PasswordHashing.HashPassword(request.Password);
             var role = await _unitOfWork.RoleRepository.Find(role => role.Name == nameof(EnumRole.MEMBER)).FirstOrDefaultAsync();
             if (role == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Role Member Not found");
+                role = new Role()
+                {
+                    Name = nameof(EnumRole.MEMBER)
+                };
+                _unitOfWork.RoleRepository.Add(role);
+                await _unitOfWork.SaveChangesAsync();
             }
-            var account = new Account()
-            {
-                Email = request.Email,
-                PhoneNumber = request.PhoneNumber,
-                RoleId = role.Id,
-                UserName = request.UserName,
-                Password = hashedPassword
-            };
+            var account = _mapper.Map<Account>(request);
+            account.Password = hashedPassword;
+            account.RoleId = role.Id;
+            account.Status = EnumAccountStatus.INACTIVE;
             _unitOfWork.AccountRepository.Add(account);
             await _unitOfWork.SaveChangesAsync();
 
-            var member = new Member()
-            {
-                Address = request.Address,
-                AvatarUrl = request.AvatarUrl,
-                DateOfBirth = request.DateOfBirth,
-                FullName = request.FullName,
-                IdentityNumber = request.IdentityNumber,
-                Gender = request.Gender,
-                Nationality = request.Nationality,
-                Status = request.Status,
-                AccountId = account.Id,
-                MembershipStartDate = DateTime.Now,
-                MembershipExpiredDate = DateTime.Now,
-                MemberSinceDate = DateTime.Now,
-            };
+            var member = _mapper.Map<Member>(request);
+            member.AccountId = account.Id;
             _unitOfWork.MemberRepository.Add(member);
             var createMemberResult = await _unitOfWork.SaveChangesAsync();
             if (createMemberResult <= 0)
@@ -110,6 +107,11 @@ namespace YBS.Services.Services.Implements
                 PageSize = request.PageSize,
             };
             return result;
+        }
+
+        public Task Update(MemberInputDto request)
+        {
+            throw new NotImplementedException();
         }
     }
 }
