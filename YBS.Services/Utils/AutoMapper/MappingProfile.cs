@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Models;
 using YBS.Service.Dtos;
+
 using YBS.Services.Dtos;
 using YBS.Services.Dtos.InputDtos;
 using YBS.Services.Dtos.ListingDTOs;
@@ -37,6 +38,10 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberDto>()
             .ForMember(accountDto => accountDto.Email, config => config.MapFrom(member => member.Account.Email))
             .ForMember(accountDto => accountDto.PhoneNumber, config => config.MapFrom(member => member.Account.PhoneNumber));
+
+            CreateMap<MemberInputDto, Member>();
+
+            CreateMap<MemberInputDto, Account>();
         }
     }
 }
