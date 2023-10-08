@@ -4,7 +4,7 @@ using Microsoft.Extensions.Configuration;
 
 namespace YBS.Data.Context
 {
-    public class YBSContextFactory : IDesignTimeDbContextFactory<YBSContext>
+    public class YBSDesignContext : IDesignTimeDbContextFactory<YBSContext>
     {
         YBSContext IDesignTimeDbContextFactory<YBSContext>.CreateDbContext(string[] args)
         {

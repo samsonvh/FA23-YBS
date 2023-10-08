@@ -12,7 +12,7 @@ namespace YBS.Data.Configs
             builder.HasKey(member => member.ID);
             builder.HasOne(member => member.Account).WithOne(account => account.Member)
             .HasForeignKey<Member>(member => member.AccountID);
-            builder.HasOne(member => member.MembershipPackage).WithMany(membershipPackge => membershipPackge.Members)
+            builder.HasOne(member => member.MembershipPackage).WithMany(membershipPackage => membershipPackage.Members)
             .HasForeignKey(member => member.MembershipPackageID).IsRequired(false);
             builder.Property(member => member.FullName).HasColumnType("nvarchar(100)");
             builder.Property(member => member.DOB).HasColumnType("date");

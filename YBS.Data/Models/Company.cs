@@ -4,7 +4,7 @@ namespace YBS.Data.Models
 {
     public class Company
     {
-        public int Id { get; set; }
+        public int ID { get; set; }
         public int AccountID { get; set; }
         public Account Account { get; set; }
         public string Name { get; set; }
