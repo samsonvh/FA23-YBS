@@ -8,9 +8,9 @@ namespace YBS.Data.Configs
         public void Configure(Microsoft.EntityFrameworkCore.Metadata.Builders.EntityTypeBuilder<Company> builder)
         {
             builder.ToTable("Company");
-            builder.HasKey(company => company.ID);
+            builder.HasKey(company => company.Id);
             builder.HasOne(company => company.Account)
-            .WithOne(account => account.Company).HasForeignKey<Company>(company => company.AccountID);
+            .WithOne(account => account.Company).HasForeignKey<Company>(company => company.AccountId);
             builder.Property(company => company.Name).HasColumnType("nvarchar(100)");
             builder.Property(company => company.Address).HasColumnType("nvarchar(200)");
             builder.Property(company => company.HotLine).HasColumnType("varchar(15)");

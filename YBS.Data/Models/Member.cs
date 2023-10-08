@@ -4,10 +4,10 @@ namespace YBS.Data.Models
 {
     public class Member
     {
-        public int ID { get; set; }
-        public int AccountID { get; set; }
+        public int Id { get; set; }
+        public int AccountId { get; set; }
         public Account Account { get; set; }
-        public int MembershipPackageID { get; set; }
+        public int MembershipPackageId { get; set; }
         public MembershipPackage MembershipPackage { get; set; }
         public string FullName { get; set; }
         public DateTime DOB { get; set; }

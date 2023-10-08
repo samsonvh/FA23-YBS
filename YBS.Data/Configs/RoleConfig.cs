@@ -9,7 +9,7 @@ namespace YBS.Data.Configs
         public void Configure(EntityTypeBuilder<Role> builder)
         {
             builder.ToTable("Role");
-            builder.HasKey(role => role.ID);
+            builder.HasKey(role => role.Id);
             builder.Property(role => role.Name).HasColumnType("varchar(50)");
         }
     }

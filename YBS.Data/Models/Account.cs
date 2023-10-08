@@ -4,8 +4,8 @@ namespace YBS.Data.Models
 {
     public class Account
     {
-        public int ID { get; set; }
-        public int RoleID { get; set; }
+        public int Id { get; set; }
+        public int RoleId { get; set; }
         public Role Role { get; set; }
         public Company Company { get; set; }
         public Member Member { get; set; }
