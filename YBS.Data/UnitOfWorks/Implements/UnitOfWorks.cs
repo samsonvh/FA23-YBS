@@ -9,7 +9,7 @@ using YBS.Data.Repositories.Implements;
 
 namespace YBS.Data.UnitOfWorks.Implements
 {
-    public class UnitOfWorks
+    public class UnitOfWorks : IUnitOfWorks
     {
         private readonly YBSContext _context;
         private readonly IGenericRepositories<Account> _accountRepository;
@@ -75,6 +75,17 @@ namespace YBS.Data.UnitOfWorks.Implements
                 }
                 return new GenericRepositories<Role>(_context);
             }
+        }
+
+        public Task<int> SaveChangesAsync()
+        {
+            return _context.SaveChangesAsync();
+        }
+
+        public void Dispose()
+        {
+            _context.Dispose();
+            GC.SuppressFinalize(this);
         }
     }
 }
