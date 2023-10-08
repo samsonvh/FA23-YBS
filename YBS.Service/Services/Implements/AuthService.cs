@@ -8,6 +8,7 @@ using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Apis.Auth;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
@@ -23,12 +24,14 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWorks _unitOfWorks;
         private readonly IConfiguration _configuration;
-        public AuthService(IUnitOfWorks unitOfWorks, IConfiguration configuration)
+        private readonly IHttpContextAccessor _httpContextAccessor;
+        public AuthService(IUnitOfWorks unitOfWorks, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWorks = unitOfWorks;
             _configuration = configuration;
+            _httpContextAccessor = httpContextAccessor; 
         }
-        public async Task<AuthResponse> GoogleLogin(string idToken)
+        public async Task<AuthResponse> Authentication(string idToken)
         {
 
             GoogleJsonWebSignature.Payload? payload = await GetPayload(idToken);
@@ -79,7 +82,7 @@ namespace YBS.Service.Services.Implements
             }
             else
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Error Occur While Login With Google, Please Try Again");
+                throw new APIException((int)HttpStatusCode.InternalServerError, "Error Occur While Login With Google, Please Try Again");
             }
             throw new APIException((int)HttpStatusCode.InternalServerError, "Internal Server Error");
         }
@@ -119,11 +122,12 @@ namespace YBS.Service.Services.Implements
         }
         private JwtSecurityToken GenerateJWTToken(Account account)
         {
-            var claims = new List<Claim>
+            var claims = new List<Claim>()
             {
                 new Claim("Id", account.Id.ToString()),
-                new Claim("Role", nameof(account.Role))
+                new Claim(ClaimTypes.Role, account.Role.Name)
             };
+            var identity = new ClaimsIdentity(claims);
             var issuer = _configuration["JWT:Issuer"];
             var audience = _configuration["JWT:Audience"];
             var secretKey = _configuration["JWT:SecretKey"];
@@ -139,6 +143,36 @@ namespace YBS.Service.Services.Implements
             signingCredentials: signingCredentials
             );
             return token;
+        }
+        public ClaimsPrincipal GetClaim()
+        {
+            string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]));
+            var issuer = _configuration["JWT:Issuer"];
+            var audience = _configuration["JWT:Audience"];
+            // Configure token validation parameters
+            var tokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidateAudience = true,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = key,
+                ValidIssuer = issuer,
+                ValidAudience = audience,
+            };
+
+            // Decrypt the token and retrieve the claims
+            ClaimsPrincipal claimsPrincipal;
+            try
+            {
+                claimsPrincipal = tokenHandler.ValidateToken(accessToken.Trim(), tokenValidationParameters, out _);
+                return claimsPrincipal;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Failed to decrypt/validate the JWT token.", ex);
+            }
         }
     }
 }

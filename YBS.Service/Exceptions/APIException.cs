@@ -9,19 +9,15 @@ namespace YBS.Service.Exceptions
     public class APIException : Exception
     {
         public int StatusCode { get; set; }
-        public string ErrorCode { get; set; }
-        public string MessageContent { get; set; }
-        public object Content { get; set; }
+        public string Message { get; set; }
         public string ToJson()
         {
             return JsonSerializer.Serialize(this);
         }
-        public APIException(int statusCode, string errorCode, string message = null, object value = null)
+        public APIException(int StatusCode, string Message)
         {
-            StatusCode = statusCode;
-            ErrorCode = errorCode;
-            MessageContent = message;
-            Content = value;
+            this.StatusCode = StatusCode;
+            this.Message = Message;
         }
     }
 }

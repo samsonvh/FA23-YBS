@@ -1,4 +1,8 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Authorization;
+using YBS.Data.Models;
 using YBS.Service.Services;
 
 namespace YBS.Controllers
@@ -12,11 +16,18 @@ namespace YBS.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("GoogleLogin")]
-        public async Task<IActionResult> GoogleLogin(string idToken)
+        [HttpPost("Authentication")]
+        public async Task<IActionResult> Authentication(string idToken)
         {
-            var result = await _authService.GoogleLogin(idToken);
+            var result = await _authService.Authentication(idToken);
             return Ok(result);
+        }
+        [RoleAuthorization("MEMBER")]
+        [HttpGet]
+        public async Task<IActionResult> Test ()
+        {
+            var role = this.User.FindFirst(x => x.Type == ClaimTypes.Role);
+            return Ok(role + "Test Authorize");
         }
     }
 }
