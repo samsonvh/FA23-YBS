@@ -2,6 +2,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\YBS.Data\YBS.Data.csproj" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.Google" Version="6.0.10" />
+    <PackageReference Include="Google.Apis.Auth" Version="1.62.0" />
   </ItemGroup>
 
   <PropertyGroup>

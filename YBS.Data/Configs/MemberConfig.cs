@@ -9,11 +9,11 @@ namespace YBS.Data.Configs
         public void Configure(EntityTypeBuilder<Member> builder)
         {
             builder.ToTable("Member");
-            builder.HasKey(member => member.ID);
+            builder.HasKey(member => member.Id);
             builder.HasOne(member => member.Account).WithOne(account => account.Member)
-            .HasForeignKey<Member>(member => member.AccountID);
+            .HasForeignKey<Member>(member => member.AccountId);
             builder.HasOne(member => member.MembershipPackage).WithMany(membershipPackage => membershipPackage.Members)
-            .HasForeignKey(member => member.MembershipPackageID).IsRequired(false);
+            .HasForeignKey(member => member.MembershipPackageId).IsRequired(false);
             builder.Property(member => member.FullName).HasColumnType("nvarchar(100)");
             builder.Property(member => member.DOB).HasColumnType("date");
             builder.Property(member => member.Nationality).HasColumnType("varchar(100)");
