@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace YBS.Service.Dtos.ListingDtos
 {
-    public class ListingAccountDto
+    public class AccountListingDto
     {
         
     }
