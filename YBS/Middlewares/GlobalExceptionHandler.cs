@@ -5,7 +5,7 @@ using System.Net;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Diagnostics;
 using Newtonsoft.Json;
-using YBS.Service;
+using YBS.Service.Exceptions;
 
 namespace YBS.Middlewares
 {
