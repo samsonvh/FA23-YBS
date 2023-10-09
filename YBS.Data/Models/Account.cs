@@ -9,6 +9,7 @@ namespace YBS.Data.Models
         public Role Role { get; set; }
         public Company Company { get; set; }
         public Member Member { get; set; }
+        public RefreshToken RefreshToken { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string Password { get; set; }

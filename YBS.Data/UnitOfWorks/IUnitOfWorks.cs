@@ -10,6 +10,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositories<Member> MemberRepository { get; }
         IGenericRepositories<MembershipPackage> MembershipPackageRepository { get; }
         IGenericRepositories<Role> RoleRepository { get; }
+        IGenericRepositories<RefreshToken> RefreshTokenRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

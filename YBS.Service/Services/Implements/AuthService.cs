@@ -38,50 +38,66 @@ namespace YBS.Service.Services.Implements
             if (payload != null)
             {
                 Account? account = await _unitOfWorks.AccountRepository.Find(account => account.Email == payload.Email)
-                .Include(x => x.Role)
-                .FirstOrDefaultAsync()
-                .ConfigureAwait(false);
+                .Include(account => account.Role)
+                .Include(account => account.RefreshToken)
+                .FirstOrDefaultAsync();
                 if (account == null)
                 {
                     throw new APIException((int)HttpStatusCode.BadRequest, "You are not membership");
                 }
-                payload.Subject = Hash(payload.Subject);
-                string? issuer, audience, token;
+                string refreshToken;
+                //add refresh token
+                if (account.RefreshToken == null)
+                {
+                    refreshToken = GenerateRefreshToken();
+                    RefreshToken addRefreshToken = new RefreshToken()
+                    {
+                        AccountId = account.Id,
+                        Token = refreshToken,
+                        ExpireDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:RefreshToken_Expire_Dates"]))
+                    };
+                    _unitOfWorks.RefreshTokenRepository.Add(addRefreshToken);
+                }
+                else
+                {
+                    //update refresh token
+                    if (account.RefreshToken.ExpireDate.CompareTo(DateTime.Now) < 0 && account.RefreshToken != null)
+                    {
+                        refreshToken = GenerateRefreshToken();
+                        account.RefreshToken.Token = refreshToken;
+
+                        var expireDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:RefreshToken_Expire_Dates"]));
+                        account.RefreshToken.ExpireDate = expireDate;
+                        _unitOfWorks.AccountRepository.Update(account);
+                    }
+                    else 
+                    {
+                        refreshToken = account.RefreshToken.Token;
+                    }
+                }
+                // payload.Subject = Hash(payload.Subject);
+                string accessToken;
                 JwtSecurityToken tokenGenerated;
-                string refreshToken = GenerateRefreshToken();
                 switch (account.Status)
                 {
+                    //update account status
                     case EnumAccountStatus.INACTIVE:
                         account.Status = EnumAccountStatus.ACTIVE;
-                        await _unitOfWorks.SaveChangesAsync();
-
-                        tokenGenerated = GenerateJWTToken(account,refreshToken);
-                        token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
-                        return new AuthResponse()
-                        {
-                            AccessToken = token,
-                            RefreshToken = refreshToken,
-                            Role = account.Role.Name,
-                            UserName = payload.Name,
-                            ImgUrl = payload.Picture
-                        };
-                    case EnumAccountStatus.ACTIVE:
-
-                        tokenGenerated = GenerateJWTToken(account,refreshToken);
-                        token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
-                        return new AuthResponse()
-                        {
-                            AccessToken = token,
-                            RefreshToken = refreshToken,
-                            Role = account.Role.Name,
-                            UserName = payload.Name,
-                            ImgUrl = payload.Picture
-                        };
-
+                        break;
                     case EnumAccountStatus.BANNED:
                         throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
                 }
-
+                await _unitOfWorks.SaveChangesAsync();
+                tokenGenerated = GenerateJWTToken(account);
+                accessToken = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
+                return new AuthResponse()
+                {
+                    AccessToken = accessToken,
+                    refreshToken = refreshToken,
+                    Role = account.Role.Name,
+                    UserName = payload.Name,
+                    ImgUrl = payload.Picture
+                };
             }
             else
             {
@@ -123,13 +139,12 @@ namespace YBS.Service.Services.Implements
                 return builder.ToString();
             }
         }
-        private JwtSecurityToken GenerateJWTToken(Account account, string refreshToken)
+        private JwtSecurityToken GenerateJWTToken(Account account)
         {
             var claims = new List<Claim>()
             {
                 new Claim("Id", account.Id.ToString()),
                 new Claim(ClaimTypes.Role, account.Role.Name),
-                new Claim("RefreshToken", refreshToken)
             };
             var issuer = _configuration["JWT:Issuer"];
             var audience = _configuration["JWT:Audience"];
@@ -201,14 +216,21 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Invalid access token");
             }
             var accountId = claimsPrincipal.FindFirstValue("Id");
-            var account = await _unitOfWorks.AccountRepository.Find(account => account.Id == int.Parse(accountId)).Include(account => account.Role).FirstOrDefaultAsync();
-            var oldRefreshToken = claimsPrincipal.FindFirstValue("RefreshToken");
-            if (accountId == null || account == null || refreshToken != oldRefreshToken)
+            var account = await _unitOfWorks.AccountRepository.Find(account => account.Id == int.Parse(accountId))
+                                                                .Include(account => account.Role)
+                                                                .Include(account => account.RefreshToken)
+                                                                .FirstOrDefaultAsync();
+            if (account == null || refreshToken != account.RefreshToken.Token)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Invalid refresh token");
             }
+            var refreshTokenExpireDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:RefreshToken_Expire_Dates"]));
             var newRefreshToken = GenerateRefreshToken();
-            var newJWTToken = GenerateJWTToken(account,newRefreshToken);
+            account.RefreshToken.Token = newRefreshToken;
+            account.RefreshToken.ExpireDate = refreshTokenExpireDate;
+            _unitOfWorks.AccountRepository.Update(account);
+            await _unitOfWorks.SaveChangesAsync();
+            var newJWTToken = GenerateJWTToken(account);
             var newAccessToken = new JwtSecurityTokenHandler().WriteToken(newJWTToken);
             var result = new RefreshTokenResponse()
             {
