@@ -147,6 +147,10 @@ namespace YBS.Service.Services.Implements
         public ClaimsPrincipal GetClaim()
         {
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            if (accessToken == null)
+            {
+                throw new APIException((int)HttpStatusCode.Unauthorized,"UnAuthorized");
+            }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]));
             var issuer = _configuration["JWT:Issuer"];

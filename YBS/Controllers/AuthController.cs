@@ -26,8 +26,7 @@ namespace YBS.Controllers
         [HttpGet]
         public async Task<IActionResult> Test ()
         {
-            var role = this.User.FindFirst(x => x.Type == ClaimTypes.Role);
-            return Ok(role + "Test Authorize");
+            return Ok();
         }
     }
 }
