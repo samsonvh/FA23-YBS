@@ -1,3 +1,4 @@
+using YBS.Data.Enums;
 using YBS.Service.Dtos.PageRequests;
 
 namespace YBS.Services.Dtos.Requests
@@ -6,5 +7,7 @@ namespace YBS.Services.Dtos.Requests
     {
         public string? Username { get; set; }
         public string? Email { get; set; }
+        public string? Role { get; set; }
+        public EnumAccountStatus? Status { get; set; }
     }
 }

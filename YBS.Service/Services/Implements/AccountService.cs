@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YBS.Data.Enums;
+using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageResponses;
@@ -28,7 +30,9 @@ namespace YBS.Service.Services.Implements
         {
             var query = _unitOfWork.AccountRepository
                 .Find(account => (string.IsNullOrWhiteSpace(pageRequest.Username) || account.Username.Contains(pageRequest.Username)) &&
-                                (string.IsNullOrWhiteSpace(pageRequest.Email) || account.Email.Contains(pageRequest.Email)))
+                                (string.IsNullOrWhiteSpace(pageRequest.Email) || account.Email.Contains(pageRequest.Email)) &&
+                                (string.IsNullOrWhiteSpace(pageRequest.Role) || account.Role.Name == pageRequest.Role) &&
+                                (!pageRequest.Status.HasValue || account.Status == pageRequest.Status.Value))
                 .Include(account => account.Role);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(account => account.Id);
