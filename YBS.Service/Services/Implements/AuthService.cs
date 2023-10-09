@@ -29,7 +29,7 @@ namespace YBS.Service.Services.Implements
         {
             _unitOfWorks = unitOfWorks;
             _configuration = configuration;
-            _httpContextAccessor = httpContextAccessor; 
+            _httpContextAccessor = httpContextAccessor;
         }
         public async Task<AuthResponse> Authentication(string idToken)
         {
@@ -48,28 +48,31 @@ namespace YBS.Service.Services.Implements
                 payload.Subject = Hash(payload.Subject);
                 string? issuer, audience, token;
                 JwtSecurityToken tokenGenerated;
+                string refreshToken = GenerateRefreshToken();
                 switch (account.Status)
                 {
                     case EnumAccountStatus.INACTIVE:
                         account.Status = EnumAccountStatus.ACTIVE;
                         await _unitOfWorks.SaveChangesAsync();
 
-                        tokenGenerated = GenerateJWTToken(account);
+                        tokenGenerated = GenerateJWTToken(account,refreshToken);
                         token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
                         return new AuthResponse()
                         {
                             AccessToken = token,
+                            RefreshToken = refreshToken,
                             Role = account.Role.Name,
                             UserName = payload.Name,
                             ImgUrl = payload.Picture
                         };
                     case EnumAccountStatus.ACTIVE:
 
-                        tokenGenerated = GenerateJWTToken(account);
+                        tokenGenerated = GenerateJWTToken(account,refreshToken);
                         token = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
                         return new AuthResponse()
                         {
                             AccessToken = token,
+                            RefreshToken = refreshToken,
                             Role = account.Role.Name,
                             UserName = payload.Name,
                             ImgUrl = payload.Picture
@@ -120,14 +123,14 @@ namespace YBS.Service.Services.Implements
                 return builder.ToString();
             }
         }
-        private JwtSecurityToken GenerateJWTToken(Account account)
+        private JwtSecurityToken GenerateJWTToken(Account account, string refreshToken)
         {
             var claims = new List<Claim>()
             {
                 new Claim("Id", account.Id.ToString()),
-                new Claim(ClaimTypes.Role, account.Role.Name)
+                new Claim(ClaimTypes.Role, account.Role.Name),
+                new Claim("RefreshToken", refreshToken)
             };
-            var identity = new ClaimsIdentity(claims);
             var issuer = _configuration["JWT:Issuer"];
             var audience = _configuration["JWT:Audience"];
             var secretKey = _configuration["JWT:SecretKey"];
@@ -149,7 +152,7 @@ namespace YBS.Service.Services.Implements
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
             if (accessToken == null)
             {
-                throw new APIException((int)HttpStatusCode.Unauthorized,"UnAuthorized");
+                throw new APIException((int)HttpStatusCode.Unauthorized, "UnAuthorized");
             }
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]));
@@ -177,6 +180,42 @@ namespace YBS.Service.Services.Implements
             {
                 throw new Exception("Failed to decrypt/validate the JWT token.", ex);
             }
+        }
+        private string GenerateRefreshToken()
+        {
+            var randomNumber = new byte[64];
+            var rng = RandomNumberGenerator.Create();
+            rng.GetBytes(randomNumber);
+            return Convert.ToBase64String(randomNumber);
+        }
+
+        public async Task<RefreshTokenResponse> RefreshToken(string refreshToken)
+        {
+            if (refreshToken == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid refresh token");
+            }
+            var claimsPrincipal = GetClaim();
+            if (claimsPrincipal == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid access token");
+            }
+            var accountId = claimsPrincipal.FindFirstValue("Id");
+            var account = await _unitOfWorks.AccountRepository.Find(account => account.Id == int.Parse(accountId)).Include(account => account.Role).FirstOrDefaultAsync();
+            var oldRefreshToken = claimsPrincipal.FindFirstValue("RefreshToken");
+            if (accountId == null || account == null || refreshToken != oldRefreshToken)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid refresh token");
+            }
+            var newRefreshToken = GenerateRefreshToken();
+            var newJWTToken = GenerateJWTToken(account,newRefreshToken);
+            var newAccessToken = new JwtSecurityTokenHandler().WriteToken(newJWTToken);
+            var result = new RefreshTokenResponse()
+            {
+                AccessToken = newAccessToken,
+                RefreshToken = newRefreshToken,
+            };
+            return result;
         }
     }
 }

@@ -9,7 +9,8 @@ namespace YBS.Service.Services
 {
     public interface IAuthService
     {
-        Task<AuthResponse> Authentication (string idToken);
-        public ClaimsPrincipal GetClaim ();
+        Task<AuthResponse> Authentication(string idToken);
+        public ClaimsPrincipal GetClaim();
+        Task<RefreshTokenResponse> RefreshToken(string refreshToken);
     }
 }
