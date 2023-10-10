@@ -195,7 +195,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new Exception("Failed to decrypt/validate the JWT token.", ex);
             }
-        }
+         }
         private string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];

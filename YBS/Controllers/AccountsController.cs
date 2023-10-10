@@ -1,10 +1,13 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Authorization;
+using YBS.Data.Enums;
 using YBS.Service.Services;
 using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Controllers
 {
+    [RoleAuthorization(nameof(EnumRole.ADMIN))]
     [Route("api/[controller]")]
     [ApiController]
     public class AccountsController : ControllerBase
