@@ -17,7 +17,6 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<YBSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("YBSContext")));
-
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
 builder.Services.AddScoped<IAccountService, AccountService>();
@@ -71,6 +70,7 @@ builder.Services.AddSwaggerGen(options =>
         }
     });
 });
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
 builder.Services.AddHttpContextAccessor();
