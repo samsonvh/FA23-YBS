@@ -14,6 +14,7 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("Dock");
             builder.HasKey(dock => dock.Id);
+            builder.Property(dock => dock.Id).ValueGeneratedOnAdd();
             builder.HasOne(dock => dock.Company).WithMany(company => company.Docks).HasForeignKey(dock => dock.CompanyId);
             builder.Property(dock => dock.Name).HasColumnType("nvarchar(100)");
             builder.Property(dock => dock.Address).HasColumnType("nvarchar(100)");

@@ -10,6 +10,7 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("Role");
             builder.HasKey(role => role.Id);
+            builder.Property(role => role.Id).ValueGeneratedOnAdd();
             builder.Property(role => role.Name).HasColumnType("varchar(50)");
         }
     }

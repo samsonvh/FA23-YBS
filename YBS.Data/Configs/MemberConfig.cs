@@ -10,6 +10,7 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("Member");
             builder.HasKey(member => member.Id);
+            builder.Property(member => member.Id).ValueGeneratedOnAdd();
             builder.HasOne(member => member.Account).WithOne(account => account.Member)
             .HasForeignKey<Member>(member => member.AccountId);
             builder.HasOne(member => member.MembershipPackage).WithMany(membershipPackage => membershipPackage.Members)

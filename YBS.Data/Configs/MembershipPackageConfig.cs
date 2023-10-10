@@ -10,6 +10,7 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("MembershipPackage");
             builder.HasKey(membershipPackage => membershipPackage.Id);
+            builder.Property(membershipPackage => membershipPackage.Id).ValueGeneratedOnAdd();
             builder.Property(membershipPackage => membershipPackage.Name).HasColumnType("nvarchar(100)");
             builder.Property(membershipPackage => membershipPackage.Price).HasColumnType("float");
             builder.Property(membershipPackage => membershipPackage.Unit).HasColumnType("varchar(10)");
