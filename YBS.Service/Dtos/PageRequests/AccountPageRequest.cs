@@ -1,7 +1,7 @@
 using YBS.Data.Enums;
 using YBS.Service.Dtos.PageRequests;
 
-namespace YBS.Services.Dtos.Requests
+namespace YBS.Services.Dtos.PageRequests
 {
     public class AccountPageRequest : DefaultPageRequest
     {

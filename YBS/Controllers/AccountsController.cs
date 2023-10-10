@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS.Service.Services;
-using YBS.Services.Dtos.Requests;
+using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Controllers
 {

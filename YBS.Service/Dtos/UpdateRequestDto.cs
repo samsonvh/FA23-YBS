@@ -19,6 +19,6 @@ namespace YBS.Services.Dtos
         public string? FacebookUrl { get; set; }
         public string? InstagramUrl { get; set; }
         public string? LinkedInUrl { get; set; }
-        public EnumCompanyUpdateRequest Status { get; set; }
+        public string Status { get; set; }
     }
 }

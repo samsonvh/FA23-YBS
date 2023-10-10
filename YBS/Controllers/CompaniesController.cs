@@ -25,7 +25,13 @@ namespace YBS.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> GetCompanyDetail([FromRoute] int id)
         {
-            return Ok(await _companyService.GetById(id));
+            var company = await _companyService.GetById(id);
+            if(company != null)
+            {
+                return Ok(company);
+
+            }
+            return NotFound("Company not found");
         }
 
         [HttpPost]
@@ -34,16 +40,21 @@ namespace YBS.Controllers
             var company = await _companyService.Create(companyInputDto);
             if (company != null)
             {
-                return CreatedAtAction(nameof(GetCompanyDetail), new { id = company.Id }, company);
+                return CreatedAtAction(nameof(GetCompanyDetail), new { id = company.Id }, "Create Company successful");
 
             }
-            return BadRequest("Failed to create company.");
+            return BadRequest("Failed to create company");
         }
 
         [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)
         {
-            return Ok(await _companyService.ChangeStatus(id, status));
+            var result = await _companyService.ChangeStatus(id, status);
+            if (result)
+            {
+                return Ok("Change status successful");
+            }
+            return BadRequest("Failed to change status");
         }
     }
 }

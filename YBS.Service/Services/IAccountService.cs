@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageResponses;
-using YBS.Services.Dtos.Requests;
+using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Service.Services
 {

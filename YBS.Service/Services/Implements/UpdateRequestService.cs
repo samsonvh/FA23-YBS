@@ -68,7 +68,7 @@ namespace YBS.Service.Services.Implements
         {
             var updateRequest = await _unitOfWorks.UpdateRequestRepository
                .Find(updateRequest => updateRequest.Id == id)
-               .Include(updateRequest => updateRequest.Company.Account)
+               .Include(updateRequest => updateRequest.Company)
                .FirstOrDefaultAsync();
 
             if (updateRequest == null)
@@ -124,7 +124,7 @@ namespace YBS.Service.Services.Implements
             }
             else if (updateRequestInputDto.Status == EnumCompanyUpdateRequest.DECLINE)
             {
-                updateRequest.Status &= ~EnumCompanyUpdateRequest.DECLINE;
+                updateRequest.Status = EnumCompanyUpdateRequest.DECLINE;
                 _unitOfWorks.UpdateRequestRepository.Update(updateRequest);
                 await _unitOfWorks.SaveChangesAsync();
                 return false;

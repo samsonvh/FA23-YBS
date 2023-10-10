@@ -18,19 +18,34 @@ namespace YBS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UpdateRequestInputDto updateRequestInputDto)
         {
-            return Ok(await _updateRequestService.CreateUpdateRequest(updateRequestInputDto));
+            var updateRequest = await _updateRequestService.CreateUpdateRequest(updateRequestInputDto);
+            if (updateRequest != null)
+            {
+                return CreatedAtAction(nameof(GetUpdateRequestDetail), new { id = updateRequest.Id }, "Create successful");
+            }
+            return BadRequest("Failed to create update request.");
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUpdateRequestDetail([FromRoute] int id)
         {
-            return Ok(await _updateRequestService.GetDetailUpdateRequest(id));
+            var updateRequest = await _updateRequestService.GetDetailUpdateRequest(id);
+            if(updateRequest != null)
+            {
+                return Ok(updateRequest);
+            }
+            return NotFound("Not found update request");
         }
 
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateRequestInputDto updateRequestInputDto)
         {
-            return Ok(await _updateRequestService.Update(id, updateRequestInputDto));
+            var updateRequest = await _updateRequestService.Update(id, updateRequestInputDto);
+            if(updateRequest)
+            {
+                return Ok("Update succefull");
+            }
+            return BadRequest("Failed to update request");
         }
     }
 }
