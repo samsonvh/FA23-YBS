@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using YBS.Data.Enums;
-using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageResponses;

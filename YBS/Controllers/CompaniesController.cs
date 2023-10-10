@@ -1,11 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Authorization;
+using YBS.Data.Enums;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
 using YBS.Services.Dtos.InputDtos;
 
 namespace YBS.Controllers
 {
+    [RoleAuthorization(nameof(EnumRole.ADMIN))]
     [Route("api/[controller]")]
     [ApiController]
     public class CompaniesController : ControllerBase
@@ -26,7 +29,7 @@ namespace YBS.Controllers
         public async Task<IActionResult> GetCompanyDetail([FromRoute] int id)
         {
             var company = await _companyService.GetById(id);
-            if(company != null)
+            if (company != null)
             {
                 return Ok(company);
 

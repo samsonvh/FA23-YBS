@@ -14,6 +14,7 @@ namespace YBS.Data.Context
         public DbSet<Member> Members { get; set; }
         public DbSet<MembershipPackage> MembershipPackages { get; set; }
         public DbSet<Role> Roles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);

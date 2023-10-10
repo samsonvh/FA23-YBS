@@ -18,6 +18,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositories<Member> _memberRepository;
         private readonly IGenericRepositories<MembershipPackage> _membershipPackageRepository;
         private readonly IGenericRepositories<Role> _roleRepository;
+        private readonly IGenericRepositories<RefreshToken> _refreshTokenRepository;
         public UnitOfWorks(YBSContext context)
         {
             _context = context;
@@ -87,6 +88,17 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _updateRequestRepository;
                 }
                 return new GenericRepositories<UpdateRequest>(_context);
+            }
+        }
+        public IGenericRepositories<RefreshToken> RefreshTokenRepository 
+        {
+            get
+            {
+                if (_refreshTokenRepository is not null)
+                {
+                    return _refreshTokenRepository;
+                }
+                return new GenericRepositories<RefreshToken>(_context);
             }
         }
 

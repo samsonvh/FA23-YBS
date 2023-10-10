@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Authorization;
+using YBS.Data.Enums;
 using YBS.Services.Dtos.InputDtos;
 using YBS.Services.Services;
 
@@ -15,6 +17,7 @@ namespace YBS.Controllers
             _updateRequestService = updateRequestService;
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UpdateRequestInputDto updateRequestInputDto)
         {
@@ -26,6 +29,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to create update request.");
         }
 
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpGet("{id}")]
         public async Task<IActionResult> GetUpdateRequestDetail([FromRoute] int id)
         {
@@ -37,6 +41,7 @@ namespace YBS.Controllers
             return NotFound("Not found update request");
         }
 
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPut("{id}")]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateRequestInputDto updateRequestInputDto)
         {
