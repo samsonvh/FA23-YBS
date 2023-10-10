@@ -2,8 +2,8 @@ namespace YBS.Data.Enums
 {
     public enum EnumMemberStatus
     {
-        INACTIVE,
-        ACTIVE,
-        BAN
+        INACTIVE = 0,
+        ACTIVE = 1,
+        BANNED = 2,
     }
 }

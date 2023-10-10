@@ -1,9 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using YBS.Data.Models;
 
 namespace YBS.Data.Context
@@ -13,11 +8,16 @@ namespace YBS.Data.Context
         public YBSContext(DbContextOptions<YBSContext> options) : base(options)
         {
         }
-        public DbSet<Role> Roles { get; set; }
         public DbSet<Account> Accounts { get; set; }
-        public DbSet<Member> Members { get; set; }
         public DbSet<Company> Companies { get; set; }
-
+        public DbSet<Member> Members { get; set; }
+        public DbSet<MembershipPackage> MembershipPackages { get; set; }
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Dock> Docks { get; set; }
+        public DbSet<Yacht> Yachts { get; set; }
+        public DbSet<DockYachtType> DockYachtTypes { get; set; }
+        public DbSet<YachtType> YachtTypes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);

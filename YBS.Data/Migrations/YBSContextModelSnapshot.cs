@@ -17,161 +17,101 @@ namespace YBS.Data.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "6.0.6")
+                .HasAnnotation("ProductVersion", "6.0.10")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
-
-                    b.Property<int>("AccessFailedCount")
-                        .HasColumnType("int");
-
-                    b.Property<string>("ConcurrencyStamp")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("getDate()");
 
                     b.Property<string>("Email")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(100)");
 
-                    b.Property<bool>("EmailConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("LastModifiedDate")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
-                        .HasDefaultValueSql("getDate()");
-
-                    b.Property<bool>("LockoutEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTimeOffset?>("LockoutEnd")
-                        .HasColumnType("datetimeoffset");
-
-                    b.Property<string>("NormalizedEmail")
+                    b.Property<string>("Password")
                         .IsRequired()
-                        .HasMaxLength(200)
-                        .HasColumnType("varchar(200)");
+                        .HasColumnType("varchar(500)");
 
-                    b.Property<string>("NormalizedUserName")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("PasswordHash")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasMaxLength(15)
-                        .HasColumnType("varchar(15)");
-
-                    b.Property<bool>("PhoneNumberConfirmed")
-                        .HasColumnType("bit");
-
-                    b.Property<int>("RoleId")
+                    b.Property<int>("RoleID")
                         .HasColumnType("int");
-
-                    b.Property<string>("SecurityStamp")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<bool>("TwoFactorEnabled")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("UserName")
+                    b.Property<string>("Username")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .HasColumnType("varchar(255)");
+                        .HasColumnType("varchar(50)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
-                    b.HasIndex("Email")
+                    b.HasIndex("RoleID");
+
+                    b.HasIndex("Username")
                         .IsUnique();
-
-                    b.HasIndex("RoleId");
-
+                        
                     b.ToTable("Account", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Company", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<int?>("AccountId")
-                        .IsRequired()
+                    b.Property<int>("AccountID")
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(150)
-                        .HasColumnType("nvarchar(150)");
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<DateTime>("ConstractStartDate")
-                        .HasColumnType("date");
+                    b.Property<DateTime>("ContractStartDate")
+                        .HasColumnType("datetime");
 
-                    b.Property<string>("FacebookUrl")
-                        .HasMaxLength(255)
+                    b.Property<string>("FacebookURL")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("HotLine")
                         .IsRequired()
-                        .HasMaxLength(15)
                         .HasColumnType("varchar(15)");
 
-                    b.Property<string>("InstagramUrl")
-                        .HasMaxLength(255)
+                    b.Property<string>("InstagramURL")
                         .HasColumnType("varchar(255)");
 
                     b.Property<DateTime>("LastModifiedDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("getDate()");
 
-                    b.Property<string>("Linkedln")
-                        .HasMaxLength(255)
+                    b.Property<string>("LinkedInURL")
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Logo")
                         .IsRequired()
-                        .HasMaxLength(255)
                         .HasColumnType("varchar(255)");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
+                    b.HasKey("ID");
 
-                    b.HasKey("Id");
-
-                    b.HasIndex("AccountId")
+                    b.HasIndex("AccountID")
                         .IsUnique();
 
                     b.ToTable("Company", (string)null);
@@ -179,31 +119,28 @@ namespace YBS.Data.Migrations
 
             modelBuilder.Entity("YBS.Data.Models.Member", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
 
-                    b.Property<int?>("AccountId")
-                        .IsRequired()
+                    b.Property<int>("AccountID")
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("nvarchar(200)");
 
-                    b.Property<string>("AvatarUrl")
-                        .HasMaxLength(255)
+                    b.Property<string>("Avatar")
+                        .IsRequired()
                         .HasColumnType("varchar(255)");
 
-                    b.Property<DateTime>("DateOfBirth")
+                    b.Property<DateTime>("DOB")
                         .HasColumnType("date");
 
                     b.Property<string>("FullName")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
                     b.Property<int>("Gender")
@@ -211,53 +148,108 @@ namespace YBS.Data.Migrations
 
                     b.Property<string>("IdentityNumber")
                         .IsRequired()
-                        .HasMaxLength(12)
-                        .HasColumnType("varchar(12)");
+                        .HasColumnType("varchar(15)");
 
                     b.Property<DateTime>("LastModifiedDate")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("date")
+                        .HasColumnType("datetime")
                         .HasDefaultValueSql("getDate()");
 
-                    b.Property<DateTime>("MemberSinceDate")
-                        .HasColumnType("date");
-
                     b.Property<DateTime>("MembershipExpiredDate")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime");
+
+                    b.Property<int>("MembershipPackageID")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("MembershipSinceDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("getDate()");
 
                     b.Property<DateTime>("MembershipStartDate")
-                        .HasColumnType("date");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("getDate()");
 
                     b.Property<string>("Nationality")
                         .IsRequired()
-                        .HasMaxLength(100)
                         .HasColumnType("varchar(100)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
 
-                    b.HasIndex("AccountId")
+                    b.HasIndex("AccountID")
                         .IsUnique();
+
+                    b.HasIndex("MembershipPackageID");
 
                     b.ToTable("Member", (string)null);
                 });
 
-            modelBuilder.Entity("YBS.Data.Models.Role", b =>
+            modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<int>("ID")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<DateTime>("CreationDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("getDate()");
+
+                    b.Property<string>("Description")
+                        .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("EffectiveDuration")
+                        .HasColumnType("int");
+
+                    b.Property<DateTime>("LastModifiedDate")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("datetime")
+                        .HasDefaultValueSql("getDate()");
+
+                    b.Property<int>("MyProperty")
+                        .HasColumnType("int");
 
                     b.Property<string>("Name")
                         .IsRequired()
-                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<double>("Point")
+                        .HasColumnType("float");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("Unit")
+                        .IsRequired()
                         .HasColumnType("varchar(10)");
 
-                    b.HasKey("Id");
+                    b.HasKey("ID");
+
+                    b.ToTable("MembershipPackage", (string)null);
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Role", b =>
+                {
+                    b.Property<int>("ID")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("varchar(50)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("ID");
 
                     b.ToTable("Role", (string)null);
                 });
@@ -266,7 +258,7 @@ namespace YBS.Data.Migrations
                 {
                     b.HasOne("YBS.Data.Models.Role", "Role")
                         .WithMany("Accounts")
-                        .HasForeignKey("RoleId")
+                        .HasForeignKey("RoleID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -277,7 +269,7 @@ namespace YBS.Data.Migrations
                 {
                     b.HasOne("YBS.Data.Models.Account", "Account")
                         .WithOne("Company")
-                        .HasForeignKey("YBS.Data.Models.Company", "AccountId")
+                        .HasForeignKey("YBS.Data.Models.Company", "AccountID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -288,11 +280,17 @@ namespace YBS.Data.Migrations
                 {
                     b.HasOne("YBS.Data.Models.Account", "Account")
                         .WithOne("Member")
-                        .HasForeignKey("YBS.Data.Models.Member", "AccountId")
+                        .HasForeignKey("YBS.Data.Models.Member", "AccountID")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("YBS.Data.Models.MembershipPackage", "MembershipPackage")
+                        .WithMany("Members")
+                        .HasForeignKey("MembershipPackageID");
+
                     b.Navigation("Account");
+
+                    b.Navigation("MembershipPackage");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
@@ -304,6 +302,10 @@ namespace YBS.Data.Migrations
                         .IsRequired();
                 });
 
+            modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
+                {
+                    b.Navigation("Members");
+                });
             modelBuilder.Entity("YBS.Data.Models.Role", b =>
                 {
                     b.Navigation("Accounts");
