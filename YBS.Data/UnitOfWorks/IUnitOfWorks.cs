@@ -7,6 +7,7 @@ namespace YBS.Data.UnitOfWorks
     {
         IGenericRepositories<Account> AccountRepository { get; }
         IGenericRepositories<Company> CompanyRepository { get; }
+        IGenericRepositories<UpdateRequest> UpdateRequestRepository { get; }
         IGenericRepositories<Member> MemberRepository { get; }
         IGenericRepositories<MembershipPackage> MembershipPackageRepository { get; }
         IGenericRepositories<Role> RoleRepository { get; }

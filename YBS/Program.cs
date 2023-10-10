@@ -2,9 +2,11 @@ using Microsoft.EntityFrameworkCore;
 using YBS.Data.Context;
 using YBS.Data.UnitOfWorks;
 using YBS.Data.UnitOfWorks.Implements;
+using YBS.Middlewares;
 using YBS.Service.Services;
 using YBS.Service.Services.Implements;
 using YBS.Service.Utils.AutoMapper;
+using YBS.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,9 @@ builder.Services.AddDbContext<YBSContext>(options =>
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();
+builder.Services.AddScoped<IUpdateRequestService, UpdateRequestService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -34,5 +39,6 @@ app.UseHttpsRedirection();
 app.UseAuthorization();
 
 app.MapControllers();
+app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.Run();

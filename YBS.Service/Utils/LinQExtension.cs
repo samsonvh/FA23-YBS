@@ -12,7 +12,8 @@ namespace YBS.Service.Utils
         public static IQueryable<TEntity> SortDesc<TEntity>(this IQueryable<TEntity> source, string orderByProperty, string? direction)
         {
             var type = typeof(TEntity);
-            var property = type.GetProperties().FirstOrDefault(q => q.Name.ToLower() == orderByProperty?.ToLower());
+            /*var property = type.GetProperties().FirstOrDefault(q => q.Name.ToLower() == orderByProperty?.ToLower());*/
+            var property = type.GetProperties().FirstOrDefault(q => q.Name.ToLower() == "id");
             if (property == null)
             {
                 property = type.GetProperties().FirstOrDefault(q => q.Name.ToLower() == "id");
