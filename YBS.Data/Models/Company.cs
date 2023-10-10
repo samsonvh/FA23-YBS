@@ -17,5 +17,6 @@ namespace YBS.Data.Models
         public DateTime ContractStartDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public EnumCompanyStatus Status { get; set; }
+        public ICollection<Dock> Docks { get; set; }
     }
 }

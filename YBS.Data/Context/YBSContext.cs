@@ -14,6 +14,10 @@ namespace YBS.Data.Context
         public DbSet<MembershipPackage> MembershipPackages { get; set; }
         public DbSet<Role> Roles { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<Dock> Docks { get; set; }
+        public DbSet<Yacht> Yachts { get; set; }
+        public DbSet<DockYachtType> DockYachtTypes { get; set; }
+        public DbSet<YachtType> YachtTypes { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);
