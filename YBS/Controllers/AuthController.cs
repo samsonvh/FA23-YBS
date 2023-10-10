@@ -23,7 +23,7 @@ namespace YBS.Controllers
             var result = await _authService.Authentication(idToken);
             return Ok(result);
         }
-        
+         [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpGet]
         public async Task<IActionResult> Test()
         {
