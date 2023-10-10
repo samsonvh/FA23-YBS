@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using YBS.Data.Models;
 using YBS.Service.Dtos;
+using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Services.Dtos;
 using YBS.Services.Dtos.InputDtos;
@@ -26,6 +27,11 @@ namespace YBS.Service.Utils.AutoMapper
             //updateRequest
             CreateMap<UpdateRequestInputDto, UpdateRequest>();
             CreateMap<UpdateRequest, UpdateRequestDto>();
+
+            //dock
+            CreateMap<Dock, DockListingDto>();
+            CreateMap<Dock, DockDto>();
+            CreateMap<DockInputDto, Dock>();
         }
     }
 }
