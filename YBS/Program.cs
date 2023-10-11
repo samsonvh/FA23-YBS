@@ -11,6 +11,8 @@ using YBS.Middlewares;
 using YBS.Service.Services;
 using YBS.Service.Services.Implements;
 using YBS.Service.Utils.AutoMapper;
+using YBS.Services.Services;
+using YBS.Services.Services.Implements;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,6 +24,7 @@ builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddControllers();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 //Add Authentication
@@ -73,6 +76,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 

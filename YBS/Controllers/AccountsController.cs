@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
-using YBS.Services.Dtos.Requests;
 
 namespace YBS.Controllers
 {
@@ -12,7 +12,7 @@ namespace YBS.Controllers
         private readonly IAccountService _accountService;
         public AccountsController(IAccountService accountService)
         {
-            _accountService = accountService;            
+            _accountService = accountService;
         }
 
         [HttpGet]

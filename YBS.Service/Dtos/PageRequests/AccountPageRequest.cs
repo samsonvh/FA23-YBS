@@ -1,6 +1,4 @@
-using YBS.Service.Dtos.PageRequests;
-
-namespace YBS.Services.Dtos.Requests
+namespace YBS.Service.Dtos.PageRequests
 {
     public class AccountPageRequest : DefaultPageRequest
     {
