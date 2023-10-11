@@ -9,7 +9,7 @@ using YBS.Service.Services;
 namespace YBS.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -17,19 +17,14 @@ namespace YBS.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("Authentication")]
+        [HttpPost]
         public async Task<IActionResult> Authentication([FromBody]string idToken)
         {
             var result = await _authService.Authentication(idToken);
             return Ok(result);
         }
         
-        [HttpGet]
-        public async Task<IActionResult> Test()
-        {
-            return Ok();
-        }
-        [HttpPost("Refresh-Token")]
+        [HttpPost("refresh")]
         public async Task<IActionResult> RefreshToken([FromBody]string refreshToken)
         {
             var result = await _authService.RefreshToken(refreshToken);

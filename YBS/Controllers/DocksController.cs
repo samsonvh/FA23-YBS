@@ -11,7 +11,7 @@ using YBS.Services.Dtos.InputDtos;
 namespace YBS.Controllers
 {
     [RoleAuthorization(nameof(EnumRole.COMPANY))]
-    [Route("api/[controller]")]
+    [Route("api/docks")]
     [ApiController]
     public class DocksController : ControllerBase
     {

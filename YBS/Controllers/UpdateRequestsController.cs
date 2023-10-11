@@ -7,7 +7,7 @@ using YBS.Services.Services;
 
 namespace YBS.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/updateRequests")]
     [ApiController]
     public class UpdateRequestsController : ControllerBase
     {

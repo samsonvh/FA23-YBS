@@ -9,7 +9,7 @@ using YBS.Services.Dtos.InputDtos;
 namespace YBS.Controllers
 {
     [RoleAuthorization(nameof(EnumRole.ADMIN))]
-    [Route("api/[controller]")]
+    [Route("api/companies")]
     [ApiController]
     public class CompaniesController : ControllerBase
     {
