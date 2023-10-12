@@ -77,6 +77,7 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
 builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 

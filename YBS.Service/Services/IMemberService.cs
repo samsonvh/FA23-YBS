@@ -9,9 +9,7 @@ namespace YBS.Services.Services
 {
     public interface IMemberService
     {
-        Task Create(MemberInputDto pageRequest);
         Task<DefaultPageResponse<MemberListingDto>> GetAll(MemberPageRequest pageRequest);
-        Task<MemberDto> GetMemberDetail(int id);
-        Task Update (MemberInputDto pageRequest);
+        Task<MemberDto> GetDetailMember(int id);
     }
 }

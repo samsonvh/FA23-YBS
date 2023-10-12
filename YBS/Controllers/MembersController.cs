@@ -18,33 +18,19 @@ namespace FA23_YBS_BACKEND.Controllers
         {
             _memberService = memberService;
         }
-        [HttpPost]
-        [Route(APIDefine.Member.Create)]
-        public async Task<IActionResult> Create([FromBody] MemberInputDto request)
-        {
-            await _memberService.Create(request);
-            return Ok("Create Member Successfully");
-        }
         [HttpGet]
-        [Route(APIDefine.Member.GetAll)]
-        public async Task<IActionResult> GetAll([FromQuery] MemberPageRequest request)
+        [Route(APIDefine.MEMBER_GET_ALL)]
+        public async Task<IActionResult> GetAll([FromQuery] MemberPageRequest pageRequest)
         {
-            var result = await _memberService.GetAll(request);
+            var result = await _memberService.GetAll(pageRequest);
             return Ok(result);
         }
         [HttpGet]
-        [Route(APIDefine.Member.Detail)]
-        public async Task<IActionResult> GetMemberDetail(int id)
+        [Route(APIDefine.MEMBER_DETAIL)]
+        public async Task<IActionResult> GetDetailMember(int Id)
         {
-            var result = await _memberService.GetMemberDetail(id);
+            var result = await _memberService.GetDetailMember(Id);
             return Ok(result);
-        }
-        [HttpPut]
-        [Route(APIDefine.Member.Update)]
-        public async Task<IActionResult> Update([FromBody]MemberInputDto request)
-        {
-             await _memberService.Update(request);
-            return Ok("Update Member Successfully");
         }
     }
 }

@@ -5,15 +5,23 @@ using System.Threading.Tasks;
 
 namespace YBS
 {
-    public class APIDefine
+    public static class APIDefine
     {
-        public const string defaultRoute = "api/[controller]";
-        public class Member
-        {
-            public const string Create = defaultRoute;
-            public const string Detail = defaultRoute + "/{id}";
-            public const string Update =  defaultRoute;
-            public const string GetAll = defaultRoute;
-        }
+        //Default Route
+        public const string DEFAULT_ROUTE = "api/[controller]";
+        //Authentication
+        public const string GOOGLE_LOGIN = "api/[controller]" + "/google-login";
+        public const string REFRESH_TOKEN = "api/[controller]" + "/refresh-token";
+        public const string GOOGLE_AUTHENTICATION = "api/[controller]" + "/";
+        //Member
+        public const string MEMBER_CREATE = DEFAULT_ROUTE;
+        public const string MEMBER_DETAIL = DEFAULT_ROUTE + "/{Id}";
+        public const string MEMBER_UPDATE = DEFAULT_ROUTE;
+        public const string MEMBER_GET_ALL = DEFAULT_ROUTE;
+        //Membership Package
+        public const string MEMBERSHIP_PACKAGE_CREATE = DEFAULT_ROUTE;
+        public const string MEMBERSHIP_PACKAGE_DETAIL = DEFAULT_ROUTE + "/{Id}";
+        public const string MEMBERSHIP_PACKAGE_UPDATE = DEFAULT_ROUTE;
+        public const string MEMBERSHIP_PACKAGE_GET_ALL = DEFAULT_ROUTE;
     }
 }

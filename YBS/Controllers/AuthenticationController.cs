@@ -9,7 +9,7 @@ using YBS.Service.Services;
 namespace YBS.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+
     public class AuthenticationController : ControllerBase
     {
         private readonly IAuthService _authService;
@@ -17,20 +17,16 @@ namespace YBS.Controllers
         {
             _authService = authService;
         }
-        [HttpPost("googlelogin")]
-        public async Task<IActionResult> Authentication([FromBody]string idToken)
+        [Route(APIDefine.GOOGLE_LOGIN)]
+        [HttpPost()]
+        public async Task<IActionResult> Authentication([FromBody] string idToken)
         {
             var result = await _authService.Authentication(idToken);
             return Ok(result);
         }
-        
-        [HttpGet]
-        public async Task<IActionResult> Test()
-        {
-            return Ok();
-        }
-        [HttpPost("refresh-Token")]
-        public async Task<IActionResult> RefreshToken([FromBody]string refreshToken)
+        [HttpPost]
+        [Route(APIDefine.REFRESH_TOKEN)]
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         {
             var result = await _authService.RefreshToken(refreshToken);
             return Ok(result);
