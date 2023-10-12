@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace YBS.Data.Migrations
 {
-    public partial class InitDB : Migration
+    public partial class InitMigration : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -13,7 +13,7 @@ namespace YBS.Data.Migrations
                 name: "MembershipPackage",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
@@ -27,30 +27,30 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_MembershipPackage", x => x.ID);
+                    table.PrimaryKey("PK_MembershipPackage", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Role",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "varchar(50)", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Role", x => x.ID);
+                    table.PrimaryKey("PK_Role", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
                 name: "Account",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    RoleID = table.Column<int>(type: "int", nullable: false),
+                    RoleId = table.Column<int>(type: "int", nullable: false),
                     Username = table.Column<string>(type: "varchar(50)", nullable: false),
                     Email = table.Column<string>(type: "varchar(100)", nullable: false),
                     Password = table.Column<string>(type: "varchar(500)", nullable: false),
@@ -59,12 +59,12 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Account", x => x.ID);
+                    table.PrimaryKey("PK_Account", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Account_Role_RoleID",
-                        column: x => x.RoleID,
+                        name: "FK_Account_Role_RoleId",
+                        column: x => x.RoleId,
                         principalTable: "Role",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -74,7 +74,7 @@ namespace YBS.Data.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     Address = table.Column<string>(type: "nvarchar(200)", nullable: false),
                     HotLine = table.Column<string>(type: "varchar(15)", nullable: false),
@@ -90,10 +90,10 @@ namespace YBS.Data.Migrations
                 {
                     table.PrimaryKey("PK_Company", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Company_Account_AccountID",
-                        column: x => x.AccountID,
+                        name: "FK_Company_Account_AccountId",
+                        column: x => x.AccountId,
                         principalTable: "Account",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -101,10 +101,10 @@ namespace YBS.Data.Migrations
                 name: "Member",
                 columns: table => new
                 {
-                    ID = table.Column<int>(type: "int", nullable: false)
+                    Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    AccountID = table.Column<int>(type: "int", nullable: false),
-                    MembershipPackageID = table.Column<int>(type: "int", nullable: false),
+                    AccountId = table.Column<int>(type: "int", nullable: false),
+                    MembershipPackageId = table.Column<int>(type: "int", nullable: false),
                     FullName = table.Column<string>(type: "nvarchar(100)", nullable: false),
                     DOB = table.Column<DateTime>(type: "date", nullable: false),
                     Nationality = table.Column<string>(type: "varchar(100)", nullable: false),
@@ -120,41 +120,47 @@ namespace YBS.Data.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Member", x => x.ID);
+                    table.PrimaryKey("PK_Member", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Member_Account_AccountID",
-                        column: x => x.AccountID,
+                        name: "FK_Member_Account_AccountId",
+                        column: x => x.AccountId,
                         principalTable: "Account",
-                        principalColumn: "ID",
+                        principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Member_MembershipPackage_MembershipPackageID",
-                        column: x => x.MembershipPackageID,
+                        name: "FK_Member_MembershipPackage_MembershipPackageId",
+                        column: x => x.MembershipPackageId,
                         principalTable: "MembershipPackage",
-                        principalColumn: "ID");
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Account_RoleID",
+                name: "IX_Account_RoleId",
                 table: "Account",
-                column: "RoleID");
+                column: "RoleId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Company_AccountID",
+                name: "IX_Account_Username",
+                table: "Account",
+                column: "Username",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Company_AccountId",
                 table: "Company",
-                column: "AccountID",
+                column: "AccountId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Member_AccountID",
+                name: "IX_Member_AccountId",
                 table: "Member",
-                column: "AccountID",
+                column: "AccountId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Member_MembershipPackageID",
+                name: "IX_Member_MembershipPackageId",
                 table: "Member",
-                column: "MembershipPackageID");
+                column: "MembershipPackageId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

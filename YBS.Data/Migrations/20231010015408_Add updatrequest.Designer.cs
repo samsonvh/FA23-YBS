@@ -12,8 +12,8 @@ using YBS.Data.Context;
 namespace YBS.Data.Migrations
 {
     [DbContext(typeof(YBSContext))]
-    [Migration("20231007114202_Init-DB")]
-    partial class InitDB
+    [Migration("20231010015408_Add updatrequest")]
+    partial class Addupdatrequest
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -26,11 +26,11 @@ namespace YBS.Data.Migrations
 
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -45,7 +45,7 @@ namespace YBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(500)");
 
-                    b.Property<int>("RoleID")
+                    b.Property<int>("RoleId")
                         .HasColumnType("int");
 
                     b.Property<int>("Status")
@@ -55,9 +55,12 @@ namespace YBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(50)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("RoleID");
+                    b.HasIndex("RoleId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Account", (string)null);
                 });
@@ -70,7 +73,7 @@ namespace YBS.Data.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AccountID")
+                    b.Property<int>("AccountId")
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
@@ -111,7 +114,7 @@ namespace YBS.Data.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("AccountID")
+                    b.HasIndex("AccountId")
                         .IsUnique();
 
                     b.ToTable("Company", (string)null);
@@ -119,13 +122,13 @@ namespace YBS.Data.Migrations
 
             modelBuilder.Entity("YBS.Data.Models.Member", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
-                    b.Property<int>("AccountID")
+                    b.Property<int>("AccountId")
                         .HasColumnType("int");
 
                     b.Property<string>("Address")
@@ -158,7 +161,7 @@ namespace YBS.Data.Migrations
                     b.Property<DateTime>("MembershipExpiredDate")
                         .HasColumnType("datetime");
 
-                    b.Property<int>("MembershipPackageID")
+                    b.Property<int>("MembershipPackageId")
                         .HasColumnType("int");
 
                     b.Property<DateTime>("MembershipSinceDate")
@@ -178,23 +181,23 @@ namespace YBS.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
-                    b.HasIndex("AccountID")
+                    b.HasIndex("AccountId")
                         .IsUnique();
 
-                    b.HasIndex("MembershipPackageID");
+                    b.HasIndex("MembershipPackageId");
 
                     b.ToTable("Member", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<DateTime>("CreationDate")
                         .ValueGeneratedOnAdd()
@@ -229,18 +232,18 @@ namespace YBS.Data.Migrations
                         .IsRequired()
                         .HasColumnType("varchar(10)");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("MembershipPackage", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Role", b =>
                 {
-                    b.Property<int>("ID")
+                    b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ID"), 1L, 1);
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
 
                     b.Property<string>("Name")
                         .IsRequired()
@@ -249,16 +252,62 @@ namespace YBS.Data.Migrations
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.HasKey("ID");
+                    b.HasKey("Id");
 
                     b.ToTable("Role", (string)null);
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.UpdateRequest", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"), 1L, 1);
+
+                    b.Property<string>("Address")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(200)");
+
+                    b.Property<int>("CompanyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("FacebookURL")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Hotline")
+                        .IsRequired()
+                        .HasColumnType("varchar(15)");
+
+                    b.Property<string>("InstagramURL")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("LinkedInURL")
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Logo")
+                        .IsRequired()
+                        .HasColumnType("varchar(255)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CompanyId");
+
+                    b.ToTable("UpdateRequest", (string)null);
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
                 {
                     b.HasOne("YBS.Data.Models.Role", "Role")
                         .WithMany("Accounts")
-                        .HasForeignKey("RoleID")
+                        .HasForeignKey("RoleId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -269,7 +318,7 @@ namespace YBS.Data.Migrations
                 {
                     b.HasOne("YBS.Data.Models.Account", "Account")
                         .WithOne("Company")
-                        .HasForeignKey("YBS.Data.Models.Company", "AccountID")
+                        .HasForeignKey("YBS.Data.Models.Company", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -280,17 +329,26 @@ namespace YBS.Data.Migrations
                 {
                     b.HasOne("YBS.Data.Models.Account", "Account")
                         .WithOne("Member")
-                        .HasForeignKey("YBS.Data.Models.Member", "AccountID")
+                        .HasForeignKey("YBS.Data.Models.Member", "AccountId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.HasOne("YBS.Data.Models.MembershipPackage", "MembershipPackage")
                         .WithMany("Members")
-                        .HasForeignKey("MembershipPackageID");
+                        .HasForeignKey("MembershipPackageId");
 
                     b.Navigation("Account");
 
                     b.Navigation("MembershipPackage");
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.UpdateRequest", b =>
+                {
+                    b.HasOne("YBS.Data.Models.Company", "Company")
+                        .WithMany("UpdateRequests")
+                        .HasForeignKey("CompanyId");
+
+                    b.Navigation("Company");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.Account", b =>
@@ -300,6 +358,11 @@ namespace YBS.Data.Migrations
 
                     b.Navigation("Member")
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("YBS.Data.Models.Company", b =>
+                {
+                    b.Navigation("UpdateRequests");
                 });
 
             modelBuilder.Entity("YBS.Data.Models.MembershipPackage", b =>
