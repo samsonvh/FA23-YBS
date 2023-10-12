@@ -32,6 +32,10 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Dock, DockListingDto>();
             CreateMap<Dock, DockDto>();
             CreateMap<DockInputDto, Dock>();
+
+            //yacht
+            CreateMap<Yacht, YachtListingDto>();
+            CreateMap<Yacht, YachtDto>();
         }
     }
 }
