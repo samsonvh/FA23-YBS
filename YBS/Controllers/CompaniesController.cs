@@ -19,13 +19,13 @@ namespace YBS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Get([FromQuery] CompanyPageRequest request)
+        public async Task<IActionResult> GetAllCompany([FromQuery] CompanyPageRequest request)
         {
             return Ok(await _companyService.GetCompanyList(request));
         }
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetCompanyDetail([FromRoute] int id)
+        public async Task<IActionResult> GetDetailCompany([FromRoute] int id)
         {
             var company = await _companyService.GetById(id);
             if (company != null)
@@ -43,7 +43,7 @@ namespace YBS.Controllers
             var company = await _companyService.Create(companyInputDto);
             if (company != null)
             {
-                return CreatedAtAction(nameof(GetCompanyDetail), new { id = company.Id }, "Create Company successful");
+                return CreatedAtAction(nameof(GetDetailCompany), new { id = company.Id }, "Create Company successful");
 
             }
             return BadRequest("Failed to create company");
