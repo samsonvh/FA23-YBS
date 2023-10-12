@@ -19,6 +19,10 @@ namespace YBS.Service.Utils.AutoMapper
 
             //yachType
             CreateMap<YachtType, YachtTypeListingDto> ();
+
+            //route
+            CreateMap<Route, RouteListingDto>();
+            CreateMap<Route, RouteDto>();
         }
     }
 }
