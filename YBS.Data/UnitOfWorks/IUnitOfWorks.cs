@@ -13,6 +13,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositories<Role> RoleRepository { get; }
         IGenericRepositories<RefreshToken> RefreshTokenRepository { get; }
         IGenericRepositories<Dock> DockRepository { get; }
+        IGenericRepositories<Yacht> YachRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

@@ -20,6 +20,8 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositories<Role> _roleRepository;
         private readonly IGenericRepositories<RefreshToken> _refreshTokenRepository;
         private readonly IGenericRepositories<Dock> _dockRepository;
+        private readonly IGenericRepositories<Yacht> _yachtRepository;
+
         public UnitOfWorks(YBSContext context)
         {
             _context = context;
@@ -112,6 +114,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _dockRepository;
                 }
                 return new GenericRepositories<Dock>(_context);
+            }
+        }
+
+        public IGenericRepositories<Yacht> YachRepository
+        {
+            get
+            {
+                if (_yachtRepository is not null)
+                {
+                    return _yachtRepository;
+                }
+                return new GenericRepositories<Yacht>(_context);
             }
         }
 
