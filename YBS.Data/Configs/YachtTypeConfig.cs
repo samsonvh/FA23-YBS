@@ -14,6 +14,7 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("YachtType");
             builder.HasKey(yachtType => yachtType.Id);
+            builder.Property(yachtType => yachtType.Id).ValueGeneratedOnAdd();
             builder.Property(yachtType => yachtType.Name).HasColumnType("varchar(50)");
             builder.Property(yachtType => yachtType.Description).HasColumnType("varchar(255)").IsRequired(false);
         }

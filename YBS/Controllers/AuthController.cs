@@ -18,14 +18,14 @@ namespace YBS.Controllers
             _authService = authService;
         }
         [HttpPost]
-        public async Task<IActionResult> Authentication([FromBody]string idToken)
+        public async Task<IActionResult> Authentication([FromBody] string idToken)
         {
             var result = await _authService.Authentication(idToken);
             return Ok(result);
         }
-        
-        [HttpPost("refresh")]
-        public async Task<IActionResult> RefreshToken([FromBody]string refreshToken)
+
+        [HttpPost("Refresh-Token")]
+        public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         {
             var result = await _authService.RefreshToken(refreshToken);
             return Ok(result);

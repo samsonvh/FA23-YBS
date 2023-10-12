@@ -13,7 +13,7 @@ namespace YBS.Data.Models
         public int EffectiveDuration { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
-        public EnumMembershipPackageStatus MyProperty { get; set; }
+        public EnumMembershipPackageStatus Status { get; set; }
         public ICollection<Member> Members { get; set; }
     }
 }
