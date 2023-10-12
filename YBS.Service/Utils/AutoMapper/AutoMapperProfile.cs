@@ -3,6 +3,7 @@ using YBS.Data.Models;
 using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
+using YBS.Services.Dtos;
 
 namespace YBS.Service.Utils.AutoMapper
 {
@@ -23,6 +24,13 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
             CreateMap<MembershipPackage, MembershipPackageDto>();
             CreateMap<MembershipPackage, MembershipPackageListingDto>();
+
+             //yacht
+            CreateMap<Yacht, YachtListingDto>();
+            CreateMap<Yacht, YachtDto>();
+
+            //yachType
+            CreateMap<YachtType, YachtTypeListingDto> ();
         }
     }
 }

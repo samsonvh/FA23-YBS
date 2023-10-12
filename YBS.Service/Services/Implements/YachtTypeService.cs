@@ -10,36 +10,33 @@ using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
 using YBS.Service.Utils;
-using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Service.Services.Implements
 {
-    public class AccountService : IAccountService
+    public class YachtTypeService : IYachtTypeService
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public AccountService(IUnitOfWork unitOfWork, IMapper mapper)
+        public YachtTypeService(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        public async Task<DefaultPageResponse<AccountListingDto>> GetAllAccounts(AccountPageRequest pageRequest)
+        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest)
         {
-            var query = _unitOfWork.AccountRepository
-                .Find(account => (string.IsNullOrWhiteSpace(pageRequest.Username) || account.Username.Contains(pageRequest.Username)) &&
-                                (string.IsNullOrWhiteSpace(pageRequest.Email) || account.Email.Contains(pageRequest.Email)) &&
-                                (string.IsNullOrWhiteSpace(pageRequest.Role) || account.Role.Name == pageRequest.Role) &&
-                                (!pageRequest.Status.HasValue || account.Status == pageRequest.Status.Value))
-                .Include(account => account.Role);
+            var query = _unitOfWork.YachTypeRepository
+                .Find(yachtType =>
+                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yachtType.Name.Contains(pageRequest.Name)) &&
+                       (!pageRequest.Status.HasValue || yachtType.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(account => account.Id);
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(yachtType => yachtType.Id);
             var totalItem = data.Count();
             var pageCount = totalItem / (int)pageRequest.PageSize + 1;
             var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
-            var resultList = _mapper.Map<List<AccountListingDto>>(dataPaging);
-            var result = new DefaultPageResponse<AccountListingDto>()
+            var resultList = _mapper.Map<List<YachtTypeListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<YachtTypeListingDto>()
             {
                 Data = resultList,
                 PageCount = pageCount,

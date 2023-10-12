@@ -19,9 +19,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<YBSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("YBSContext")));
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<IYachtService, YachtService>();
+builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
+
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -75,7 +79,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
 builder.Services.AddHttpContextAccessor();
@@ -95,7 +99,6 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
-
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
 app.Run();

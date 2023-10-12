@@ -20,9 +20,9 @@ namespace YBS.Service.Services.Implements
 {
     public class MembershipPackageService : IMembershipPackageService
     {
-        private readonly IUnitOfWorks _unitOfWorks;
+        private readonly IUnitOfWork _unitOfWorks;
         private readonly IMapper _mapper;
-        public MembershipPackageService(IUnitOfWorks unitOfWorks, IMapper mapper)
+        public MembershipPackageService(IUnitOfWork unitOfWorks, IMapper mapper)
         {
             _unitOfWorks = unitOfWorks;
             _mapper = mapper;
