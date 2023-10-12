@@ -24,18 +24,12 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(company => company.Id, options => options.Ignore())
                 .ForMember(company => company.AccountId, options => options.Ignore());
 
-            //updateRequest
-            CreateMap<UpdateRequestInputDto, UpdateRequest>();
-            CreateMap<UpdateRequest, UpdateRequestDto>();
-
-            //dock
-            CreateMap<Dock, DockListingDto>();
-            CreateMap<Dock, DockDto>();
-            CreateMap<DockInputDto, Dock>();
-
             //yacht
             CreateMap<Yacht, YachtListingDto>();
             CreateMap<Yacht, YachtDto>();
+
+            //yachType
+            CreateMap<YachtType, YachtTypeListingDto> ();
         }
     }
 }

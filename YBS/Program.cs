@@ -11,7 +11,6 @@ using YBS.Middlewares;
 using YBS.Service.Services;
 using YBS.Service.Services.Implements;
 using YBS.Service.Utils.AutoMapper;
-using YBS.Services.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,12 +18,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<YBSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("YBSContext")));
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
-builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<ICompanyService, CompanyService>();
-builder.Services.AddScoped<IUpdateRequestService, UpdateRequestService>();
-builder.Services.AddScoped<IDockService, DockService>();
 builder.Services.AddScoped<IYachtService, YachtService>();
+builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
@@ -77,7 +76,7 @@ builder.Services.AddSwaggerGen(options =>
 });
 
 builder.Services.AddScoped<IAuthService, AuthService>();
-builder.Services.AddScoped<IUnitOfWorks, UnitOfWorks>();
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 

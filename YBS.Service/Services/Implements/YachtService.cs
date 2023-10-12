@@ -16,10 +16,10 @@ namespace YBS.Service.Services.Implements
 {
     public class YachtService : IYachtService
     {
-        private readonly IUnitOfWorks _unitOfWorks;
+        private readonly IUnitOfWork _unitOfWorks;
         private readonly IMapper _mapper;
 
-        public YachtService(IUnitOfWorks unitOfWorks, IMapper mapper)
+        public YachtService(IUnitOfWork unitOfWorks, IMapper mapper)
         {
             _unitOfWorks = unitOfWorks;
             _mapper = mapper;

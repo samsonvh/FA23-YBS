@@ -1,30 +1,77 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Context;
 using YBS.Data.Models;
-using YBS.Data.Repositories.Implements;
 using YBS.Data.Repositories;
+using YBS.Data.Repositories.Implements;
 
 namespace YBS.Data.UnitOfWorks.Implements
 {
     public class UnitOfWork : IUnitOfWork
     {
         private readonly YBSContext _context;
-
-        private readonly IGenericRepository<Role> _roleRepository;
-        private readonly IGenericRepository<Account> _accountRepository;
-        private readonly IGenericRepository<Company> _companyRepository;
-        private readonly IGenericRepository<Member> _memberRepository;
+        private readonly IGenericRepositoty<Account> _accountRepository;
+        private readonly IGenericRepositoty<Company> _companyRepository;
+        private readonly IGenericRepositoty<UpdateRequest> _updateRequestRepository;
+        private readonly IGenericRepositoty<Member> _memberRepository;
+        private readonly IGenericRepositoty<MembershipPackage> _membershipPackageRepository;
+        private readonly IGenericRepositoty<Role> _roleRepository;
+        private readonly IGenericRepositoty<RefreshToken> _refreshTokenRepository;
+        private readonly IGenericRepositoty<Dock> _dockRepository;
+        private readonly IGenericRepositoty<Yacht> _yachtRepository;
+        private readonly IGenericRepositoty<YachtType> _yachtTypeRepository;
 
         public UnitOfWork(YBSContext context)
         {
             _context = context;
         }
-
-        public IGenericRepository<Role> RoleRepository
+        public IGenericRepositoty<Account> AccountRepository
+        {
+            get
+            {
+                if (_accountRepository is not null)
+                {
+                    return _accountRepository;
+                }
+                return new GenericRepository<Account>(_context);
+            }
+        }
+        public IGenericRepositoty<Company> CompanyRepository
+        {
+            get
+            {
+                if (_companyRepository is not null)
+                {
+                    return _companyRepository;
+                }
+                return new GenericRepository<Company>(_context);
+            }
+        }
+        public IGenericRepositoty<Member> MemberRepository
+        {
+            get
+            {
+                if (_memberRepository is not null)
+                {
+                    return _memberRepository;
+                }
+                return new GenericRepository<Member>(_context);
+            }
+        }
+        public IGenericRepositoty<MembershipPackage> MembershipPackageRepository
+        {
+            get
+            {
+                if (_membershipPackageRepository is not null)
+                {
+                    return _membershipPackageRepository;
+                }
+                return new GenericRepository<MembershipPackage>(_context);
+            }
+        }
+        public IGenericRepositoty<Role> RoleRepository
         {
             get
             {
@@ -36,43 +83,66 @@ namespace YBS.Data.UnitOfWorks.Implements
             }
         }
 
-        public IGenericRepository<Account> AccountRepository
+        public IGenericRepositoty<UpdateRequest> UpdateRequestRepository
         {
             get
             {
-                if (_accountRepository is not null)
+                if (_updateRequestRepository is not null)
                 {
-                    return _accountRepository;
+                    return _updateRequestRepository;
                 }
-                return new GenericRepository<Account>(_context);
+                return new GenericRepository<UpdateRequest>(_context);
             }
         }
-
-        public IGenericRepository<Company> CompanyRepository
+        public IGenericRepositoty<RefreshToken> RefreshTokenRepository 
         {
             get
             {
-                if (_companyRepository is not null)
+                if (_refreshTokenRepository is not null)
                 {
-                    return _companyRepository;
+                    return _refreshTokenRepository;
                 }
-                return new GenericRepository<Company>(_context);
+                return new GenericRepository<RefreshToken>(_context);
             }
         }
 
-        public IGenericRepository<Member> MemberRepository
+        public IGenericRepositoty<Dock> DockRepository
         {
             get
             {
-                if (_memberRepository is not null)
+                if(_dockRepository is not null)
                 {
-                    return _memberRepository;
+                    return _dockRepository;
                 }
-                return new GenericRepository<Member>(_context);
+                return new GenericRepository<Dock>(_context);
             }
         }
 
-        public Task<int> Commit()
+        public IGenericRepositoty<Yacht> YachRepository
+        {
+            get
+            {
+                if (_yachtRepository is not null)
+                {
+                    return _yachtRepository;
+                }
+                return new GenericRepository<Yacht>(_context);
+            }
+        }
+
+        public IGenericRepositoty<YachtType> YachTypeRepository
+        {
+            get
+            {
+                if (_yachtTypeRepository is not null)
+                {
+                    return _yachtTypeRepository;
+                }
+                return new GenericRepository<YachtType>(_context);
+            }
+        }
+
+        public Task<int> SaveChangesAsync()
         {
             return _context.SaveChangesAsync();
         }
