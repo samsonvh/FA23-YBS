@@ -96,6 +96,4 @@ app.UseAuthorization();
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 
-app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-
 app.Run();

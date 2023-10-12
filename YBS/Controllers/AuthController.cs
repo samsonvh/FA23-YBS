@@ -24,7 +24,7 @@ namespace YBS.Controllers
             return Ok(result);
         }
 
-        [HttpPost("Refresh-Token")]
+        [HttpPost("refresh-token")]
         public async Task<IActionResult> RefreshToken([FromBody] string refreshToken)
         {
             var result = await _authService.RefreshToken(refreshToken);

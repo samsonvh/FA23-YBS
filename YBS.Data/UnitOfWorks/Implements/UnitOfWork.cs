@@ -13,13 +13,10 @@ namespace YBS.Data.UnitOfWorks.Implements
     {
         private readonly YBSContext _context;
         private readonly IGenericRepositoty<Account> _accountRepository;
-        private readonly IGenericRepositoty<Company> _companyRepository;
-        private readonly IGenericRepositoty<UpdateRequest> _updateRequestRepository;
         private readonly IGenericRepositoty<Member> _memberRepository;
         private readonly IGenericRepositoty<MembershipPackage> _membershipPackageRepository;
         private readonly IGenericRepositoty<Role> _roleRepository;
         private readonly IGenericRepositoty<RefreshToken> _refreshTokenRepository;
-        private readonly IGenericRepositoty<Dock> _dockRepository;
         private readonly IGenericRepositoty<Yacht> _yachtRepository;
         private readonly IGenericRepositoty<YachtType> _yachtTypeRepository;
 
@@ -36,17 +33,6 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _accountRepository;
                 }
                 return new GenericRepository<Account>(_context);
-            }
-        }
-        public IGenericRepositoty<Company> CompanyRepository
-        {
-            get
-            {
-                if (_companyRepository is not null)
-                {
-                    return _companyRepository;
-                }
-                return new GenericRepository<Company>(_context);
             }
         }
         public IGenericRepositoty<Member> MemberRepository
@@ -83,17 +69,6 @@ namespace YBS.Data.UnitOfWorks.Implements
             }
         }
 
-        public IGenericRepositoty<UpdateRequest> UpdateRequestRepository
-        {
-            get
-            {
-                if (_updateRequestRepository is not null)
-                {
-                    return _updateRequestRepository;
-                }
-                return new GenericRepository<UpdateRequest>(_context);
-            }
-        }
         public IGenericRepositoty<RefreshToken> RefreshTokenRepository 
         {
             get
@@ -103,18 +78,6 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _refreshTokenRepository;
                 }
                 return new GenericRepository<RefreshToken>(_context);
-            }
-        }
-
-        public IGenericRepositoty<Dock> DockRepository
-        {
-            get
-            {
-                if(_dockRepository is not null)
-                {
-                    return _dockRepository;
-                }
-                return new GenericRepository<Dock>(_context);
             }
         }
 
