@@ -1,20 +1,17 @@
-﻿using Microsoft.IdentityModel.Protocols;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YBS.Data.Models;
 using YBS.Data.Repositories;
 
 namespace YBS.Data.UnitOfWorks
 {
-    public interface IUnitOfWork : IDisposable
+    public interface IUnitOfWork
     {
-        IGenericRepository<Account> AccountRepository { get; }
-        IGenericRepository<Company> CompanyRepository { get; }
-        IGenericRepository<Member> MemberRepository { get; }
-        IGenericRepository<Role> RoleRepository { get; }
-        Task<int> Commit();
+        IGenericRepositoty<Account> AccountRepository { get; }
+        IGenericRepositoty<Member> MemberRepository { get; }
+        IGenericRepositoty<MembershipPackage> MembershipPackageRepository { get; }
+        IGenericRepositoty<Role> RoleRepository { get; }
+        IGenericRepositoty<RefreshToken> RefreshTokenRepository { get; }
+        IGenericRepositoty<Yacht> YachRepository { get; }
+        IGenericRepositoty<YachtType> YachTypeRepository { get; }
+        Task<int> SaveChangesAsync();
     }
 }

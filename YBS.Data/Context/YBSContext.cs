@@ -10,6 +10,7 @@ namespace YBS.Data.Context
         }
         public DbSet<Account> Accounts { get; set; }
         public DbSet<Company> Companies { get; set; }
+        public DbSet<UpdateRequest> UpdateRequests { get; set; }
         public DbSet<Member> Members { get; set; }
         public DbSet<MembershipPackage> MembershipPackages { get; set; }
         public DbSet<Role> Roles { get; set; }

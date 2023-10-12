@@ -2,7 +2,7 @@ using System.Linq.Expressions;
 
 namespace YBS.Data.Repositories
 {
-    public interface IGenericRepositories<T> where T : class
+    public interface IGenericRepositoty<T> where T : class
     {
         #region CRUD Database
         void Add(T entity);

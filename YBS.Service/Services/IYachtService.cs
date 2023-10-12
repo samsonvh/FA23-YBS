@@ -3,14 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using YBS.Service.Dtos;
 using YBS.Service.Dtos.ListingDtos;
+using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
-using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Service.Services
 {
-    public interface IAccountService
+    public interface IYachtService
     {
-        Task<DefaultPageResponse<AccountListingDto>> GetAllAccounts(AccountPageRequest pageRequest);
+        Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest);
+        Task<YachtDto> GetDetailYacht(int id);
     }
 }

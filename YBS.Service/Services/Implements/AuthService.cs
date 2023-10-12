@@ -22,10 +22,10 @@ namespace YBS.Service.Services.Implements
 {
     public class AuthService : IAuthService
     {
-        private readonly IUnitOfWorks _unitOfWorks;
+        private readonly IUnitOfWork _unitOfWorks;
         private readonly IConfiguration _configuration;
         private readonly IHttpContextAccessor _httpContextAccessor;
-        public AuthService(IUnitOfWorks unitOfWorks, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
+        public AuthService(IUnitOfWork unitOfWorks, IConfiguration configuration, IHttpContextAccessor httpContextAccessor)
         {
             _unitOfWorks = unitOfWorks;
             _configuration = configuration;
@@ -195,7 +195,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new Exception("Failed to decrypt/validate the JWT token.", ex);
             }
-        }
+         }
         private string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];

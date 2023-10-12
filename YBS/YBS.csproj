@@ -18,9 +18,5 @@
     <ProjectReference Include="..\YBS.Data\YBS.Data.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Middleware\" />
-  </ItemGroup>
-
 
 </Project>
