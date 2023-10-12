@@ -8,7 +8,6 @@ using YBS.Services.Dtos.InputDtos;
 
 namespace YBS.Controllers
 {
-    [RoleAuthorization(nameof(EnumRole.ADMIN))]
     [Route("api/companies")]
     [ApiController]
     public class CompaniesController : ControllerBase
@@ -37,6 +36,7 @@ namespace YBS.Controllers
             return NotFound("Company not found");
         }
 
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CompanyInputDto companyInputDto)
         {
@@ -49,6 +49,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to create company");
         }
 
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPatch("{id}")]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)
         {
