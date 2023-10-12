@@ -17,10 +17,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddDbContext<YBSContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("YBSContext")));
+
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
-builder.Services.AddScoped<ICompanyService, CompanyService>();
 builder.Services.AddScoped<IYachtService, YachtService>();
 builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
 
