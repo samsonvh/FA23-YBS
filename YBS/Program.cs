@@ -23,6 +23,8 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
 builder.Services.AddScoped<IYachtService, YachtService>();
 builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
+builder.Services.AddScoped<IRouteService, RouteService>();
+
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle

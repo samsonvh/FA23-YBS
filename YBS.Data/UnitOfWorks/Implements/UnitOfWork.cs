@@ -19,6 +19,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<RefreshToken> _refreshTokenRepository;
         private readonly IGenericRepositoty<Yacht> _yachtRepository;
         private readonly IGenericRepositoty<YachtType> _yachtTypeRepository;
+        private readonly IGenericRepositoty<Route> _routeRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -102,6 +103,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _yachtTypeRepository;
                 }
                 return new GenericRepository<YachtType>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Route> RouteRepository
+        {
+            get
+            {
+                if (_routeRepository is not null)
+                {
+                    return _routeRepository;
+                }
+                return new GenericRepository<Route>(_context);
             }
         }
 
