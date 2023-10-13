@@ -21,6 +21,10 @@ namespace YBS.Data.Configs
             builder.Property(company => company.LinkedInURL).HasColumnType("varchar(255)").IsRequired(false);
             builder.Property(company => company.ContractStartDate).HasColumnType("datetime");
             builder.Property(company => company.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
+
+            builder.HasMany(company => company.Routes)
+               .WithOne(route => route.Company)
+               .HasForeignKey(route => route.CompanyId);
         }
     }
 }
