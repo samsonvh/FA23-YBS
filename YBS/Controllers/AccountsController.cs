@@ -15,7 +15,7 @@ namespace YBS.Controllers
         private readonly IAccountService _accountService;
         public AccountsController(IAccountService accountService)
         {
-            _accountService = accountService;            
+            _accountService = accountService;
         }
 
         [HttpGet]

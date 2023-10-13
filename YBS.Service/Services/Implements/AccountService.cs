@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos.ListingDtos;
+using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
 using YBS.Service.Utils;
 using YBS.Services.Dtos.PageRequests;
