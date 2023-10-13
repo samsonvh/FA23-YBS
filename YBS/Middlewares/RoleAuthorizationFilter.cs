@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc.Filters;
 using YBS.Service.Exceptions;
 using YBS.Service.Services;
 
-namespace YBS.Authorization
+namespace YBS.Middlewares
 {
     public class RoleAuthorizationFilter : IAuthorizationFilter
     {

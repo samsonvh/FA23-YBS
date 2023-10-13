@@ -29,9 +29,9 @@ namespace YBS.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_DETAIL)]
-        public async Task<IActionResult> GetDetailMembershipPackage(int Id)
+        public async Task<IActionResult> GetDetailMembershipPackage(int id)
         {
-            var result = await _membershipPackageService.GetDetailMembershipPackage(Id);
+            var result = await _membershipPackageService.GetDetailMembershipPackage(id);
             return Ok(result);
         }
     }

@@ -54,9 +54,9 @@ namespace YBS.Service.Services.Implements
             return result;
         }
 
-        public async Task<MembershipPackageDto> GetDetailMembershipPackage(int Id)
+        public async Task<MembershipPackageDto> GetDetailMembershipPackage(int id)
         {
-            var membershipPackage = await _unitOfWorks.MembershipPackageRepository.GetByID(Id);
+            var membershipPackage = await _unitOfWorks.MembershipPackageRepository.GetByID(id);
             if (membershipPackage == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");

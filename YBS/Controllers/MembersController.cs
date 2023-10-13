@@ -27,9 +27,9 @@ namespace FA23_YBS_BACKEND.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBER_DETAIL)]
-        public async Task<IActionResult> GetDetailMember(int Id)
+        public async Task<IActionResult> GetDetailMember(int id)
         {
-            var result = await _memberService.GetDetailMember(Id);
+            var result = await _memberService.GetDetailMember(id);
             return Ok(result);
         }
     }

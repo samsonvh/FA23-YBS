@@ -9,6 +9,6 @@ namespace YBS.Service.Services
     public interface IMembershipPackageService
     {
         Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest);
-        Task<MembershipPackageDto> GetDetailMembershipPackage(int Id);
+        Task<MembershipPackageDto> GetDetailMembershipPackage(int id);
     }
 }
