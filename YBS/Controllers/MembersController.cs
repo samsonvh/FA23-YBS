@@ -2,6 +2,7 @@ using System.Xml.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS;
+using YBS.Data.Models;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Services.Services;

@@ -9,6 +9,8 @@ namespace YBS
     {
         //Default Route
         public const string DEFAULT_ROUTE = "api/[controller]";
+        //Account
+        public const string ACCOUNT_GET_ALL = DEFAULT_ROUTE;
         //Authentication
         public const string GOOGLE_LOGIN = "api/[controller]" + "/google-login";
         public const string REFRESH_TOKEN = "api/[controller]" + "/refresh-token";

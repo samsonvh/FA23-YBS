@@ -13,6 +13,5 @@ namespace YBS.Service.Dtos.ListingDtos
         public float Price { get; set; }
         public string Unit { get; set; }
         public float Point { get; set; }
-        public int EffectiveDuration { get; set; }
     }
 }
