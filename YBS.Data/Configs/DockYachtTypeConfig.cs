@@ -15,8 +15,6 @@ namespace YBS.Data.Configs
             builder.ToTable("DockYachtType");
             builder.HasKey(dockyachtType => dockyachtType.Id);
             builder.Property(dockyachtType => dockyachtType.Id).ValueGeneratedOnAdd();
-            builder.HasOne(dockYachtType => dockYachtType.Dock).WithMany(dock => dock.DockYachtTypes).HasForeignKey(dockYachtType => dockYachtType.DockId);
-            builder.HasOne(dockYachtType => dockYachtType.YachtType).WithMany(yachtType => yachtType.DockYachtTypes).HasForeignKey(dockYachtType => dockYachtType.YachtTypeId);
         }
     }
 }

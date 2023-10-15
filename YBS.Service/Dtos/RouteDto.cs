@@ -14,12 +14,14 @@ namespace YBS.Service.Dtos
         public string Name { get; set; }
         public string Beginning { get; set; }
         public string Destination { get; set; }
-        public TimeSpan PickupTime { get; set; }
-        public TimeSpan StartingTime { get; set; }
-        public TimeSpan EndingTime { get; set; }
-        public int DurationTime { get; set; }
+        public DateTime ExpectedPickupTime { get; set; }
+        public DateTime ExpectedStartingTime { get; set; }
+        public DateTime ExpectedEndingTime { get; set; }
+        public int ExpectedDurationTime { get; set; }
         public string DurationUnit { get; set; }
+        public float Price { get; set; }
+        public string MoneyUnit { get; set; }
         public string Type { get; set; }
-        public string Status { get; set; }
+        public EnumRouteStatus Status { get; set; }
     }
 }

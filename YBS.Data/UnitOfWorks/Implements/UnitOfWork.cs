@@ -20,6 +20,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<Yacht> _yachtRepository;
         private readonly IGenericRepositoty<YachtType> _yachtTypeRepository;
         private readonly IGenericRepositoty<Route> _routeRepository;
+        private readonly IGenericRepositoty<Company> _companyRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -115,6 +116,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _routeRepository;
                 }
                 return new GenericRepository<Route>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Company> CompanyRepository
+        {
+            get
+            {
+                if (_companyRepository is not null)
+                {
+                    return _companyRepository;
+                }
+                return new GenericRepository<Company>(_context);
             }
         }
 

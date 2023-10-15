@@ -24,11 +24,6 @@ namespace YBS.Data.Configs
             builder.Property(updateRequest => updateRequest.FacebookURL).HasColumnType("varchar(255)").IsRequired(false);
             builder.Property(updateRequest => updateRequest.InstagramURL).HasColumnType("varchar(255)").IsRequired(false);
             builder.Property(updateRequest => updateRequest.LinkedInURL).HasColumnType("varchar(255)").IsRequired(false);
-
-            builder.HasOne(updateRequest => updateRequest.Company)
-                .WithMany(company => company.UpdateRequests)
-                .HasForeignKey(updateRequest => updateRequest.CompanyId)
-                .IsRequired(false);
         }
     }
 }

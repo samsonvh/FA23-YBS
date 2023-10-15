@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Service.Dtos;
+using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
@@ -15,5 +16,7 @@ namespace YBS.Service.Services
     {
         Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest);
         Task<RouteDto> GetDetailRoute(int id);
+        Task Create (RouteInputDto pageRequest);
+        Task Update (RouteInputDto pageRequest);
     }
 }
