@@ -16,6 +16,7 @@ namespace YBS.Data.Configs
             builder.Property(membershipPackage => membershipPackage.Unit).HasColumnType("varchar(10)");
             builder.Property(membershipPackage => membershipPackage.Description).HasColumnType("nvarchar(255)").IsRequired(false);
             builder.Property(membershipPackage => membershipPackage.Point).HasColumnType("float");
+            builder.Property(membershipPackage => membershipPackage.TimeUnit).HasColumnType("nvarchar(10)");
             builder.Property(membershipPackage => membershipPackage.CreationDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
             builder.Property(membershipPackage => membershipPackage.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
         }

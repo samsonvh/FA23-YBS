@@ -98,10 +98,6 @@ namespace YBS.Service.Services.Implements
             {
                 route.ExpectedDurationTime = (int)pageRequest.ExpectedDurationTime;
             }
-            if (pageRequest.Price > 0)
-            {
-                route.Price = (float)pageRequest.Price;
-            }
             if (pageRequest.ExpectedPickupTime > pageRequest.ExpectedStartingTime)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest,"Expected Pickup Time must be beofre Expected Starting Time");
@@ -122,8 +118,6 @@ namespace YBS.Service.Services.Implements
             route.ExpectedEndingTime = (DateTime)pageRequest.ExpectedEndingTime;
             route.ExpectedDurationTime = (int)pageRequest.ExpectedDurationTime;
             route.DurationUnit = pageRequest.DurationUnit;
-            route.Price = (float)pageRequest.Price;
-            route.MoneyUnit = pageRequest.MoneyUnit;
             route.Type = pageRequest.Type;
             if (pageRequest.Status != null)
             {

@@ -11,8 +11,10 @@ namespace YBS.Service.Utils.AutoMapper
     {
         public AutoMapperProfile()
         {
+            //account
             CreateMap<Account, AccountListingDto>()
                 .ForMember(account => account.Role, option => option.MapFrom(account => account.Role.Name));
+            //member
             CreateMap<MemberInputDto, Account>();
             CreateMap<MemberInputDto, Member>();
             CreateMap<Member, MemberDto>()
@@ -21,6 +23,7 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberListingDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));
+            //membership package
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
             CreateMap<MembershipPackage, MembershipPackageDto>();
             CreateMap<MembershipPackage, MembershipPackageListingDto>();

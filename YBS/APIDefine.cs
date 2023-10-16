@@ -18,13 +18,13 @@ namespace YBS
         //Member
         public const string MEMBER_CREATE = DEFAULT_ROUTE;
         public const string MEMBER_DETAIL = DEFAULT_ROUTE + "/{id}";
-        public const string MEMBER_UPDATE = DEFAULT_ROUTE;
+        public const string MEMBER_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_GET_ALL = DEFAULT_ROUTE;
         //Membership Package
         public const string MEMBERSHIP_PACKAGE = "membership-packages";
         public const string MEMBERSHIP_PACKAGE_CREATE = MEMBERSHIP_PACKAGE;
         public const string MEMBERSHIP_PACKAGE_DETAIL = MEMBERSHIP_PACKAGE + "/{id}";
-        public const string MEMBERSHIP_PACKAGE_UPDATE = MEMBERSHIP_PACKAGE;
+        public const string MEMBERSHIP_PACKAGE_UPDATE = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_GET_ALL = MEMBERSHIP_PACKAGE;
     }
 }

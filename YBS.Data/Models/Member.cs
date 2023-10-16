@@ -13,7 +13,8 @@ namespace YBS.Data.Models
         [ForeignKey("MembershipPackageId")]
         public MembershipPackage? MembershipPackage { get; set; }
         public string FullName { get; set; }
-        public DateTime DOB { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string PhoneNumber { get; set; }
         public string Nationality { get; set; }
         public EnumGender Gender { get; set; }
         public string AvatarURL { get; set; }

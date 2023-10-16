@@ -19,8 +19,6 @@ namespace YBS.Service.Dtos
         public DateTime ExpectedEndingTime { get; set; }
         public int ExpectedDurationTime { get; set; }
         public string DurationUnit { get; set; }
-        public float Price { get; set; }
-        public string MoneyUnit { get; set; }
         public string Type { get; set; }
         public EnumRouteStatus Status { get; set; }
     }

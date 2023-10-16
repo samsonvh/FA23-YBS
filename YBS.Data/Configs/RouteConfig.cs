@@ -25,8 +25,6 @@ namespace YBS.Data.Configs
             builder.Property(route => route.ExpectedEndingTime).HasColumnType("datetime").IsRequired();
             builder.Property(route => route.ExpectedDurationTime).HasColumnType("int").IsRequired();
             builder.Property(route => route.DurationUnit).HasColumnType("varchar").HasMaxLength(10).IsRequired();
-            builder.Property(route => route.Price).HasColumnType("float").IsRequired();
-            builder.Property(route => route.MoneyUnit).HasColumnType("varchar(10)").IsRequired();
             builder.Property(route => route.Type).HasColumnType("varchar").HasMaxLength(15).IsRequired();
             builder.Property(route => route.Status).IsRequired();
         }
