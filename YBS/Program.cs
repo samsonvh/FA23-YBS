@@ -14,6 +14,8 @@ using YBS.Service.Utils.AutoMapper;
 using YBS.Services.Services;
 using YBS.Services.Services.Implements;
 
+var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -80,6 +82,14 @@ builder.Services.AddSwaggerGen(options =>
     });
 });
 
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy(MyAllowSpecificOrigins, builder =>
+    {
+        builder.AllowAnyMethod().AllowAnyHeader().AllowAnyOrigin();
+    });
+});
+
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
@@ -102,5 +112,6 @@ app.UseAuthorization();
 
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
