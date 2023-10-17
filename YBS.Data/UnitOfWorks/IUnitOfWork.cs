@@ -13,6 +13,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Yacht> YachRepository { get; }
         IGenericRepositoty<YachtType> YachTypeRepository { get; }
         IGenericRepositoty<Route> RouteRepository { get; }
+        IGenericRepositoty<Company> CompanyRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

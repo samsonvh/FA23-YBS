@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using YBS.Data.Enums;
 
 namespace YBS.Data.Models
@@ -6,6 +7,7 @@ namespace YBS.Data.Models
     {
         public int Id { get; set; }
         public int AccountId { get; set; }
+        [ForeignKey("AccountId")]
         public Account Account { get; set; }
         public string Name { get; set; }
         public string Address { get; set; }
@@ -20,6 +22,7 @@ namespace YBS.Data.Models
         public ICollection<UpdateRequest> UpdateRequests { get; set; } = new List<UpdateRequest>();
         public ICollection<Route> Routes { get; set; } = new List<Route>();
         public ICollection<Dock> Docks { get; set; }
+        public ICollection<Yacht> Yachts { get; set; }
 
     }
 }

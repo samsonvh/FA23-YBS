@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
 
@@ -26,6 +27,18 @@ namespace YBS.Controllers
         public async Task<IActionResult> GetDetailYacht(int id)
         {
             return Ok(await _yachtService.GetDetailYacht(id));
+        }
+        [HttpPost]
+        public async Task<IActionResult> Create([FromBody] YachtInputDto pageRequest)
+        {
+            await _yachtService.Create(pageRequest);
+            return Ok("Create Company Successfully");
+        }
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] YachtInputDto pageRequest)
+        {
+            await _yachtService.Update(pageRequest);
+            return Ok("Update Company Successfully");
         }
     }
 }
