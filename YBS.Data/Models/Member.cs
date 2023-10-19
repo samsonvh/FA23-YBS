@@ -1,3 +1,4 @@
+using System.ComponentModel.DataAnnotations.Schema;
 using YBS.Data.Enums;
 
 namespace YBS.Data.Models
@@ -6,14 +7,17 @@ namespace YBS.Data.Models
     {
         public int Id { get; set; }
         public int AccountId { get; set; }
+        [ForeignKey("AccountId")]
         public Account Account { get; set; }
-        public int MembershipPackageId { get; set; }
-        public MembershipPackage MembershipPackage { get; set; }
+        public int? MembershipPackageId { get; set; }
+        [ForeignKey("MembershipPackageId")]
+        public MembershipPackage? MembershipPackage { get; set; }
         public string FullName { get; set; }
-        public DateTime DOB { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string PhoneNumber { get; set; }
         public string Nationality { get; set; }
         public EnumGender Gender { get; set; }
-        public string Avatar { get; set; }
+        public string AvatarURL { get; set; }
         public string Address { get; set; }
         public string IdentityNumber { get; set; }
         public DateTime MembershipStartDate { get; set; }

@@ -6,14 +6,16 @@ using System.Threading.Tasks;
 
 namespace YBS.Data.Models
 {
-    public class DockYachtType
+    public class PriceMapper
     {
         public int Id { get; set; }
-        public int DockId { get; set; }
-        [ForeignKey("DockId")]
-        public Dock Dock { get; set; }
+        public int RouteId { get; set; }
+        [ForeignKey("RouteId")]
+        public Route Route { get; set; }
         public int YachtTypeId { get; set; }
         [ForeignKey("YachtTypeId")]
         public YachtType YachtType { get; set; }
+        public float Price { get; set; }
+        public string MoneyUnit { get; set; }
     }
 }

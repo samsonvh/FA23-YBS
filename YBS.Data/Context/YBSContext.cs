@@ -20,6 +20,7 @@ namespace YBS.Data.Context
         public DbSet<DockYachtType> DockYachtTypes { get; set; }
         public DbSet<YachtType> YachtTypes { get; set; }
         public DbSet<Route> Routes { get; set; }
+        public DbSet<PriceMapper> PriceMappers { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);

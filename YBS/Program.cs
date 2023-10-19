@@ -11,6 +11,8 @@ using YBS.Middlewares;
 using YBS.Service.Services;
 using YBS.Service.Services.Implements;
 using YBS.Service.Utils.AutoMapper;
+using YBS.Services.Services;
+using YBS.Services.Services.Implements;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -30,6 +32,7 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 
 
 builder.Services.AddControllers();
+builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 
 //Add Authentication
@@ -90,6 +93,8 @@ builder.Services.AddCors(options =>
 
 builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+builder.Services.AddScoped<IMemberService, MemberService>();
+builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 

@@ -14,8 +14,6 @@ namespace YBS.Data.Configs
             builder.ToTable("RefreshToken");
             builder.HasKey(refreshToken => refreshToken.Id);
             builder.Property(refreshToken => refreshToken.Id).ValueGeneratedOnAdd();
-            builder.HasOne(refreshToken => refreshToken.Account).WithOne(account => account.RefreshToken)
-            .HasForeignKey<RefreshToken>(refreshToken => refreshToken.AccountId);
             builder.Property(refreshToken => refreshToken.Token).HasColumnType("varchar(100)");
             builder.HasIndex(refreshToken => refreshToken.Token).IsUnique();
             builder.Property(refreshToken => refreshToken.ExpireDate).HasColumnType("datetime");
