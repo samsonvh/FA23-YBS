@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using YBS.Data.Enums;
 
 namespace YBS.Service.Dtos.InputDtos
 {
     public class YachtInputDto
     {
-        public int? Id { get; set; }
         public int? CompanyId { get; set; }
         public int? YachtTypeId { get; set; }
         public string? Name { get; set; }
@@ -26,10 +26,10 @@ namespace YBS.Service.Dtos.InputDtos
         public string? LOA { get; set; }
         public string? BEAM { get; set; }
         public string? DRAFT { get; set; }
-        public string? SizeUnit { get; set; }
         public int? FuelCapacity { get; set; }
         public string? FuelCapacityUnit { get; set; }
         public int? MaximumGuestLimit { get; set; }
         public int? Cabin { get; set; }
+        public EnumYachtStatus? Status { get; set; }
     }
 }

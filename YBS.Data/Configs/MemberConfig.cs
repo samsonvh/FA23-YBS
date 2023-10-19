@@ -16,7 +16,7 @@ namespace YBS.Data.Configs
             builder.Property(member => member.DateOfBirth).HasColumnType("date");
             builder.Property(member => member.PhoneNumber).HasColumnType("varchar(15)");
             builder.Property(member => member.Nationality).HasColumnType("varchar(100)");
-            builder.Property(member => member.AvatarURL).HasColumnType("varchar(255)").IsRequired(false);
+            builder.Property(member => member.AvatarURL).HasColumnType("varchar(max)").IsRequired(false);
             builder.Property(member => member.Address).HasColumnType("nvarchar(200)");
             builder.Property(member => member.IdentityNumber).HasColumnType("varchar(15)");
             builder.Property(member => member.MembershipStartDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");

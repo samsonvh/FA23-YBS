@@ -47,7 +47,7 @@ namespace YBS.Services.Services.Implements
             (string.IsNullOrWhiteSpace(pageRequest.Email) || member.Account.Email.Contains(pageRequest.Email))
             && (string.IsNullOrWhiteSpace(pageRequest.FullName) || member.FullName.Contains(pageRequest.FullName))
             && (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || member.PhoneNumber.Contains(pageRequest.PhoneNumber))
-            && (string.IsNullOrWhiteSpace(pageRequest.Status) || member.FullName.Contains(pageRequest.Status)))
+            && (!pageRequest.Status.HasValue || member.Status == pageRequest.Status))
             .Include(member => member.Account);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
             var totalCount = data.Count();
@@ -108,6 +108,9 @@ namespace YBS.Services.Services.Implements
             member.AccountId = account.Id;
             switch (existedMembership.TimeUnit)
             {
+                case "years":
+                    member.MembershipExpiredDate = DateTime.Now.AddYears(existedMembership.EffectiveDuration);  
+                    break;
                 case "months":
                     member.MembershipExpiredDate = DateTime.Now.AddMonths(existedMembership.EffectiveDuration);    
                     break;

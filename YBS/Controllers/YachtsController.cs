@@ -6,7 +6,6 @@ using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
-    [Route("api/yachts")]
     [ApiController]
     public class YachtsController : ControllerBase
     {
@@ -16,29 +15,32 @@ namespace YBS.Controllers
         {
             _yachtService = yachtService;
         }
-
+        [Route(APIDefine.YACHT_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllYacht([FromQuery] YachtPageRequest pageRequest)
         {
             return Ok(await _yachtService.GetAllYacht(pageRequest));    
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDetailYacht(int id)
+        [HttpGet]
+        [Route(APIDefine.YACHT_DETAIL)]
+        public async Task<IActionResult> GetDetailYacht([FromRoute]int id)
         {
             return Ok(await _yachtService.GetDetailYacht(id));
         }
         [HttpPost]
+        [Route(APIDefine.YACHT_CREATE)]
         public async Task<IActionResult> Create([FromBody] YachtInputDto pageRequest)
         {
             await _yachtService.Create(pageRequest);
-            return Ok("Create Company Successfully");
+            return Ok("Create Yacht Successfully");
         }
         [HttpPut]
-        public async Task<IActionResult> Update([FromBody] YachtInputDto pageRequest)
+        [Route(APIDefine.YACHT_UPDATE)]
+        public async Task<IActionResult> Update([FromRoute] int id,[FromBody] YachtInputDto pageRequest,[FromForm] int testField)
         {
-            await _yachtService.Update(pageRequest);
-            return Ok("Update Company Successfully");
+            await _yachtService.Update(id,pageRequest);
+            return Ok("Update Yacht Successfully");
         }
     }
 }

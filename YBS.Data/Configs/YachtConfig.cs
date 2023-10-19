@@ -16,12 +16,12 @@ namespace YBS.Data.Configs
             builder.HasKey(yacht => yacht.Id);
             builder.Property(yacht => yacht.Id).ValueGeneratedOnAdd();
             builder.Property(yacht => yacht.Name).HasColumnType("varchar(100)");
-            builder.Property(yacht => yacht.ImageURL).HasColumnType("varchar(255)");
-            builder.Property(yacht => yacht.Description).HasColumnType("varchar(255)").IsRequired(false);
+            builder.Property(yacht => yacht.ImageURL).HasColumnType("varchar(max)");
+            builder.Property(yacht => yacht.Description).HasColumnType("varchar(max)").IsRequired(false);
             builder.Property(yacht => yacht.Manufacture).HasColumnType("varchar(100)");
             builder.Property(yacht => yacht.GrossTonnageUnit).HasColumnType("varchar(10)");
-            builder.Property(yacht => yacht.RangeUnit).HasColumnType("varchar(10)");
-            builder.Property(yacht => yacht.SpeedUnit).HasColumnType("varchar(10)");
+            builder.Property(yacht => yacht.RangeUnit).HasColumnType("varchar(20)");
+            builder.Property(yacht => yacht.SpeedUnit).HasColumnType("varchar(20)");
             builder.Property(yacht => yacht.FuelCapacityUnit).HasColumnType("varchar(10)");
             builder.Property(yacht => yacht.LOA).HasColumnType("varchar(20)");
             builder.Property(yacht => yacht.BEAM).HasColumnType("varchar(20)");

@@ -36,17 +36,17 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
-            // var yachtType = await _unitOfWorks.YachTypeRepository.Find(yachtType => yachtType.Id == pageRequest.YachtTypeId).FirstOrDefaultAsync();
-            // if (yachtType == null)
-            // {
-            //     throw new APIException((int)HttpStatusCode.BadRequest,"Yacht type not found");
-            // }
+            var yachtType = await _unitOfWorks.YachTypeRepository.Find(yachtType => yachtType.Id == pageRequest.YachtTypeId).FirstOrDefaultAsync();
+            if (yachtType == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest,"Yacht type not found");
+            }
             var yachtAdd = _mapper.Map<Yacht>(pageRequest);
             _unitOfWorks.YachRepository.Add(yachtAdd);
             var result = await _unitOfWorks.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while add yacht");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating yacht");
             }
         }
 
@@ -62,7 +62,27 @@ namespace YBS.Service.Services.Implements
             var totalItem = data.Count();
             var pageCount = totalItem / (int)pageRequest.PageSize + 1;
             var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            List<string> imgUrlList = new List<string>();
+
+            if (dataPaging != null)
+            {
+                foreach (var yacht in dataPaging)
+                {
+                    var arrayImgSplit = yacht.ImageURL.Split(',');
+                    foreach (var imgSplit in arrayImgSplit)
+                    {
+                        imgUrlList.Add(imgSplit.Trim());
+                    }
+                }
+            }
             var resultList = _mapper.Map<List<YachtListingDto>>(dataPaging);
+            if (imgUrlList.Count > 0)
+            {
+                foreach (var yachtInputDto in resultList)
+                {
+                    yachtInputDto.ImageURL = imgUrlList;
+                }
+            }
             var result = new DefaultPageResponse<YachtListingDto>()
             {
                 Data = resultList,
@@ -79,16 +99,25 @@ namespace YBS.Service.Services.Implements
             var yacht = await _unitOfWorks.YachRepository
                 .Find(yacht => yacht.Id == id)
                 .FirstOrDefaultAsync();
-            if (yacht != null)
+            if (yacht == null)
             {
-                return _mapper.Map<YachtDto>(yacht);
+                throw new APIException((int)HttpStatusCode.BadRequest, "Detail Yacht not found");
             }
-            return null;
+            var result = _mapper.Map<YachtDto>(yacht);
+            List<string> imgUrlList = new List<string>();
+
+            var arrayImgSplit = yacht.ImageURL.Split(',');
+            foreach (var imgSplit in arrayImgSplit)
+            {
+                imgUrlList.Add(imgSplit.Trim());
+            }
+            result.ImageURL = imgUrlList;
+            return result;
         }
 
-        public async Task Update(YachtInputDto pageRequest)
+        public async Task Update(int id,YachtInputDto pageRequest)
         {
-            var existedYacht = await _unitOfWorks.YachRepository.Find(yacht => yacht.Id == pageRequest.Id).FirstOrDefaultAsync();
+            var existedYacht = await _unitOfWorks.YachRepository.Find(yacht => yacht.Id == id).FirstOrDefaultAsync();
             if (existedYacht == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Yacht not found");
@@ -100,6 +129,10 @@ namespace YBS.Service.Services.Implements
             if (pageRequest.YachtTypeId > 0)
             {
                 existedYacht.YachtTypeId = (int)pageRequest.YachtTypeId;
+            }
+            if (pageRequest.GrossTonnage > 0)
+            {
+                existedYacht.GrossTonnage = (int)pageRequest.GrossTonnage;
             }
             if (pageRequest.Range > 0)
             {
@@ -135,11 +168,11 @@ namespace YBS.Service.Services.Implements
             }
             existedYacht.RangeUnit = pageRequest.RangeUnit;
             existedYacht.Name = pageRequest.Name;
-            existedYacht.ImageURL = pageRequest.Name;
-            existedYacht.Description = pageRequest.Name;
+            existedYacht.ImageURL = pageRequest.ImageURL;
+            existedYacht.Description = pageRequest.Description;
             existedYacht.Manufacture = pageRequest.Manufacture;
-            existedYacht.GrossTonnage = (int)pageRequest.GrossTonnage;
             existedYacht.GrossTonnageUnit = pageRequest.GrossTonnageUnit;
+
             existedYacht.SpeedUnit = pageRequest.SpeedUnit;
             existedYacht.LOA = pageRequest.LOA;
             existedYacht.BEAM = pageRequest.BEAM;

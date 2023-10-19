@@ -35,9 +35,12 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Company, CompanyListingDto>();
             CreateMap<CompanyInputDto, Company>();
 
-            //yacht
-            CreateMap<Yacht, YachtListingDto>();
-            CreateMap<Yacht, YachtDto>();
+
+             //yacht
+            CreateMap<Yacht, YachtListingDto>()
+                .ForMember(yachtListingDto => yachtListingDto.ImageURL, option => option.Ignore());
+            CreateMap<Yacht, YachtDto>()
+                .ForMember(yachtDto => yachtDto.ImageURL, option => option.Ignore());
             CreateMap<YachtInputDto,Yacht>();
 
             //yachType

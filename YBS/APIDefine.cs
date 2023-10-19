@@ -26,5 +26,10 @@ namespace YBS
         public const string MEMBERSHIP_PACKAGE_DETAIL = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_UPDATE = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_GET_ALL = MEMBERSHIP_PACKAGE;
+        //Yacht
+        public const string YACHT_CREATE = DEFAULT_ROUTE;
+        public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string YACHT_UPDATE = DEFAULT_ROUTE + "/{id}";
+        public const string YACHT_GET_ALL = DEFAULT_ROUTE;
     }
 }

@@ -28,7 +28,7 @@ namespace FA23_YBS_BACKEND.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBER_DETAIL)]
-        public async Task<IActionResult> GetDetailMember(int id)
+        public async Task<IActionResult> GetDetailMember([FromRoute]int id)
         {
             var result = await _memberService.GetDetailMember(id);
             return Ok(result);
@@ -42,7 +42,7 @@ namespace FA23_YBS_BACKEND.Controllers
         }
         [HttpPut]
         [Route(APIDefine.MEMBER_UPDATE)]
-        public async Task<IActionResult> Update([FromBody]MemberInputDto pageRequest,[FromRoute] int id)
+        public async Task<IActionResult> Update([FromRoute] int id,[FromBody]MemberInputDto pageRequest)
         {
             await _memberService.Update(pageRequest,id);
             return Ok("Update Member Successfully");

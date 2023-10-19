@@ -10,5 +10,7 @@ namespace YBS.Service.Services
     {
         Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest);
         Task<MembershipPackageDto> GetDetailMembershipPackage(int id);
+        Task Create (MembershipPackageInputDto pageRequest);
+        Task Update (MembershipPackageInputDto pageRequest, int id);
     }
 }
