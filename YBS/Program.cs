@@ -23,6 +23,7 @@ builder.Services.AddDbContext<YBSContext>(options =>
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();  
 builder.Services.AddScoped<IYachtService, YachtService>();
 builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
@@ -104,9 +105,9 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
-app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
