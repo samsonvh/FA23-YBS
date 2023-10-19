@@ -11,7 +11,7 @@ namespace YBS.Service.Dtos.ListingDtos
         public int Id { get; set; }
         public string Name { get; set; }
         public float Price { get; set; }
-        public string Unit { get; set; }
+        public string MoneyUnit { get; set; }
         public float Point { get; set; }
     }
 }

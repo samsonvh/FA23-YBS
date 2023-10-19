@@ -16,6 +16,6 @@ namespace YBS.Service.Services
         Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest);
         Task<YachtDto> GetDetailYacht(int id);
         Task Create (YachtInputDto pageRequest);
-        Task Update (YachtInputDto pageRequest);
+        Task Update (int id ,YachtInputDto pageRequest);
     }
 }
