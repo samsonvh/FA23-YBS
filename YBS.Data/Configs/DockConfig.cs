@@ -15,12 +15,12 @@ namespace YBS.Data.Configs
             builder.ToTable("Dock");
             builder.HasKey(dock => dock.Id);
             builder.Property(dock => dock.Id).ValueGeneratedOnAdd();
-            builder.HasOne(dock => dock.Company).WithMany(company => company.Docks).HasForeignKey(dock => dock.CompanyId);
             builder.Property(dock => dock.Name).HasColumnType("nvarchar(100)");
             builder.Property(dock => dock.Address).HasColumnType("nvarchar(100)");
             builder.Property(dock => dock.Latitude).HasColumnType("float");
             builder.Property(dock => dock.Longtitude).HasColumnType("float");
-            builder.Property(dock => dock.Description).HasColumnType("nvarchar(100)").IsRequired(false);
+            builder.Property(dock => dock.Image).HasColumnType("varchar(max)");
+            builder.Property(dock => dock.Description).HasColumnType("nvarchar(max)").IsRequired(false);
             builder.Property(dock => dock.CreationDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
             builder.Property(dock => dock.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
         }

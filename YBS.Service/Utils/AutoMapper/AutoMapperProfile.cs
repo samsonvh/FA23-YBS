@@ -11,8 +11,10 @@ namespace YBS.Service.Utils.AutoMapper
     {
         public AutoMapperProfile()
         {
+            //account
             CreateMap<Account, AccountListingDto>()
                 .ForMember(account => account.Role, option => option.MapFrom(account => account.Role.Name));
+            //member
             CreateMap<MemberInputDto, Account>();
             CreateMap<MemberInputDto, Member>();
             CreateMap<Member, MemberDto>()
@@ -21,13 +23,25 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberListingDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));
+            //membership package
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
             CreateMap<MembershipPackage, MembershipPackageDto>();
             CreateMap<MembershipPackage, MembershipPackageListingDto>();
 
+            //company
+            CreateMap<Company, CompanyDto>()
+                .ForMember(dest => dest.Email, options => options.MapFrom(company => company.Account.Email))
+                .ForMember(company => company.Username, options => options.MapFrom(company => company.Account.Username));
+            CreateMap<Company, CompanyListingDto>();
+            CreateMap<CompanyInputDto, Company>();
+
+
              //yacht
-            CreateMap<Yacht, YachtListingDto>();
-            CreateMap<Yacht, YachtDto>();
+            CreateMap<Yacht, YachtListingDto>()
+                .ForMember(yachtListingDto => yachtListingDto.ImageURL, option => option.Ignore());
+            CreateMap<Yacht, YachtDto>()
+                .ForMember(yachtDto => yachtDto.ImageURL, option => option.Ignore());
+            CreateMap<YachtInputDto,Yacht>();
 
             //yachType
             CreateMap<YachtType, YachtTypeListingDto> ();
@@ -35,6 +49,7 @@ namespace YBS.Service.Utils.AutoMapper
             //route
             CreateMap<Route, RouteListingDto>();
             CreateMap<Route, RouteDto>();
+            CreateMap<RouteInputDto, Route>();
         }
     }
 }

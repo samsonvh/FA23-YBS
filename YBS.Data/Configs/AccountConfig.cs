@@ -11,8 +11,6 @@ namespace YBS.Data.Configs
             builder.ToTable("Account");
             builder.HasKey(account => account.Id);
             builder.Property(account => account.Id).ValueGeneratedOnAdd();
-            builder.HasOne(account => account.Role)
-            .WithMany(role => role.Accounts).HasForeignKey(account => account.RoleId);
             builder.Property(account => account.Username).HasColumnType("varchar(50)");
             builder.HasIndex(account => account.Username).IsUnique();
             builder.HasIndex(account => account.Email).IsUnique();

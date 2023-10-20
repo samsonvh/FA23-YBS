@@ -2,6 +2,7 @@ using System.Xml.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS;
+using YBS.Data.Models;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Services.Services;
@@ -27,10 +28,24 @@ namespace FA23_YBS_BACKEND.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBER_DETAIL)]
-        public async Task<IActionResult> GetDetailMember(int Id)
+        public async Task<IActionResult> GetDetailMember([FromRoute]int id)
         {
-            var result = await _memberService.GetDetailMember(Id);
+            var result = await _memberService.GetDetailMember(id);
             return Ok(result);
+        }
+        [HttpPost]
+        [Route(APIDefine.MEMBER_CREATE)]
+        public async Task<IActionResult> Register([FromBody]MemberInputDto pageRequest)
+        {
+            await _memberService.Register(pageRequest);
+            return Ok("Register Member Successfully");
+        }
+        [HttpPut]
+        [Route(APIDefine.MEMBER_UPDATE)]
+        public async Task<IActionResult> Update([FromRoute] int id,[FromBody]MemberInputDto pageRequest)
+        {
+            await _memberService.Update(pageRequest,id);
+            return Ok("Update Member Successfully");
         }
     }
 }

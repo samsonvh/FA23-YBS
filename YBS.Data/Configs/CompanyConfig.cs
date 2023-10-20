@@ -10,8 +10,6 @@ namespace YBS.Data.Configs
             builder.ToTable("Company");
             builder.HasKey(company => company.Id);
             builder.Property(company => company.Id).ValueGeneratedOnAdd();
-            builder.HasOne(company => company.Account)
-            .WithOne(account => account.Company).HasForeignKey<Company>(company => company.AccountId);
             builder.Property(company => company.Name).HasColumnType("nvarchar(100)");
             builder.Property(company => company.Address).HasColumnType("nvarchar(200)");
             builder.Property(company => company.HotLine).HasColumnType("varchar(15)");
@@ -21,10 +19,6 @@ namespace YBS.Data.Configs
             builder.Property(company => company.LinkedInURL).HasColumnType("varchar(255)").IsRequired(false);
             builder.Property(company => company.ContractStartDate).HasColumnType("datetime");
             builder.Property(company => company.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
-
-            builder.HasMany(company => company.Routes)
-               .WithOne(route => route.Company)
-               .HasForeignKey(route => route.CompanyId);
         }
     }
 }

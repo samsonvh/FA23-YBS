@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -25,6 +26,7 @@ builder.Services.AddDbContext<YBSContext>(options =>
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile).Assembly);
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IAccountService, AccountService>();
+builder.Services.AddScoped<ICompanyService, CompanyService>();  
 builder.Services.AddScoped<IYachtService, YachtService>();
 builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
@@ -33,7 +35,7 @@ builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-
+Environment.SetEnvironmentVariable("GOOGLE_APPLICATION_CREDENTIALS", AppContext.BaseDirectory.ToString() + @"yacht-booking-system-3bc15-firebase-adminsdk-7wvy1-bbb5e82c83.json");
 //Add Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
@@ -94,6 +96,7 @@ builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
+builder.Services.AddScoped<IFirebaseStorageService,FirebaseStorageService>();
 builder.Services.AddHttpContextAccessor();
 var app = builder.Build();
 
@@ -109,6 +112,7 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();

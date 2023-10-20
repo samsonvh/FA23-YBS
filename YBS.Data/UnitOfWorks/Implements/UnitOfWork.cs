@@ -14,6 +14,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly YBSContext _context;
         private readonly IGenericRepositoty<Account> _accountRepository;
         private readonly IGenericRepositoty<Member> _memberRepository;
+        private readonly IGenericRepositoty<Company> _companyRepository;
         private readonly IGenericRepositoty<MembershipPackage> _membershipPackageRepository;
         private readonly IGenericRepositoty<Role> _roleRepository;
         private readonly IGenericRepositoty<RefreshToken> _refreshTokenRepository;
@@ -47,6 +48,19 @@ namespace YBS.Data.UnitOfWorks.Implements
                 return new GenericRepository<Member>(_context);
             }
         }
+
+        public IGenericRepositoty<Company> CompanyRepository
+        {
+            get
+            {
+                if (_companyRepository is not null)
+                {
+                    return _companyRepository;
+                }
+                return new GenericRepository<Company>(_context);
+            }
+        }
+
         public IGenericRepositoty<MembershipPackage> MembershipPackageRepository
         {
             get

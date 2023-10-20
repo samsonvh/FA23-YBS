@@ -43,7 +43,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
                 if (account == null)
                 {
-                    throw new APIException((int)HttpStatusCode.BadRequest, "You are not membership");
+                    throw new APIException((int)HttpStatusCode.BadRequest, "You are not registed");
                 }
                 string refreshToken;
                 //add refresh token

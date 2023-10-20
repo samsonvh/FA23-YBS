@@ -1,7 +1,6 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using YBS.Authorization;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Service.Services;
@@ -18,7 +17,7 @@ namespace YBS.Controllers
             _authService = authService;
         }
         [Route(APIDefine.GOOGLE_LOGIN)]
-        [HttpPost()]
+        [HttpPost]
         public async Task<IActionResult> Authentication([FromBody] string idToken)
         {
             var result = await _authService.Authentication(idToken);
