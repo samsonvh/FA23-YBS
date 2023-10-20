@@ -16,7 +16,7 @@ namespace YBS.Data.Configs
             builder.HasKey(yacht => yacht.Id);
             builder.Property(yacht => yacht.Id).ValueGeneratedOnAdd();
             builder.Property(yacht => yacht.Name).HasColumnType("varchar(100)");
-            builder.Property(yacht => yacht.ImageURL).HasColumnType("varchar(max)");
+            builder.Property(yacht => yacht.ImageURL).HasColumnType("varchar(max)").IsRequired(false);
             builder.Property(yacht => yacht.Description).HasColumnType("varchar(max)").IsRequired(false);
             builder.Property(yacht => yacht.Manufacture).HasColumnType("varchar(100)");
             builder.Property(yacht => yacht.GrossTonnageUnit).HasColumnType("varchar(10)");

@@ -7,6 +7,7 @@ using YBS.Service.Services;
 namespace YBS.Controllers
 {
     [ApiController]
+    [Consumes("multipart/form-data")]
     public class YachtsController : ControllerBase
     {
         private readonly IYachtService _yachtService;
@@ -30,7 +31,7 @@ namespace YBS.Controllers
         }
         [HttpPost]
         [Route(APIDefine.YACHT_CREATE)]
-        public async Task<IActionResult> Create([FromBody] YachtInputDto pageRequest)
+        public async Task<IActionResult> Create([FromForm] YachtInputDto pageRequest)
         {
             await _yachtService.Create(pageRequest);
             return Ok("Create Yacht Successfully");
