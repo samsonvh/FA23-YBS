@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using YBS.Data.Enums;
 
 namespace YBS.Service.Dtos.InputDtos
@@ -11,7 +12,7 @@ namespace YBS.Service.Dtos.InputDtos
         public int? CompanyId { get; set; }
         public int? YachtTypeId { get; set; }
         public string? Name { get; set; }
-        public string? ImageURL { get; set; }
+        public List<IFormFile>? ImageFiles { get; set; }
         public string? Description { get; set; }
         public string? Manufacture { get; set; }
         public int? GrossTonnage { get; set; }
