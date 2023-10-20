@@ -21,6 +21,10 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<Yacht> _yachtRepository;
         private readonly IGenericRepositoty<YachtType> _yachtTypeRepository;
         private readonly IGenericRepositoty<Route> _routeRepository;
+        private readonly IGenericRepositoty<Booking> _bookingRepository;
+        private readonly IGenericRepositoty<Trip> _tripRepository;
+        private readonly IGenericRepositoty<PriceMapper> _priceMapperRepository;
+        private readonly IGenericRepositoty<Guest> _guestRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -129,6 +133,54 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _routeRepository;
                 }
                 return new GenericRepository<Route>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Booking> BookingRepository
+        {
+            get
+            {
+                if (_bookingRepository is not null)
+                {
+                    return _bookingRepository;
+                }
+                return new GenericRepository<Booking>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Trip> TripRepository
+        {
+            get
+            {
+                if (_tripRepository is not null)
+                {
+                    return _tripRepository;
+                }
+                return new GenericRepository<Trip>(_context);
+            }
+        }
+
+        public IGenericRepositoty<PriceMapper> PriceMapperRepository
+        {
+            get
+            {
+                if (_priceMapperRepository is not null)
+                {
+                    return _priceMapperRepository;
+                }
+                return new GenericRepository<PriceMapper>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Guest> GuestRepository
+        {
+            get
+            {
+                if (_guestRepository is not null)
+                {
+                    return _guestRepository;
+                }
+                return new GenericRepository<Guest>(_context);
             }
         }
 
