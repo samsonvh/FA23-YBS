@@ -25,6 +25,7 @@ namespace YBS.Data.Context
         public DbSet<ServicePackage> ServicePackages { get; set; }
         public DbSet<PriceMapper> PriceMappers { get; set; }
         public DbSet<Agency> Agencies { get; set; }
+        public DbSet<Guest> Guests { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);
