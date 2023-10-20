@@ -2,7 +2,10 @@ namespace YBS.Data.Enums
 {
     public enum EnumTripStatus
     {
-        UNAVAILABLE = 0,
-        AVAILABLE = 1,
+        NOT_STARTED,
+        IN_PROGRESS,
+        DONE,
+        DELAY,
+        CANCLED
     }
 }
