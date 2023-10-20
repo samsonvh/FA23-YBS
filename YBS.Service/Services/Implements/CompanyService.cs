@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
+using YBS.Data.UnitOfWorks.Implements;
 using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
@@ -89,9 +90,23 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "There is already a company with that phonenumber.");
             }
+
+            var companyRole = await _unitOfWork.RoleRepository
+                .Find(role => role.Name == nameof(EnumRole.COMPANY))
+                .FirstOrDefaultAsync();
+            if (companyRole == null)
+            {
+                companyRole = new Role()
+                {
+                    Name = nameof(EnumRole.COMPANY),
+                    Status = EnumRoleStatus.ACTIVE
+                };
+                _unitOfWork.RoleRepository.Add(companyRole);
+                await _unitOfWork.SaveChangesAsync();
+            }
             var account = new Account
             {
-                RoleId = 2,
+                RoleId = companyRole.Id,
                 Email = companyInputDto.Email,
                 Password = companyInputDto.Password,
                 Username = companyInputDto.Username,
