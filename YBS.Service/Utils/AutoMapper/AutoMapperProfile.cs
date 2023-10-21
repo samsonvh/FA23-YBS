@@ -36,26 +36,41 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<CompanyInputDto, Company>();
 
 
-             //yacht
+            //yacht
             CreateMap<Yacht, YachtListingDto>()
                 .ForMember(yachtListingDto => yachtListingDto.ImageURL, option => option.Ignore());
             CreateMap<Yacht, YachtDto>()
                 .ForMember(yachtDto => yachtDto.ImageURL, option => option.Ignore());
-            CreateMap<YachtInputDto,Yacht>();
+            CreateMap<YachtInputDto, Yacht>();
 
             //yachType
-            CreateMap<YachtType, YachtTypeListingDto> ();
+            CreateMap<YachtType, YachtTypeListingDto>();
 
             //route
             CreateMap<Route, RouteListingDto>();
             CreateMap<Route, RouteDto>();
             CreateMap<RouteInputDto, Route>();
 
-
             //booking
             CreateMap<BookingInputDto, Booking>();
             CreateMap<Booking, Guest>();
             CreateMap<BookingInputDto, Guest>();
+            CreateMap<Booking, BookingListingDto>()
+                .ForMember(bookingListDto => bookingListDto.Guest,
+                            option => option.MapFrom(booking => booking.Guests.Where(guest => guest.IsLeader == true).Select(guest => guest.FullName)))
+                .ForMember(bookingListDto => bookingListDto.PhoneNumber,
+                            option => option.MapFrom(booking => booking.Guests.Where(guest => guest.IsLeader == true).Select(guest => guest.PhoneNumber)))
+                .ForMember(bookingListDto => bookingListDto.Trip,
+                            option => option.MapFrom(booking => booking.Trip.Name))
+                .ForMember(bookingListDto => bookingListDto.Yacht,
+                            option => option.MapFrom(booking => booking.Yacht != null
+                                                                ? booking.Yacht.Name : null))
+                .ForMember(bookingListDto => bookingListDto.DateBook,
+                            option => option.MapFrom(booking => booking.CreationDate))
+                .ForMember(bookingListDto => bookingListDto.StartDate,
+                            option => option.MapFrom(booking => booking.Trip.ActualStartingTime))
+                .ForMember(bookingListDto => bookingListDto.EndDate,
+                            option => option.MapFrom(booking => booking.Trip.ActualEndingTime));
         }
     }
 }

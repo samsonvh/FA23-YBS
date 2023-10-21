@@ -17,11 +17,8 @@ namespace YBS.Data.Models
         public string Name { get; set; }
         public string Beginning { get; set; }
         public string Destination { get; set; }
-        public DateTime ExpectedPickupTime { get; set; }
         public DateTime ExpectedStartingTime { get; set; }
         public DateTime ExpectedEndingTime { get; set; }
-        public int ExpectedDurationTime { get; set; }
-        public string DurationUnit { get; set; }
         public string Type { get; set; }
         public EnumRouteStatus Status { get; set; }
         public ICollection<Trip> Trips { get; set; }

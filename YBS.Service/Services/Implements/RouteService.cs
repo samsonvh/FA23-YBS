@@ -35,14 +35,14 @@ namespace YBS.Service.Services.Implements
             var company = _unitOfWork.CompanyRepository.Find(company => company.Id == pageRequest.CompanyId);
             if (company == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Company not found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
             _unitOfWork.RouteRepository.Add(routeAdd);
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Company not found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
         }
 
@@ -76,7 +76,7 @@ namespace YBS.Service.Services.Implements
             var route = await _unitOfWork.RouteRepository
                 .Find(route => route.Id == id)
                 .FirstOrDefaultAsync();
-            if(route != null)
+            if (route != null)
             {
                 return _mapper.Map<RouteDto>(route);
             }
@@ -94,30 +94,15 @@ namespace YBS.Service.Services.Implements
             {
                 route.CompanyId = (int)pageRequest.CompanyId;
             }
-            if (pageRequest.ExpectedDurationTime > 0)
+            if (pageRequest.ExpectedStartingTime > pageRequest.ExpectedEndingTime)
             {
-                route.ExpectedDurationTime = (int)pageRequest.ExpectedDurationTime;
-            }
-            if (pageRequest.ExpectedPickupTime > pageRequest.ExpectedStartingTime)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Expected Pickup Time must be beofre Expected Starting Time");
-            }
-            if ( pageRequest.ExpectedPickupTime > pageRequest.ExpectedEndingTime)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Expected Pickup Time must be beofre Expected Ending Time");
-            }
-            if ( pageRequest.ExpectedStartingTime > pageRequest.ExpectedEndingTime)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Expected Starting Time must be beofre Expected Ending Time");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Expected Starting Time must be beofre Expected Ending Time");
             }
             route.Name = pageRequest.Name;
             route.Beginning = pageRequest.Beginning;
             route.Destination = pageRequest.Destination;
-            route.ExpectedPickupTime = (DateTime)pageRequest.ExpectedPickupTime;
             route.ExpectedStartingTime = (DateTime)pageRequest.ExpectedStartingTime;
             route.ExpectedEndingTime = (DateTime)pageRequest.ExpectedEndingTime;
-            route.ExpectedDurationTime = (int)pageRequest.ExpectedDurationTime;
-            route.DurationUnit = pageRequest.DurationUnit;
             route.Type = pageRequest.Type;
             if (pageRequest.Status != null)
             {
@@ -127,7 +112,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Error while updating route");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating route");
             }
         }
     }

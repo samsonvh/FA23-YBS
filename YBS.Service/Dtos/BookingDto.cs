@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 
+
 namespace YBS.Service.Dtos
 {
     public class BookingDto
@@ -22,3 +23,5 @@ namespace YBS.Service.Dtos
         public string Status { get; set; }
     }
 }
+
+

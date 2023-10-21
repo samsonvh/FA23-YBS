@@ -20,6 +20,6 @@ namespace YBS.Service.Dtos
         public int ExpectedDurationTime { get; set; }
         public string DurationUnit { get; set; }
         public string Type { get; set; }
-        public EnumRouteStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }

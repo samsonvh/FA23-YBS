@@ -32,6 +32,6 @@ namespace YBS.Service.Dtos
         public int MaximumGuestLimit { get; set; }
         public int Cabin { get; set; }
         public DateTime CreationDate { get; set; }
-        public EnumYachtStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }
