@@ -50,6 +50,12 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Route, RouteListingDto>();
             CreateMap<Route, RouteDto>();
             CreateMap<RouteInputDto, Route>();
+
+
+            //booking
+            CreateMap<BookingInputDto, Booking>();
+            CreateMap<Booking, Guest>();
+            CreateMap<BookingInputDto, Guest>();
         }
     }
 }

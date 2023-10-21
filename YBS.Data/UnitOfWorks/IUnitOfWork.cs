@@ -18,6 +18,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Booking> BookingRepository { get; }
         IGenericRepositoty<PriceMapper> PriceMapperRepository { get; }
         IGenericRepositoty<Guest> GuestRepository { get; }
+        IGenericRepositoty<ServicePackage> ServicePackageRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

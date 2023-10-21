@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,6 +11,6 @@ namespace YBS.Service.Services
     public interface IBookingService
     {
         Task CreateGuestBooking (BookingInputDto pageRequest);
-        Task CreateMemberBooking (Booking pageRequest);
+        Task<bool> ChangeStatusBookingNonMember(int id, string status);
     }
 }

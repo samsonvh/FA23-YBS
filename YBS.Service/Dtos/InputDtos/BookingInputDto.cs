@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using YBS.Data.Enums;
 
 namespace YBS.Service.Dtos.InputDtos
 {
@@ -16,8 +17,11 @@ namespace YBS.Service.Dtos.InputDtos
         public int? AgencyId { get; set; }
         public int YachtTypeId { get; set; }
         public string? Note { get; set; }
-        public float TotalPrice { get; set; }
         public string MoneyUnit { get; set; }
         public IFormFile? GuestList { get; set; }
+        public string FullName { get; set; }
+        public DateTime DateOfBirth { get; set; }
+        public string IdentityNumber { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

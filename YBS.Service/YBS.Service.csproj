@@ -1,6 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <ItemGroup>
+    <PackageReference Include="EPPlus" Version="6.2.10" />
     <PackageReference Include="FirebaseStorage.net" Version="1.0.3" />
     <PackageReference Include="Google.Cloud.Storage.V1" Version="4.6.0" />
     <ProjectReference Include="..\YBS.Data\YBS.Data.csproj" />

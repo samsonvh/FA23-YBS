@@ -8,7 +8,6 @@ using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
-    [Route("api/companies")]
     [ApiController]
     public class CompaniesController : ControllerBase
     {
@@ -18,13 +17,15 @@ namespace YBS.Controllers
             _companyService = companyService;
         }
 
+        [Route(APIDefine.COMPANY_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> Get([FromQuery] CompanyPageRequest request)
         {
             return Ok(await _companyService.GetCompanyList(request));
         }
 
-        [HttpGet("{id}")]
+        [Route(APIDefine.COMPANY_GET_DETAIL)]
+        [HttpGet]
         public async Task<IActionResult> GetCompanyDetail([FromRoute] int id)
         {
             var company = await _companyService.GetById(id);
@@ -38,6 +39,7 @@ namespace YBS.Controllers
 
         [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPost]
+        [Route(APIDefine.COMPANY_CREATE)]
         public async Task<IActionResult> Create([FromBody] CompanyInputDto companyInputDto)
         {
             var company = await _companyService.Create(companyInputDto);
@@ -50,7 +52,8 @@ namespace YBS.Controllers
         }
 
         [RoleAuthorization(nameof(EnumRole.ADMIN))]
-        [HttpPatch("{id}")]
+        [Route(APIDefine.COMPANY_CHANGE_STATUS)]
+        [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)
         {
             var result = await _companyService.ChangeStatus(id, status);
