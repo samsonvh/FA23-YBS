@@ -176,7 +176,7 @@ namespace YBS.Service.Services.Implements
         public async Task<DefaultPageResponse<BookingListingDto>> GetAll(BookingPageRequest pageRequest)
         {
             if (pageRequest.StartDate <= pageRequest.EndDate)
-            {
+            {   
                 throw new APIException((int)HttpStatusCode.BadRequest, "End date must be greater than start date.");
             }
             var query = _unitOfWork.BookingRepository.Find(booking =>
@@ -194,6 +194,7 @@ namespace YBS.Service.Services.Implements
              (!pageRequest.EndDate.HasValue && pageRequest.StartDate == booking.Trip.ActualStartingTime) ||
              (booking.Trip.ActualStartingTime >= pageRequest.StartDate && booking.Trip.ActualEndingTime <= pageRequest.EndDate)
             ))
+            .Include(booking => booking.Guests)
             .Include(booking => booking.Trip)
             .Include(Booking => Booking.Yacht);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) 
