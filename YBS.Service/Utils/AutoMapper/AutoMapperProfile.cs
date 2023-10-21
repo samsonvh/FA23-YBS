@@ -56,10 +56,11 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Booking, Guest>();
             CreateMap<BookingInputDto, Guest>();
             CreateMap<Booking, BookingListingDto>()
-                .ForMember(bookingListDto => bookingListDto.Guest,
-                            option => option.MapFrom(booking => booking.Guests.Where(guest => guest.IsLeader == true).Select(guest => new String(guest.FullName))))
-                .ForMember(bookingListDto => bookingListDto.PhoneNumber,
-                            option => option.MapFrom(booking => booking.Guests.Where(guest => guest.IsLeader == true).Select(guest => new String(guest.PhoneNumber))))
+                 .ForMember(bookingListDto => bookingListDto.Guest,
+                             option => option.MapFrom(booking => booking.Guests.Where(guest => guest.IsLeader == true).Select(guest => new String(guest.FullName))))
+                 .ForMember(bookingListDto => bookingListDto.PhoneNumber,
+                             option => option.MapFrom(booking => booking.Guests.Where(guest => guest.IsLeader == true).Select(guest => new String(guest.PhoneNumber))))
+
                 .ForMember(bookingListDto => bookingListDto.Trip,
                             option => option.MapFrom(booking => booking.Trip.Name))
                 .ForMember(bookingListDto => bookingListDto.Yacht,
