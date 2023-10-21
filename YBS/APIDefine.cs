@@ -20,6 +20,12 @@ namespace YBS
         public const string MEMBER_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_GET_ALL = DEFAULT_ROUTE;
+        //Company
+        public const string COMPANY_GET_ALL = DEFAULT_ROUTE;
+        public const string COMPANY_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string COMPANY_CREATE = DEFAULT_ROUTE;
+        public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
+
         //Membership Package
         public const string MEMBERSHIP_PACKAGE = "membership-packages";
         public const string MEMBERSHIP_PACKAGE_CREATE = MEMBERSHIP_PACKAGE;
@@ -31,5 +37,8 @@ namespace YBS
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_GET_ALL = DEFAULT_ROUTE;
+        //Booking
+        public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
+        public const string BOOKING_GUEST_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
     }
 }

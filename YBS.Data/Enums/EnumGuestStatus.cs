@@ -4,5 +4,6 @@ namespace YBS.Data.Enums
     {
         ABSENT = 0,
         PRESENT = 1,
+        NOT_YET
     }
 }

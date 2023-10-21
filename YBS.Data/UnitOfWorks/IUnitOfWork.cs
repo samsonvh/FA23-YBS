@@ -14,6 +14,11 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Yacht> YachRepository { get; }
         IGenericRepositoty<YachtType> YachTypeRepository { get; }
         IGenericRepositoty<Route> RouteRepository { get; }
+        IGenericRepositoty<Trip> TripRepository { get; }
+        IGenericRepositoty<Booking> BookingRepository { get; }
+        IGenericRepositoty<PriceMapper> PriceMapperRepository { get; }
+        IGenericRepositoty<Guest> GuestRepository { get; }
+        IGenericRepositoty<ServicePackage> ServicePackageRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }
