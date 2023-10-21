@@ -14,11 +14,9 @@ namespace YBS.Data.Models
         [ForeignKey("RouteId")]
         public Route Route { get; set; }
         public string Name { get; set; }
-        public DateTime ExpectedPickupTime { get; set; }
-        public DateTime ExpectedStartingTime { get; set; }
-        public DateTime ExpectedEndingTime { get; set; }
-        public int ExpectedDurationTime { get; set; }
-        public string DurationUnit { get; set; }
+        public DateTime ActualPickupTime { get; set; }
+        public DateTime ActualStartingTime { get; set; }
+        public DateTime ActualEndingTime { get; set; }
         public EnumTripStatus Status { get; set; }
         public ICollection<Booking> Bookings { get; set; }
     }

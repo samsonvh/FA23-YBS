@@ -16,11 +16,9 @@ namespace YBS.Data.Configs
             builder.HasKey(trip => trip.Id);
             builder.Property(trip => trip.Id).ValueGeneratedOnAdd();
             builder.Property(trip => trip.Name).HasColumnType("nvarchar(100)");
-            builder.Property(route => route.ExpectedPickupTime).HasColumnType("datetime").IsRequired();
-            builder.Property(route => route.ExpectedStartingTime).HasColumnType("datetime").IsRequired();
-            builder.Property(route => route.ExpectedEndingTime).HasColumnType("datetime").IsRequired();
-            builder.Property(route => route.ExpectedDurationTime).HasColumnType("int").IsRequired();
-            builder.Property(route => route.DurationUnit).HasColumnType("varchar").HasMaxLength(10).IsRequired();
+            builder.Property(route => route.ActualPickupTime).HasColumnType("datetime").IsRequired();
+            builder.Property(route => route.ActualStartingTime).HasColumnType("datetime").IsRequired();
+            builder.Property(route => route.ActualEndingTime).HasColumnType("datetime").IsRequired();
         }
     }
 }
