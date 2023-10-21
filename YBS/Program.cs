@@ -121,5 +121,6 @@ app.UseCors(MyAllowSpecificOrigins);
 
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
+app.UseCors(MyAllowSpecificOrigins);
 
 app.Run();
