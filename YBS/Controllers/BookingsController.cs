@@ -44,5 +44,12 @@ namespace YBS.Controllers
             var result = await _bookingService.GetAll(pageRequest);
             return Ok(result);
         }
+
+        [Route(APIDefine.BOOKING_GET_DETAIL)]
+        [HttpGet]
+        public async Task<IActionResult> GetDetailBooking([FromRoute] int id)
+        {
+            return Ok(await _bookingService.GetDetailBooking(id));
+        }
     }
 }

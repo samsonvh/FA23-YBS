@@ -41,5 +41,6 @@ namespace YBS
         public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
         public const string BOOKING_GUEST_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
         public const string BOOKING_GET_ALL = DEFAULT_ROUTE;
+        public const string BOOKING_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
     }
 }
