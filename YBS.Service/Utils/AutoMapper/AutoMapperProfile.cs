@@ -79,7 +79,6 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Booking, BookingDto>()
                 .ForMember(bookingDto => bookingDto.FullName, options => options.MapFrom(booking => booking.MemberId == null ? booking.Guests.First(booking => booking.IsLeader == true).FullName : booking.Member.FullName))
                 .ForMember(bookingDto => bookingDto.PhoneNumber, options => options.MapFrom(booking => booking.MemberId == null ? booking.Guests.First(booking => booking.IsLeader == true).PhoneNumber : booking.Member.PhoneNumber))
-                .ForMember(bookingDto => bookingDto.TripName, options => options.MapFrom(booking => booking.Trip.Name))
                 .ForMember(bookingDto => bookingDto.YachtName, options => options.MapFrom(booking => booking.Yacht.Name != null
                                                                                                         ? booking.Yacht.Name : null))
                 .ForMember(bookingDto => bookingDto.AgencyId, options => options.MapFrom(booking => booking.AgencyId != null
