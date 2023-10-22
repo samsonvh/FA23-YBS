@@ -21,7 +21,7 @@ namespace YBS.Data.Models
         public DateTime ExpectedEndingTime { get; set; }
         public string Type { get; set; }
         public EnumRouteStatus Status { get; set; }
-        public ICollection<Trip> Trips { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
         public ICollection<PriceMapper> PriceMappers { get; set; }
     }
 }
