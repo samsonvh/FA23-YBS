@@ -13,5 +13,6 @@ namespace YBS.Service.Services
     public interface IAccountService
     {
         Task<DefaultPageResponse<AccountListingDto>> GetAllAccounts(AccountPageRequest pageRequest);
+        Task<string> HashPassword (string password);
     }
 }

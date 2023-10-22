@@ -64,8 +64,8 @@ namespace YBS.Service.Utils.AutoMapper
                             option => option.MapFrom(booking => booking.Guests
                                                                 .First(guest => guest.IsLeader == true)
                                                                 .PhoneNumber))
-                .ForMember(bookingListDto => bookingListDto.Trip,
-                            option => option.MapFrom(booking => booking.Trip.Name))
+                .ForMember(bookingListDto => bookingListDto.Route,
+                            option => option.MapFrom(booking => booking.Route.Name))
                 .ForMember(bookingListDto => bookingListDto.Yacht,
                             option => option.MapFrom(booking => booking.Yacht != null
                                                                 ? booking.Yacht.Name : null))

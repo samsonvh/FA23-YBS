@@ -9,6 +9,7 @@ using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
+using YBS.Service.Util.Hash;
 using YBS.Service.Utils;
 using YBS.Services.Dtos.PageRequests;
 
@@ -48,6 +49,12 @@ namespace YBS.Service.Services.Implements
                 PageSize = (int)pageRequest.PageSize,
             };
             return result;
+        }
+
+        public async Task<string> HashPassword(string password)
+        {
+            string passwordHash =  PasswordHashing.HashPassword(password);
+            return passwordHash;
         }
     }
 }
