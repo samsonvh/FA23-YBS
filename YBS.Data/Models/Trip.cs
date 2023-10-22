@@ -13,7 +13,6 @@ namespace YBS.Data.Models
         public int BookingId { get; set; }
         [ForeignKey("BookingId")]
         public Booking Booking { get; set; }
-        public DateTime ActualPickupTime { get; set; }
         public DateTime ActualStartingTime { get; set; }
         public DateTime ActualEndingTime { get; set; }
         public EnumTripStatus Status { get; set; }
