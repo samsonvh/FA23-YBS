@@ -15,7 +15,6 @@ namespace YBS.Data.Configs
             builder.ToTable("Trip");
             builder.HasKey(trip => trip.Id);
             builder.Property(trip => trip.Id).ValueGeneratedOnAdd();
-            builder.Property(trip => trip.Name).HasColumnType("nvarchar(100)");
             builder.Property(route => route.ActualPickupTime).HasColumnType("datetime").IsRequired();
             builder.Property(route => route.ActualStartingTime).HasColumnType("datetime").IsRequired();
             builder.Property(route => route.ActualEndingTime).HasColumnType("datetime").IsRequired();

@@ -7,7 +7,7 @@ using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Controllers
 {
-    [RoleAuthorization(nameof(EnumRole.ADMIN))]
+    // [RoleAuthorization(nameof(EnumRole.ADMIN))]
     
     [ApiController]
     public class AccountsController : ControllerBase
@@ -22,6 +22,12 @@ namespace YBS.Controllers
         public async Task<IActionResult> GetAccountList([FromQuery] AccountPageRequest pageRequest)
         {
             return Ok(await _accountService.GetAllAccounts(pageRequest));
+        }
+        [Route("GenPass")]
+        [HttpGet]
+        public async Task<IActionResult> Test([FromQuery] string password )
+        {
+            return Ok(await _accountService.HashPassword(password));
         }
     }
 }

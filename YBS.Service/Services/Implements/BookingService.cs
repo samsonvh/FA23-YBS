@@ -147,14 +147,14 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "End date must be greater than start date.");
             }
             var query = _unitOfWork.BookingRepository.Find(booking =>
-            (string.IsNullOrWhiteSpace(pageRequest.Trip) || booking.Trip.Name
-                                                            .Contains(pageRequest.Trip)) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Route) || booking.Route.Name
+                                                            .Contains(pageRequest.Route)) &&
             (string.IsNullOrWhiteSpace(pageRequest.Yacht) || booking.Yacht != null && booking.Yacht.Name
                                                                                         .Contains(pageRequest.Yacht)) &&
             (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || booking.Guests
                                                                     .Where(guest => guest.IsLeader == true)
                                                                     .Select(guest => guest.PhoneNumber)
-                                                                    .Contains(pageRequest.Trip)) &&
+                                                                    .Contains(pageRequest.Route)) &&
             (!pageRequest.DateBook.HasValue || pageRequest.DateBook == booking.CreationDate) &&
             ((!pageRequest.StartDate.HasValue && !pageRequest.StartDate.HasValue) ||
              (!pageRequest.StartDate.HasValue && pageRequest.EndDate == booking.Trip.ActualEndingTime) ||
