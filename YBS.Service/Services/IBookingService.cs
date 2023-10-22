@@ -16,7 +16,6 @@ namespace YBS.Service.Services
     {
         Task CreateGuestBooking (BookingInputDto pageRequest);
         Task<bool> ChangeStatusBookingNonMember(int id, string status);
-        Task CreateMemberBooking (BookingInputDto pageRequest);
         Task<DefaultPageResponse<BookingListingDto>> GetAll (BookingPageRequest pageRequest);
         Task<BookingDto> GetDetailBooking(int id);
     }

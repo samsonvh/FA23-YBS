@@ -13,6 +13,7 @@ namespace YBS
         public const string ACCOUNT_GET_ALL = DEFAULT_ROUTE;
         //Authentication
         public const string GOOGLE_LOGIN = "api/[controller]" + "/google-login";
+        public const string LOGIN = "api/[controller]" + "/login";
         public const string REFRESH_TOKEN = "api/[controller]" + "/refresh-token";
         public const string GOOGLE_AUTHENTICATION = "api/[controller]" + "/";
         //Member
