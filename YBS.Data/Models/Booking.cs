@@ -10,6 +10,7 @@ namespace YBS.Data.Models
     public class Booking
     {
         public int Id { get; set; }
+        public Trip Trip { get; set; }
         public int RouteId { get; set; }
         [ForeignKey("RouteId")]
         public Route Route { get; set; }

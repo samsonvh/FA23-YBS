@@ -31,17 +31,12 @@ namespace YBS.Service.Services.Implements
 
         public async Task CreateGuestBooking(BookingInputDto pageRequest)
         {
-            var existedTrip = await _unitOfWork.TripRepository
-                .Find(trip => trip.Id == pageRequest.TripId)
-                .Include(trip => trip.Route)
+            var existedRoute = await _unitOfWork.RouteRepository
+                .Find(trip => trip.Id == pageRequest.RouteId)
                 .FirstOrDefaultAsync();
-            if (existedTrip == null)
+            if (existedRoute == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
-            }
-            if (existedTrip.Route == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
             }
             var existedYachtType = await _unitOfWork.YachTypeRepository
                 .Find(yachtType => yachtType.Id == pageRequest.YachtTypeId)
@@ -51,7 +46,7 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
             }
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository
-                .Find(priceMapper => priceMapper.YachtTypeId == existedYachtType.Id && priceMapper.RouteId == existedTrip.RouteId)
+                .Find(priceMapper => priceMapper.YachtTypeId == existedYachtType.Id && priceMapper.RouteId == existedRoute.Id)
                 .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
@@ -145,33 +140,6 @@ namespace YBS.Service.Services.Implements
             return false;
         }
 
-        public async Task CreateMemberBooking(BookingInputDto pageRequest)
-        {
-            var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.Id == pageRequest.TripId)
-                                                            .Include(trip => trip.Route)
-                                                            .FirstOrDefaultAsync();
-            if (existedTrip == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
-            }
-            if (existedTrip.Route == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
-            }
-            var existedYachtType = await _unitOfWork.YachTypeRepository.Find(yachtType => yachtType.Id == pageRequest.YachtTypeId)
-                                                                .FirstOrDefaultAsync();
-            if (existedYachtType == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
-            }
-            var existedPriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.YachtTypeId == existedYachtType.Id &&
-                                                                        priceMapper.RouteId == existedTrip.RouteId)
-                                                                    .FirstOrDefaultAsync();
-            if (existedPriceMapper == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Trip Not Found");
-            }
-        }
 
         public async Task<DefaultPageResponse<BookingListingDto>> GetAll(BookingPageRequest pageRequest)
         {
