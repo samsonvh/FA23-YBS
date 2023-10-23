@@ -17,11 +17,11 @@ namespace YBS.Data.Models
         public string Name { get; set; }
         public string Beginning { get; set; }
         public string Destination { get; set; }
-        public DateTime ExpectedStartingTime { get; set; }
-        public DateTime ExpectedEndingTime { get; set; }
+        public TimeSpan ExpectedStartingTime { get; set; }
+        public TimeSpan ExpectedEndingTime { get; set; }
         public string Type { get; set; }
         public EnumRouteStatus Status { get; set; }
-        public ICollection<Trip> Trips { get; set; }
+        public ICollection<Booking> Bookings { get; set; }
         public ICollection<PriceMapper> PriceMappers { get; set; }
     }
 }

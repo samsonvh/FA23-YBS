@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YBS.Data.Enums;
 using YBS.Data.Models;
+using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Services;
 
 namespace YBS.Controllers
@@ -18,9 +19,16 @@ namespace YBS.Controllers
         }
         [Route(APIDefine.GOOGLE_LOGIN)]
         [HttpPost]
-        public async Task<IActionResult> Authentication([FromBody] string idToken)
+        public async Task<IActionResult> GoogleLogin([FromBody] string idToken)
         {
-            var result = await _authService.Authentication(idToken);
+            var result = await _authService.GoogleLogin(idToken);
+            return Ok(result);
+        }
+        [Route(APIDefine.LOGIN)]
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] LoginInputDto pageRequest)
+        {
+            var result = await _authService.Login(pageRequest);
             return Ok(result);
         }
         [HttpPost]

@@ -54,7 +54,7 @@ namespace YBS.Service.Services.Implements
                 var counter = 1;
                 foreach (var image in pageRequest.ImageFiles)
                 {
-                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, counter,"Yachts");
+                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, counter,"Yacht",yachtType.Name);
                     if (counter == pageRequest.ImageFiles.Count)
                     {
                         imageUrL += imageUri;
@@ -196,7 +196,7 @@ namespace YBS.Service.Services.Implements
             existedYacht.Name = pageRequest.Name;
             // existedYacht.ImageURL = pageRequest.ImageURL;
             existedYacht.Description = pageRequest.Description;
-            existedYacht.Manufacture = pageRequest.Manufacture;
+            existedYacht.Manufacturer = pageRequest.Manufacturer;
             existedYacht.GrossTonnageUnit = pageRequest.GrossTonnageUnit;
 
             existedYacht.SpeedUnit = pageRequest.SpeedUnit;

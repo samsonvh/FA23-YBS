@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using YBS.Data.Enums;
 using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
+using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
 
 namespace YBS.Controllers
@@ -35,6 +36,20 @@ namespace YBS.Controllers
                 return BadRequest("Change status guest booking fail.");
             }
             return Ok("Change status guest booking succesful.");
+        }
+        [Route(APIDefine.BOOKING_GET_ALL)]
+        [HttpGet]
+        public async Task<IActionResult> GetAll ([FromQuery] BookingPageRequest pageRequest)
+        {
+            var result = await _bookingService.GetAll(pageRequest);
+            return Ok(result);
+        }
+
+        [Route(APIDefine.BOOKING_GET_DETAIL)]
+        [HttpGet]
+        public async Task<IActionResult> GetDetailBooking([FromRoute] int id)
+        {
+            return Ok(await _bookingService.GetDetailBooking(id));
         }
     }
 }

@@ -15,8 +15,10 @@ using Microsoft.IdentityModel.Tokens;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
+using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageResponses;
 using YBS.Service.Exceptions;
+using YBS.Service.Util.Hash;
 
 namespace YBS.Service.Services.Implements
 {
@@ -31,7 +33,7 @@ namespace YBS.Service.Services.Implements
             _configuration = configuration;
             _httpContextAccessor = httpContextAccessor;
         }
-        public async Task<AuthResponse> Authentication(string idToken)
+        public async Task<AuthResponse> GoogleLogin(string idToken)
         {
 
             GoogleJsonWebSignature.Payload? payload = await GetPayload(idToken);
@@ -70,7 +72,7 @@ namespace YBS.Service.Services.Implements
                         account.RefreshToken.ExpireDate = expireDate;
                         _unitOfWorks.AccountRepository.Update(account);
                     }
-                    else 
+                    else
                     {
                         refreshToken = account.RefreshToken.Token;
                     }
@@ -93,10 +95,10 @@ namespace YBS.Service.Services.Implements
                 return new AuthResponse()
                 {
                     AccessToken = accessToken,
-                    refreshToken = refreshToken,
+                    RefreshToken = refreshToken,
                     Role = account.Role.Name,
-                    UserName = payload.Name,
-                    ImgUrl = payload.Picture
+                    UserName = account.Username,
+                    Email = account.Email
                 };
             }
             else
@@ -195,7 +197,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new Exception("Failed to decrypt/validate the JWT token.", ex);
             }
-         }
+        }
         private string GenerateRefreshToken()
         {
             var randomNumber = new byte[64];
@@ -238,6 +240,85 @@ namespace YBS.Service.Services.Implements
                 RefreshToken = newRefreshToken,
             };
             return result;
+        }
+
+        public async Task<AuthResponse> Login(LoginInputDto loginInputDto)
+        {
+            var existedEmail = await _unitOfWorks.AccountRepository.Find(account => account.Email == loginInputDto.Email)
+                                                                    .Include(account => account.Role)
+                                                                    .Include(account => account.RefreshToken)
+                                                                    .FirstOrDefaultAsync();
+            if (existedEmail == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Email is wrong");
+            }
+            var comparePassword = PasswordHashing.VerifyHashedPassword(existedEmail.Password, loginInputDto.Password);
+            if (comparePassword == false)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Password is wrong");
+            }
+            string refreshToken;
+            if (existedEmail.RefreshToken == null)
+            {
+                //add refresh token
+                refreshToken = await AddRefreshToken(existedEmail);
+            }
+            else
+            {
+                //update refresh token
+                if (existedEmail.RefreshToken.ExpireDate.CompareTo(DateTime.Now) < 0 && existedEmail.RefreshToken != null)
+                {
+                    refreshToken = await UpdateRefreshToken(existedEmail);
+                }
+                else
+                {
+                    refreshToken = existedEmail.RefreshToken.Token;
+                }
+            }
+            string accessToken;
+            JwtSecurityToken tokenGenerated;
+            switch (existedEmail.Status)
+            {
+                //update account status
+                case EnumAccountStatus.INACTIVE:
+                    existedEmail.Status = EnumAccountStatus.ACTIVE;
+                    break;
+                case EnumAccountStatus.BANNED:
+                    throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
+            }
+            await _unitOfWorks.SaveChangesAsync();
+            tokenGenerated = GenerateJWTToken(existedEmail);
+            accessToken = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
+            return new AuthResponse()
+            {
+                AccessToken = accessToken,
+                RefreshToken = refreshToken,
+                Role = existedEmail.Role.Name,
+                UserName = existedEmail.Username,
+                Email = existedEmail.Email
+            };
+        }
+        private async Task<string> AddRefreshToken(Account account)
+        {
+            string token = GenerateRefreshToken();
+            RefreshToken addRefreshToken = new RefreshToken()
+            {
+                AccountId = account.Id,
+                Token = token,
+                ExpireDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:RefreshToken_Expire_Dates"]))
+            };
+            _unitOfWorks.RefreshTokenRepository.Add(addRefreshToken);
+            return token;
+        }
+        private async Task<string> UpdateRefreshToken(Account account)
+        {
+            string token = GenerateRefreshToken();
+            account.RefreshToken.Token = token;
+
+            var expireDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:RefreshToken_Expire_Dates"]));
+            account.RefreshToken.ExpireDate = expireDate;
+            _unitOfWorks.AccountRepository.Update(account);
+            return token;
         }
     }
 }

@@ -9,7 +9,7 @@ namespace YBS.Service.Dtos.InputDtos
 {
     public class BookingInputDto
     {
-        public int TripId { get; set; }
+        public int RouteId { get; set; }
         public int? YachtId { get; set; }
         public int? MemberId { get; set; }
         public int? ServicePackageId { get; set; }
@@ -21,7 +21,8 @@ namespace YBS.Service.Dtos.InputDtos
         public IFormFile? GuestList { get; set; }
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
-        public string IdentityNumber { get; set; }
+        public string? IdentityNumber { get; set; }
         public string? PhoneNumber { get; set; }
+        public DateTime OccurDate { get; set; }
     }
 }
