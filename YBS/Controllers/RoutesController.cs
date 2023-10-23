@@ -6,7 +6,6 @@ using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
-    [Route("api/routes")]
     [ApiController]
     public class RoutesController : ControllerBase
     {
@@ -16,23 +15,29 @@ namespace YBS.Controllers
             _routeService = routeService; 
         }
 
+        [Route(APIDefine.ROUTE_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest)
         {
             return Ok(await _routeService.GetAllRoutes(pageRequest));   
         }
 
-        [HttpGet("{id}")]
-        public async Task<IActionResult> GetDetailRoute(int id)
+        [Route(APIDefine.ROUTE_GET_DETAIL)]
+        [HttpGet]
+        public async Task<IActionResult> GetDetailRoute([FromRoute] int id)
         {
             return Ok(await _routeService.GetDetailRoute(id));
         }
+
+        [Route(APIDefine.ROUTE_CREATE)]
         [HttpPost]
         public async Task<IActionResult> Create(RouteInputDto pageRequest)
         {
             await _routeService.Create(pageRequest);
             return Ok("Create Route Successfully");
         }
+
+        [Route(APIDefine.ROUTE_UPDATE)]
         [HttpPut]
         public async Task<IActionResult> Update(RouteInputDto pageRequest)
         {

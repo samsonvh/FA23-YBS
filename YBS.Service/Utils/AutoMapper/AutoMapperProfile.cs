@@ -92,12 +92,15 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.ServicePackageName, options => options.MapFrom(booking => booking.ServicePackage.Name != null
                                                                                                                 ? booking.ServicePackage.Name : null))
                 .ForMember(bookingDto => bookingDto.ActualStartingTime, options => options.MapFrom(booking => booking.Trip.ActualStartingTime))
+                .ForMember(bookingDto => bookingDto.RouteName, options => options.MapFrom(booking => booking.Route.Name))
                 .ForMember(bookingDto => bookingDto.CreationDate, options => options.MapFrom(booking => booking.CreationDate))
                 .ForMember(bookingDto => bookingDto.NumberOfGuest, options => options.MapFrom(booking => booking.Guests.Count()))
                 .ForMember(bookingDto => bookingDto.Note, options => options.MapFrom(booking => booking.Note))
                 .ForMember(bookingDto => bookingDto.TotalPrice, options => options.MapFrom(booking => booking.TotalPrice))
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
+            //trip
+            CreateMap<BookingInputDto, Trip>();
         }
     }
 }

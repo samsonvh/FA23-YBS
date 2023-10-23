@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
 using Microsoft.AspNetCore.Http;
@@ -37,7 +38,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedRoute == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
             }
             var existedYachtType = await _unitOfWork.YachTypeRepository
                 .Find(yachtType => yachtType.Id == pageRequest.YachtTypeId)
@@ -53,8 +54,11 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Trip Not Found");
             }
-
-            /*var booking = _mapper.Map<Booking>(pageRequest);*/
+            //valid DateOfBirth
+            if (pageRequest.DateOfBirth.Year > DateTime.Now.Year || pageRequest.DateOfBirth.Year < 0)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
+            }
             var servicePackage = await _unitOfWork.ServicePackageRepository
                 .Find(servicePackage => servicePackage.Id == pageRequest.ServicePackageId)
                 .FirstOrDefaultAsync();
@@ -69,6 +73,9 @@ namespace YBS.Service.Services.Implements
             {
                 guestList = await ImportGuestExcel(pageRequest.GuestList);
             }
+            var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
+            var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
+           
             //add booking
             var booking = _mapper.Map<Booking>(pageRequest);
             booking.Status = EnumBookingStatus.PENDING;
@@ -80,6 +87,15 @@ namespace YBS.Service.Services.Implements
             booking.Guests = guestList;
             _unitOfWork.BookingRepository.Add(booking);
             await _unitOfWork.SaveChangesAsync();
+            //add trip
+            var trip = _mapper.Map<Trip>(pageRequest);
+            trip.BookingId = booking.Id;
+            trip.ActualStartingTime = actualStartingDate;
+            trip.ActualEndingTime = actualEndingDate;
+            trip.Status = EnumTripStatus.NOT_STARTED;
+            _unitOfWork.TripRepository.Add(trip);   
+            //save trip
+            await _unitOfWork.SaveChangesAsync();  
         }
 
         private async Task<List<Guest>> ImportGuestExcel(IFormFile formFile, CancellationToken cancellationToken = default)
@@ -104,6 +120,23 @@ namespace YBS.Service.Services.Implements
                     var rowCount = worksheet.Dimension.Rows;
                     for (int row = 2; row <= rowCount; row++)
                     {
+                        var dateOfBirth = worksheet.Cells[row, 2].GetValue<DateTime>();
+                        if (dateOfBirth.Year <= 0 || dateOfBirth.Year > 2023)
+                        {
+                            throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
+                        }
+
+                        var identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
+                        if (string.IsNullOrEmpty(identityNumber) || !Regex.IsMatch(identityNumber, "^[0-9]+$"))
+                        {
+                            throw new APIException((int)HttpStatusCode.BadRequest, "Invalid IdentityNumber");
+                        }
+
+                        var phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
+                        if (string.IsNullOrEmpty(phoneNumber) || !Regex.IsMatch(phoneNumber, @"^0?(3[2-9]|5[689]|7[06-9]|8[0689]|9[0-46-9])[0-9]{7}$"))
+                        {
+                            throw new APIException((int)HttpStatusCode.BadRequest, "Invalid PhoneNumber");
+                        }
                         var guest = new Guest
                         {
                             FullName = worksheet.Cells[row, 1].Value.ToString().Trim(),
@@ -138,7 +171,6 @@ namespace YBS.Service.Services.Implements
             }
             return false;
         }
-
 
         public async Task<DefaultPageResponse<BookingListingDto>> GetAll(BookingPageRequest pageRequest)
         {
