@@ -59,28 +59,6 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
             }
-            //valid identityNumber and phoneNumber
-            var uniqueIdentityNumbers = new HashSet<string>();
-            var uniquePhoneNumbers = new HashSet<string>();
-
-            if (pageRequest.IdentityNumber != null)
-            {
-                if (uniqueIdentityNumbers.Contains(pageRequest.IdentityNumber))
-                {
-                    throw new APIException((int)HttpStatusCode.BadRequest, "IdentityNumber is existed");
-                }
-                uniqueIdentityNumbers.Add(pageRequest.IdentityNumber);
-            }
-
-            if (pageRequest.PhoneNumber != null)
-            {
-                if (uniquePhoneNumbers.Contains(pageRequest.PhoneNumber))
-                {
-                    throw new APIException((int)HttpStatusCode.BadRequest, "PhoneNumber is existed");
-                }
-                uniquePhoneNumbers.Add(pageRequest.PhoneNumber);
-            }
-
             var servicePackage = await _unitOfWork.ServicePackageRepository
                 .Find(servicePackage => servicePackage.Id == pageRequest.ServicePackageId)
                 .FirstOrDefaultAsync();
@@ -95,8 +73,8 @@ namespace YBS.Service.Services.Implements
             {
                 guestList = await ImportGuestExcel(pageRequest.GuestList);
             }
-            var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hour).AddMinutes(existedRoute.ExpectedStartingTime.Minute);
-            var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hour).AddMinutes(existedRoute.ExpectedEndingTime.Minute);
+            var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
+            var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
            
             //add booking
             var booking = _mapper.Map<Booking>(pageRequest);
