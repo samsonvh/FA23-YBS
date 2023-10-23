@@ -23,11 +23,17 @@ namespace YBS.Controllers
         {
             return Ok(await _accountService.GetAllAccounts(pageRequest));
         }
-        [Route("GenPass")]
+        // [Route("GenPass")]
+        // [HttpGet]
+        // public async Task<IActionResult> Test([FromQuery] string password )
+        // {
+        //     return Ok(await _accountService.HashPassword(password));
+        // }
+        [Route(APIDefine.ACCOUNT_DETAIL)]
         [HttpGet]
-        public async Task<IActionResult> Test([FromQuery] string password )
+        public async Task<IActionResult> GetDetailAccount ([FromRoute] int id)
         {
-            return Ok(await _accountService.HashPassword(password));
+            return Ok(await _accountService.GetDetailAccount(id));
         }
     }
 }

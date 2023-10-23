@@ -248,7 +248,7 @@ namespace YBS.Service.Services.Implements
                                                                     .Include(account => account.Role)
                                                                     .Include(account => account.RefreshToken)
                                                                     .FirstOrDefaultAsync();
-            if (existedEmail != null)
+            if (existedEmail == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Email is wrong");
             }

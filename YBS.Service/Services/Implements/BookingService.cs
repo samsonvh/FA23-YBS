@@ -143,28 +143,21 @@ namespace YBS.Service.Services.Implements
 
         public async Task<DefaultPageResponse<BookingListingDto>> GetAll(BookingPageRequest pageRequest)
         {
-            if (pageRequest.StartDate <= pageRequest.EndDate)
-            {   
-                throw new APIException((int)HttpStatusCode.BadRequest, "End date must be greater than start date.");
-            }
             var query = _unitOfWork.BookingRepository.Find(booking =>
             (string.IsNullOrWhiteSpace(pageRequest.Route) || booking.Route.Name
                                                             .Contains(pageRequest.Route)) &&
             (string.IsNullOrWhiteSpace(pageRequest.Yacht) || booking.Yacht != null && booking.Yacht.Name
                                                                                         .Contains(pageRequest.Yacht)) &&
-            (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || booking.Guests
-                                                                    .Where(guest => guest.IsLeader == true)
-                                                                    .Select(guest => guest.PhoneNumber)
-                                                                    .Contains(pageRequest.Route)) &&
+            (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || (booking.MemberId == null 
+                                                                    ? booking.Guests
+                                                                    .First(guest => guest.IsLeader == true).PhoneNumber == pageRequest.PhoneNumber
+                                                                    : booking.Member.PhoneNumber == pageRequest.PhoneNumber)) &&
             (!pageRequest.DateBook.HasValue || pageRequest.DateBook == booking.CreationDate) &&
-            ((!pageRequest.StartDate.HasValue && !pageRequest.StartDate.HasValue) ||
-             (!pageRequest.StartDate.HasValue && pageRequest.EndDate == booking.Trip.ActualEndingTime) ||
-             (!pageRequest.EndDate.HasValue && pageRequest.StartDate == booking.Trip.ActualStartingTime) ||
-             (booking.Trip.ActualStartingTime >= pageRequest.StartDate && booking.Trip.ActualEndingTime <= pageRequest.EndDate)
-            ))
+            (!pageRequest.DateOccurred.HasValue || (pageRequest.DateOccurred <= booking.Trip.ActualEndingTime && pageRequest.DateOccurred >= booking.Trip.ActualStartingTime)))
             .Include(booking => booking.Guests)
             .Include(booking => booking.Trip)
-            .Include(Booking => Booking.Yacht);
+            .Include(booking => booking.Route.Name)
+            .Include(Booking => Booking.Yacht.Name);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) 
                         ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(booking => booking.Id);
             var totalCount = data.Count();

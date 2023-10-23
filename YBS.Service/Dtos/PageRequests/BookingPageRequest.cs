@@ -12,8 +12,7 @@ namespace YBS.Service.Dtos.PageRequests
         public string? Yacht { get; set; }
         public string? PhoneNumber { get; set; }
         public DateTime? DateBook { get; set; }
-        public DateTime? StartDate { get; set; }
-        public DateTime? EndDate { get; set; }
+        public DateTime? DateOccurred { get; set; }
         public EnumBookingStatus? Status { get; set; }
     }
 }
