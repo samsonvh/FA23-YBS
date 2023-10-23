@@ -13,8 +13,8 @@ namespace YBS.Service.Dtos.InputDtos
         public string? Name { get; set; }
         public string? Beginning { get; set; }
         public string? Destination { get; set; }
-        public DateTime? ExpectedStartingTime { get; set; }
-        public DateTime? ExpectedEndingTime { get; set; }
+        public TimeOnly ExpectedStartingTime { get; set; }
+        public TimeOnly ExpectedEndingTime { get; set; }
         public string? Type { get; set; }
         public EnumRouteStatus Status { get; set; }
     }

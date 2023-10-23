@@ -49,7 +49,9 @@ namespace YBS.Service.Utils.AutoMapper
             //route
             CreateMap<Route, RouteListingDto>();
             CreateMap<Route, RouteDto>();
-            CreateMap<RouteInputDto, Route>();
+            CreateMap<RouteInputDto, Route>()
+                .ForMember(route => route.ExpectedStartingTime, option => option.Ignore())
+                .ForMember(route => route.ExpectedEndingTime, option => option.Ignore());
 
             //booking
             CreateMap<BookingInputDto, Booking>();
@@ -57,13 +59,17 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<BookingInputDto, Guest>();
             CreateMap<Booking, BookingListingDto>()
                 .ForMember(bookingListDto => bookingListDto.Leader,
-                            option => option.MapFrom(booking =>  booking.Guests
+                            option => option.MapFrom(booking => booking.MemberId == null 
+                                                                ? booking.Guests
                                                                 .First(guest => guest.IsLeader == true)
-                                                                .FullName))
+                                                                .FullName
+                                                                : booking.Member.FullName))
                 .ForMember(bookingListDto => bookingListDto.PhoneNumber,
-                            option => option.MapFrom(booking => booking.Guests
+                            option => option.MapFrom(booking => booking.MemberId == null
+                                                                ?booking.Guests
                                                                 .First(guest => guest.IsLeader == true)
-                                                                .PhoneNumber))
+                                                                .PhoneNumber
+                                                                : booking.Member.PhoneNumber))
                 .ForMember(bookingListDto => bookingListDto.Route,
                             option => option.MapFrom(booking => booking.Route.Name))
                 .ForMember(bookingListDto => bookingListDto.Yacht,

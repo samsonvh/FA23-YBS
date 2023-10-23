@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos;
@@ -38,6 +39,9 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
+            routeAdd.Status = EnumRouteStatus.AVAILABLE;
+            routeAdd.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
+            routeAdd.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
             _unitOfWork.RouteRepository.Add(routeAdd);
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
@@ -101,8 +105,8 @@ namespace YBS.Service.Services.Implements
             route.Name = pageRequest.Name;
             route.Beginning = pageRequest.Beginning;
             route.Destination = pageRequest.Destination;
-            route.ExpectedStartingTime = (DateTime)pageRequest.ExpectedStartingTime;
-            route.ExpectedEndingTime = (DateTime)pageRequest.ExpectedEndingTime;
+            route.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
+            route.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
             route.Type = pageRequest.Type;
             if (pageRequest.Status != null)
             {
