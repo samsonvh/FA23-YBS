@@ -5,7 +5,6 @@ using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
-    [Route("api/yacht-types")]
     [ApiController]
     public class YachtTypesController : ControllerBase
     {
@@ -16,6 +15,7 @@ namespace YBS.Controllers
             _yachtTypeService = yachtTypeService;
         }
 
+        [Route(APIDefine.YACHT_TYPE_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllYachtType([FromQuery] YachtTypePageRequest pageRequest)
         {

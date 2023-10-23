@@ -15,7 +15,7 @@ namespace YBS.Service.Dtos
         public string FullName { get; set; }
         public string PhoneNumber { get; set; }
         public int TripId { get; set; }
-        public string TripName { get; set; }
+        public string RouteName { get; set; }
         public int YachtId { get; set; }
         public string YachtName { get; set; }
         public int AgencyId { get; set; }

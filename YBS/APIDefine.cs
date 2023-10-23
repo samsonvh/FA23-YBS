@@ -8,13 +8,13 @@ namespace YBS
     public static class APIDefine
     {
         //Default Route
-        public const string DEFAULT_ROUTE = "api/[controller]";
+        public const string DEFAULT_ROUTE = "api/v{version:apiVersion}/[controller]";
         //Account
         public const string ACCOUNT_GET_ALL = DEFAULT_ROUTE;
         //Authentication
-        public const string GOOGLE_LOGIN = "api/[controller]" + "/google-login";
-        public const string LOGIN = "api/[controller]" + "/login";
-        public const string REFRESH_TOKEN = "api/[controller]" + "/refresh-token";
+        public const string GOOGLE_LOGIN = DEFAULT_ROUTE + "/google-login";
+        public const string LOGIN = DEFAULT_ROUTE + "/login";
+        public const string REFRESH_TOKEN = DEFAULT_ROUTE + "/refresh-token";
         public const string GOOGLE_AUTHENTICATION = "api/[controller]" + "/";
         //Member
         public const string MEMBER_CREATE = DEFAULT_ROUTE;
@@ -27,6 +27,12 @@ namespace YBS
         public const string COMPANY_CREATE = DEFAULT_ROUTE;
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
+        //Route
+        public const string ROUTE_GET_ALL = DEFAULT_ROUTE;
+        public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string ROUTE_CREATE= DEFAULT_ROUTE;
+        public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
+
         //Membership Package
         public const string MEMBERSHIP_PACKAGE = "membership-packages";
         public const string MEMBERSHIP_PACKAGE_CREATE = MEMBERSHIP_PACKAGE;
@@ -38,6 +44,10 @@ namespace YBS
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_GET_ALL = DEFAULT_ROUTE;
+
+        //YachtType
+        public const string YACHT_TYPE_GET_ALL = "api/v{version:apiVersion}/yacht-types";
+
         //Booking
         public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
         public const string BOOKING_GUEST_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";

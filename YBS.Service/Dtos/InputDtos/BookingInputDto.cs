@@ -23,5 +23,6 @@ namespace YBS.Service.Dtos.InputDtos
         public DateTime DateOfBirth { get; set; }
         public string IdentityNumber { get; set; }
         public string? PhoneNumber { get; set; }
+        public DateTime OccurDate { get; set; }
     }
 }
