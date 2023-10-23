@@ -10,6 +10,7 @@ using OfficeOpenXml;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
+using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
@@ -79,8 +80,6 @@ namespace YBS.Service.Services.Implements
             booking.Guests = guestList;
             _unitOfWork.BookingRepository.Add(booking);
             await _unitOfWork.SaveChangesAsync();
-
-         
         }
 
         private async Task<List<Guest>> ImportGuestExcel(IFormFile formFile, CancellationToken cancellationToken = default)
@@ -173,6 +172,25 @@ namespace YBS.Service.Services.Implements
                 PageSize = (int)pageRequest.PageSize,
             };
             return result;
+        }
+
+        public async Task<BookingDto> GetDetailBooking(int id)
+        {
+            var booking = await _unitOfWork.BookingRepository
+                .Find(booking => booking.Id == id)
+                .Include(booking => booking.ServicePackage)
+                .Include(booking => booking.Agency)
+                .Include(booking => booking.Guests)
+                .Include(booking => booking.Trip)
+                .Include(booking => booking.Yacht)
+                .Include(booking => booking.YachtType)
+                .FirstOrDefaultAsync(); 
+            if(booking != null)
+            {
+                var bookingDto = _mapper.Map<BookingDto>(booking);
+                return bookingDto;
+            }
+            return null;
         }
     }
 }

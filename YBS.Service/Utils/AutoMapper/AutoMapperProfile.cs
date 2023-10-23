@@ -81,6 +81,23 @@ namespace YBS.Service.Utils.AutoMapper
                             option => option.MapFrom(booking => booking.Trip.ActualStartingTime))
                 .ForMember(bookingListDto => bookingListDto.EndDate,
                             option => option.MapFrom(booking => booking.Trip.ActualEndingTime));
+
+            CreateMap<Booking, BookingDto>()
+                .ForMember(bookingDto => bookingDto.FullName, options => options.MapFrom(booking => booking.MemberId == null ? booking.Guests.First(booking => booking.IsLeader == true).FullName : booking.Member.FullName))
+                .ForMember(bookingDto => bookingDto.PhoneNumber, options => options.MapFrom(booking => booking.MemberId == null ? booking.Guests.First(booking => booking.IsLeader == true).PhoneNumber : booking.Member.PhoneNumber))
+                .ForMember(bookingDto => bookingDto.YachtName, options => options.MapFrom(booking => booking.Yacht.Name != null
+                                                                                                        ? booking.Yacht.Name : null))
+                .ForMember(bookingDto => bookingDto.AgencyId, options => options.MapFrom(booking => booking.AgencyId != null
+                                                                                                        ? booking.AgencyId : null))
+                .ForMember(bookingDto => bookingDto.ServicePackageName, options => options.MapFrom(booking => booking.ServicePackage.Name != null
+                                                                                                                ? booking.ServicePackage.Name : null))
+                .ForMember(bookingDto => bookingDto.ActualStartingTime, options => options.MapFrom(booking => booking.Trip.ActualStartingTime))
+                .ForMember(bookingDto => bookingDto.CreationDate, options => options.MapFrom(booking => booking.CreationDate))
+                .ForMember(bookingDto => bookingDto.NumberOfGuest, options => options.MapFrom(booking => booking.Guests.Count()))
+                .ForMember(bookingDto => bookingDto.Note, options => options.MapFrom(booking => booking.Note))
+                .ForMember(bookingDto => bookingDto.TotalPrice, options => options.MapFrom(booking => booking.TotalPrice))
+                .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
+                .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
         }
     }
 }
