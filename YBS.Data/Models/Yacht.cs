@@ -18,7 +18,7 @@ namespace YBS.Data.Models
         public string Name { get; set; }
         public string ImageURL { get; set; }
         public string Description { get; set; }
-        public string Manufacture { get; set; }
+        public string Manufacturer { get; set; }
         public int GrossTonnage { get; set; }
         public string GrossTonnageUnit { get; set; }
         public int Range { get; set; }

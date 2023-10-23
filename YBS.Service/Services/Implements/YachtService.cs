@@ -196,7 +196,7 @@ namespace YBS.Service.Services.Implements
             existedYacht.Name = pageRequest.Name;
             // existedYacht.ImageURL = pageRequest.ImageURL;
             existedYacht.Description = pageRequest.Description;
-            existedYacht.Manufacture = pageRequest.Manufacture;
+            existedYacht.Manufacturer = pageRequest.Manufacturer;
             existedYacht.GrossTonnageUnit = pageRequest.GrossTonnageUnit;
 
             existedYacht.SpeedUnit = pageRequest.SpeedUnit;

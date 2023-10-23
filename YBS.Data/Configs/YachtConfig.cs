@@ -18,7 +18,7 @@ namespace YBS.Data.Configs
             builder.Property(yacht => yacht.Name).HasColumnType("varchar(100)");
             builder.Property(yacht => yacht.ImageURL).HasColumnType("varchar(max)").IsRequired(false);
             builder.Property(yacht => yacht.Description).HasColumnType("varchar(max)").IsRequired(false);
-            builder.Property(yacht => yacht.Manufacture).HasColumnType("varchar(100)");
+            builder.Property(yacht => yacht.Manufacturer).HasColumnType("varchar(100)");
             builder.Property(yacht => yacht.GrossTonnageUnit).HasColumnType("varchar(10)");
             builder.Property(yacht => yacht.RangeUnit).HasColumnType("varchar(20)");
             builder.Property(yacht => yacht.SpeedUnit).HasColumnType("varchar(20)");

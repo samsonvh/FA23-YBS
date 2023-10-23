@@ -51,7 +51,7 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Route, RouteDto>();
             CreateMap<RouteInputDto, Route>()
                 .ForMember(route => route.ExpectedStartingTime, option => option.Ignore())
-                .ForMember(route => route.ExpectedEndingTime, option => option.Ignore());
+                .ForMember(route => route.  ExpectedEndingTime, option => option.Ignore());
 
             //booking
             CreateMap<BookingInputDto, Booking>();
