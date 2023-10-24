@@ -210,6 +210,7 @@ namespace YBS.Service.Services.Implements
         {
             var booking = await _unitOfWork.BookingRepository
                 .Find(booking => booking.Id == id)
+                .Include(booking => booking.Route)
                 .Include(booking => booking.ServicePackage)
                 .Include(booking => booking.Agency)
                 .Include(booking => booking.Guests)
