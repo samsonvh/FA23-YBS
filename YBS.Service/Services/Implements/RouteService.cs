@@ -24,11 +24,12 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-
-        public RouteService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IFirebaseStorageService _firebaseStorageService;
+        public RouteService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _firebaseStorageService = firebaseStorageService;
         }
 
         public async Task Create(RouteInputDto pageRequest)
@@ -38,7 +39,26 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
+            string imageUrL = null;
+            if (pageRequest.ImageFiles.Count > 0)
+            {
+                var counter = 1;
+                foreach (var image in pageRequest.ImageFiles)
+                {
+                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, counter, "Route");
+                    if (counter == pageRequest.ImageFiles.Count)
+                    {
+                        imageUrL += imageUri;
+                    }
+                    else
+                    {
+                        imageUrL += imageUri + ",";
+                    }
+                    counter++;
+                }
+            }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
+            routeAdd.ImageURL = imageUrL;
             routeAdd.Status = EnumRouteStatus.AVAILABLE;
             routeAdd.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
             routeAdd.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
@@ -63,7 +83,30 @@ namespace YBS.Service.Services.Implements
             var totalItem = data.Count();
             var pageCount = totalItem / (int)pageRequest.PageSize + 1;
             var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
-            var resultList = _mapper.Map<List<RouteListingDto>>(dataPaging);
+            List<RouteListingDto> resultList = new List<RouteListingDto>();
+            if (dataPaging != null)
+            {
+                foreach (var route in dataPaging)
+                {
+                    var routeListingDto = _mapper.Map<RouteListingDto>(route);
+                    if (route.ImageURL != null)
+                    {
+                        List<string> imgUrlList = new List<string>();
+                        var arrayImgSplit = route.ImageURL.Trim().Split(',');
+                        int arrayLength = arrayImgSplit.Length;
+                        if (arrayImgSplit.Length > 3)
+                        {
+                            arrayLength = 3;
+                        }
+                        for (int i = 0; i < arrayLength; i++)
+                        {
+                            imgUrlList.Add(arrayImgSplit[i].Trim());
+                        }
+                        routeListingDto.ImageURL = imgUrlList;
+                    }
+                    resultList.Add(routeListingDto);
+                }
+            }
             var result = new DefaultPageResponse<RouteListingDto>()
             {
                 Data = resultList,
@@ -80,16 +123,27 @@ namespace YBS.Service.Services.Implements
             var route = await _unitOfWork.RouteRepository
                 .Find(route => route.Id == id)
                 .FirstOrDefaultAsync();
-            if (route != null)
+            if (route == null)
             {
-                return _mapper.Map<RouteDto>(route);
+                throw new APIException((int)HttpStatusCode.NotFound, "Route Not Found");
             }
-            return null;
+            var routeDto = _mapper.Map<RouteDto>(route);
+            if (route.ImageURL != null)
+            {
+                List<string> imgUrlList = new List<string>();
+                var arrayImgSplit = route.ImageURL.Trim().Split(',');
+                foreach (var image in arrayImgSplit)
+                {
+                    imgUrlList.Add(image);
+                }
+                routeDto.ImageURL = imgUrlList;
+            }
+            return routeDto;
         }
 
-        public async Task Update(RouteInputDto pageRequest)
+        public async Task Update(RouteInputDto pageRequest, int id)
         {
-            var route = await _unitOfWork.RouteRepository.Find(route => route.Id == pageRequest.Id).FirstOrDefaultAsync();
+            var route = await _unitOfWork.RouteRepository.Find(route => route.Id == id).FirstOrDefaultAsync();
             if (route == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Route not found");
@@ -98,7 +152,7 @@ namespace YBS.Service.Services.Implements
             {
                 route.CompanyId = (int)pageRequest.CompanyId;
             }
-            if (pageRequest.ExpectedStartingTime > pageRequest.ExpectedEndingTime)
+            if (pageRequest.ExpectedStartingTime.CompareTo(pageRequest.ExpectedEndingTime) > 0)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Expected Starting Time must be beofre Expected Ending Time");
             }
@@ -110,7 +164,7 @@ namespace YBS.Service.Services.Implements
             route.Type = pageRequest.Type;
             if (pageRequest.Status != null)
             {
-                route.Status = pageRequest.Status;
+                route.Status = (EnumRouteStatus)pageRequest.Status;
             }
             _unitOfWork.RouteRepository.Update(route);
             var result = await _unitOfWork.SaveChangesAsync();
