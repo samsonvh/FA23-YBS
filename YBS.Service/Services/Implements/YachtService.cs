@@ -99,9 +99,14 @@ namespace YBS.Service.Services.Implements
                     {
                         List<string> imgUrlList = new List<string>();
                         var arrayImgSplit = yacht.ImageURL.Trim().Split(',');
-                        foreach (var imgSplit in arrayImgSplit)
+                        int arrayLength = arrayImgSplit.Length;
+                        if (arrayImgSplit.Length > 3)
+                        {   
+                            arrayLength = 3;
+                        }
+                        for (int i = 0; i < arrayLength ; i ++)
                         {
-                            imgUrlList.Add(imgSplit.Trim());
+                            imgUrlList.Add(arrayImgSplit[i].Trim());
                         }
                         yachtListingDto.ImageURL = imgUrlList;
                     }
@@ -196,7 +201,7 @@ namespace YBS.Service.Services.Implements
             existedYacht.Name = pageRequest.Name;
             // existedYacht.ImageURL = pageRequest.ImageURL;
             existedYacht.Description = pageRequest.Description;
-            existedYacht.Manufacture = pageRequest.Manufacture;
+            existedYacht.Manufacturer = pageRequest.Manufacturer;
             existedYacht.GrossTonnageUnit = pageRequest.GrossTonnageUnit;
 
             existedYacht.SpeedUnit = pageRequest.SpeedUnit;

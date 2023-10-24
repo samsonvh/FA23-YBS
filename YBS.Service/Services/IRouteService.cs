@@ -17,6 +17,6 @@ namespace YBS.Service.Services
         Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest);
         Task<RouteDto> GetDetailRoute(int id);
         Task Create (RouteInputDto pageRequest);
-        Task Update (RouteInputDto pageRequest);
+        Task Update (RouteInputDto pageRequest, int id);
     }
 }

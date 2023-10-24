@@ -13,6 +13,7 @@ namespace YBS.Service.Dtos.ListingDtos
         public string Name { get; set; }
         public string Beginning { get; set; }
         public string Destination { get; set; }
+        public List<string>? ImageURL { get; set; }
         public string Status { get; set; }
 
     }

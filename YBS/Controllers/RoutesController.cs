@@ -7,6 +7,7 @@ using YBS.Service.Services;
 namespace YBS.Controllers
 {
     [ApiController]
+    [Consumes("multipart/form-data")]
     public class RoutesController : ControllerBase
     {
         private readonly IRouteService _routeService;
@@ -31,7 +32,7 @@ namespace YBS.Controllers
 
         [Route(APIDefine.ROUTE_CREATE)]
         [HttpPost]
-        public async Task<IActionResult> Create(RouteInputDto pageRequest)
+        public async Task<IActionResult> Create([FromForm]RouteInputDto pageRequest)
         {
             await _routeService.Create(pageRequest);
             return Ok("Create Route Successfully");
@@ -39,9 +40,9 @@ namespace YBS.Controllers
 
         [Route(APIDefine.ROUTE_UPDATE)]
         [HttpPut]
-        public async Task<IActionResult> Update(RouteInputDto pageRequest)
+        public async Task<IActionResult> Update([FromForm]RouteInputDto pageRequest,[FromRoute] int id)
         {
-            await _routeService.Update(pageRequest);
+            await _routeService.Update(pageRequest, id);
             return Ok("Update Route Successfully");
         }
     }

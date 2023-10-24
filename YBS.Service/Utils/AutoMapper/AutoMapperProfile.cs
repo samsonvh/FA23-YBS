@@ -47,8 +47,10 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<YachtType, YachtTypeListingDto>();
 
             //route
-            CreateMap<Route, RouteListingDto>();
-            CreateMap<Route, RouteDto>();
+            CreateMap<Route, RouteListingDto>()
+                .ForMember(routeListingDto => routeListingDto.ImageURL, option => option.Ignore());
+            CreateMap<Route, RouteDto>()
+                .ForMember(routeListingDto => routeListingDto.ImageURL, option => option.Ignore());
             CreateMap<RouteInputDto, Route>()
                 .ForMember(route => route.ExpectedStartingTime, option => option.Ignore())
                 .ForMember(route => route.ExpectedEndingTime, option => option.Ignore());
@@ -59,14 +61,14 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<BookingInputDto, Guest>();
             CreateMap<Booking, BookingListingDto>()
                 .ForMember(bookingListDto => bookingListDto.Leader,
-                            option => option.MapFrom(booking => booking.MemberId == null 
+                            option => option.MapFrom(booking => booking.MemberId == null
                                                                 ? booking.Guests
                                                                 .First(guest => guest.IsLeader == true)
                                                                 .FullName
                                                                 : booking.Member.FullName))
                 .ForMember(bookingListDto => bookingListDto.PhoneNumber,
                             option => option.MapFrom(booking => booking.MemberId == null
-                                                                ?booking.Guests
+                                                                ? booking.Guests
                                                                 .First(guest => guest.IsLeader == true)
                                                                 .PhoneNumber
                                                                 : booking.Member.PhoneNumber))

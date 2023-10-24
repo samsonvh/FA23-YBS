@@ -17,6 +17,7 @@ namespace YBS.Data.Models
         public string Name { get; set; }
         public string Beginning { get; set; }
         public string Destination { get; set; }
+        public string ImageURL { get; set; }
         public TimeSpan ExpectedStartingTime { get; set; }
         public TimeSpan ExpectedEndingTime { get; set; }
         public string Type { get; set; }

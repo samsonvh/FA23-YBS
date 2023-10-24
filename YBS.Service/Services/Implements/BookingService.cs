@@ -25,10 +25,10 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public BookingService(IUnitOfWork unitOfWork, IMapper mapper) 
+        public BookingService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWork = unitOfWork;        
-            _mapper = mapper;   
+            _unitOfWork = unitOfWork;
+            _mapper = mapper;
         }
 
         public async Task CreateGuestBooking(BookingInputDto pageRequest)
@@ -63,23 +63,29 @@ namespace YBS.Service.Services.Implements
                 .Find(servicePackage => servicePackage.Id == pageRequest.ServicePackageId)
                 .FirstOrDefaultAsync();
             float totalPrice = existedPriceMapper.Price;
-            if(servicePackage != null)
+            if (servicePackage != null)
             {
                 totalPrice += servicePackage.Price;
             }
-            List<Guest> guestList = new List<Guest> ();
+            List<Guest> guestList = new List<Guest>();
             //doc file guest
             if (pageRequest.GuestList != null)
             {
-                guestList = await ImportGuestExcel(pageRequest.GuestList);
+                var leader = new CheckGuestInputDto()
+                {
+                    IdentityNumber = pageRequest.IdentityNumber,
+                    PhoneNumber = pageRequest.PhoneNumber,
+                };
+                guestList = await ImportGuestExcel(pageRequest.GuestList, leader);
             }
             var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
             var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
-           
+
             //add booking
             var booking = _mapper.Map<Booking>(pageRequest);
             booking.Status = EnumBookingStatus.PENDING;
             booking.TotalPrice = totalPrice;
+            booking.MoneyUnit = existedPriceMapper.MoneyUnit;
             var guest = _mapper.Map<Guest>(pageRequest);
             guest.IsLeader = true;
             guest.Status = EnumGuestStatus.NOT_YET;
@@ -93,12 +99,12 @@ namespace YBS.Service.Services.Implements
             trip.ActualStartingTime = actualStartingDate;
             trip.ActualEndingTime = actualEndingDate;
             trip.Status = EnumTripStatus.NOT_STARTED;
-            _unitOfWork.TripRepository.Add(trip);   
+            _unitOfWork.TripRepository.Add(trip);
             //save trip
-            await _unitOfWork.SaveChangesAsync();  
+            await _unitOfWork.SaveChangesAsync();
         }
 
-        private async Task<List<Guest>> ImportGuestExcel(IFormFile formFile, CancellationToken cancellationToken = default)
+        private async Task<List<Guest>> ImportGuestExcel(IFormFile formFile, CheckGuestInputDto leader, CancellationToken cancellationToken = default)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             if (formFile == null || formFile.Length <= 0)
@@ -120,40 +126,62 @@ namespace YBS.Service.Services.Implements
                     var rowCount = worksheet.Dimension.Rows;
                     for (int row = 2; row <= rowCount; row++)
                     {
-                        var dateOfBirth = worksheet.Cells[row, 2].GetValue<DateTime>();
-                        if (dateOfBirth.Year <= 0 || dateOfBirth.Year > 2023)
+                        string identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
+                        string phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
+                        if (!identityNumber.Substring(0,1).Equals("0"))
                         {
-                            throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
+                            identityNumber = "0" + identityNumber;
                         }
-
-                        var identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
-                        if (string.IsNullOrEmpty(identityNumber) || !Regex.IsMatch(identityNumber, "^[0-9]+$"))
+                        if (!phoneNumber.Substring(0,1).Equals("0"))
                         {
-                            throw new APIException((int)HttpStatusCode.BadRequest, "Invalid IdentityNumber");
+                            phoneNumber = "0" + phoneNumber;
                         }
-
-                        var phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
-                        if (string.IsNullOrEmpty(phoneNumber) || !Regex.IsMatch(phoneNumber, @"^0?(3[2-9]|5[689]|7[06-9]|8[0689]|9[0-46-9])[0-9]{7}$"))
+                        if (!leader.PhoneNumber.Equals(phoneNumber) && !leader.IdentityNumber.Equals(identityNumber))
                         {
-                            throw new APIException((int)HttpStatusCode.BadRequest, "Invalid PhoneNumber");
+                            var dateOfBirth = worksheet.Cells[row, 2].GetValue<DateTime>();
+                            var fullName = worksheet.Cells[row, 1].Value.ToString().Trim();
+                            var gender = worksheet.Cells[row, 5].Value.ToString().Trim();
+                            var checkGuestInput = new CheckGuestInputDto()
+                            {
+                                FullName = fullName,
+                                DateOfBirth = dateOfBirth,
+                                IdentityNumber = identityNumber,
+                                PhoneNumber = phoneNumber,
+                                Gender = gender
+                            };
+                            ValidateGuestExcelFile(checkGuestInput);
+                            var guest = new Guest
+                            {
+                                FullName = checkGuestInput.FullName,
+                                DateOfBirth = checkGuestInput.DateOfBirth,
+                                IdentityNumber = checkGuestInput.IdentityNumber,
+                                PhoneNumber = checkGuestInput.PhoneNumber,
+                                Gender = (EnumGender)Enum.Parse(typeof(EnumGender), checkGuestInput.Gender, true),
+                                IsLeader = false,
+                                Status = EnumGuestStatus.NOT_YET
+                            };
+                            guestList.Add(guest);
                         }
-                        var guest = new Guest
-                        {
-                            FullName = worksheet.Cells[row, 1].Value.ToString().Trim(),
-                            DateOfBirth = worksheet.Cells[row, 2].GetValue<DateTime>(),
-                            IdentityNumber = worksheet.Cells[row, 3].Value.ToString().Trim(),
-                            PhoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim(),
-                            Gender = (EnumGender)Enum.Parse(typeof(EnumGender), worksheet.Cells[row, 5].Value.ToString().Trim(), true),
-                            IsLeader = false,
-                            Status = EnumGuestStatus.NOT_YET
-                        };
-                        guestList.Add(guest);
                     }
                 }
             }
             return guestList;
         }
-
+        private void ValidateGuestExcelFile(CheckGuestInputDto guest)
+        {
+            if (guest.DateOfBirth.Year <= 0 || guest.DateOfBirth.Year > 2023)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
+            }
+            if (string.IsNullOrEmpty(guest.IdentityNumber) || !Regex.IsMatch(guest.IdentityNumber, "^[0-9]+$"))
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid IdentityNumber");
+            }
+            if (string.IsNullOrEmpty(guest.PhoneNumber) || !Regex.IsMatch(guest.PhoneNumber, @"^0?(3[2-9]|5[689]|7[06-9]|8[0689]|9[0-46-9])[0-9]{7}$"))
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid PhoneNumber");
+            }
+        }
         public async Task<bool> ChangeStatusBookingNonMember(int id, string status)
         {
             var booking = await _unitOfWork.BookingRepository
@@ -179,7 +207,7 @@ namespace YBS.Service.Services.Implements
                                                             .Contains(pageRequest.Route)) &&
             (string.IsNullOrWhiteSpace(pageRequest.Yacht) || booking.Yacht != null && booking.Yacht.Name
                                                                                         .Contains(pageRequest.Yacht)) &&
-            (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || (booking.MemberId == null 
+            (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || (booking.MemberId == null
                                                                     ? booking.Guests
                                                                     .First(guest => guest.IsLeader == true).PhoneNumber == pageRequest.PhoneNumber
                                                                     : booking.Member.PhoneNumber == pageRequest.PhoneNumber)) &&
@@ -187,9 +215,9 @@ namespace YBS.Service.Services.Implements
             (!pageRequest.DateOccurred.HasValue || (pageRequest.DateOccurred <= booking.Trip.ActualEndingTime && pageRequest.DateOccurred >= booking.Trip.ActualStartingTime)))
             .Include(booking => booking.Guests)
             .Include(booking => booking.Trip)
-            .Include(booking => booking.Route.Name)
-            .Include(Booking => Booking.Yacht.Name);
-            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) 
+            .Include(booking => booking.Route)
+            .Include(Booking => Booking.Yacht);
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                         ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(booking => booking.Id);
             var totalCount = data.Count();
             var pageCount = totalCount / pageRequest.PageSize + 1;
@@ -217,8 +245,8 @@ namespace YBS.Service.Services.Implements
                 .Include(booking => booking.Trip)
                 .Include(booking => booking.Yacht)
                 .Include(booking => booking.YachtType)
-                .FirstOrDefaultAsync(); 
-            if(booking != null)
+                .FirstOrDefaultAsync();
+            if (booking != null)
             {
                 var bookingDto = _mapper.Map<BookingDto>(booking);
                 return bookingDto;
