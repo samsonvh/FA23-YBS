@@ -99,9 +99,14 @@ namespace YBS.Service.Services.Implements
                     {
                         List<string> imgUrlList = new List<string>();
                         var arrayImgSplit = yacht.ImageURL.Trim().Split(',');
-                        foreach (var imgSplit in arrayImgSplit)
+                        int arrayLength = arrayImgSplit.Length;
+                        if (arrayImgSplit.Length > 3)
+                        {   
+                            arrayLength = 3;
+                        }
+                        for (int i = 0; i < arrayLength ; i ++)
                         {
-                            imgUrlList.Add(imgSplit.Trim());
+                            imgUrlList.Add(arrayImgSplit[i].Trim());
                         }
                         yachtListingDto.ImageURL = imgUrlList;
                     }

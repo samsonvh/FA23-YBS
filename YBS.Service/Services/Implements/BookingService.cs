@@ -85,6 +85,7 @@ namespace YBS.Service.Services.Implements
             var booking = _mapper.Map<Booking>(pageRequest);
             booking.Status = EnumBookingStatus.PENDING;
             booking.TotalPrice = totalPrice;
+            booking.MoneyUnit = existedPriceMapper.MoneyUnit;
             var guest = _mapper.Map<Guest>(pageRequest);
             guest.IsLeader = true;
             guest.Status = EnumGuestStatus.NOT_YET;
@@ -125,8 +126,16 @@ namespace YBS.Service.Services.Implements
                     var rowCount = worksheet.Dimension.Rows;
                     for (int row = 2; row <= rowCount; row++)
                     {
-                        var identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
-                        var phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
+                        string identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
+                        string phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
+                        if (!identityNumber.Substring(0,1).Equals("0"))
+                        {
+                            identityNumber = "0" + identityNumber;
+                        }
+                        if (!phoneNumber.Substring(0,1).Equals("0"))
+                        {
+                            phoneNumber = "0" + phoneNumber;
+                        }
                         if (!leader.PhoneNumber.Equals(phoneNumber) && !leader.IdentityNumber.Equals(identityNumber))
                         {
                             var dateOfBirth = worksheet.Cells[row, 2].GetValue<DateTime>();
