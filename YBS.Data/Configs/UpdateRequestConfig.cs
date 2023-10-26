@@ -20,10 +20,10 @@ namespace YBS.Data.Configs
             builder.Property(updateRequest => updateRequest.Name).HasColumnType("nvarchar(100)");
             builder.Property(updateRequest => updateRequest.Address).HasColumnType("nvarchar(200)");
             builder.Property(updateRequest => updateRequest.Hotline).HasColumnType("varchar(15)");
-            builder.Property(updateRequest => updateRequest.Logo).HasColumnType("varchar(255)");
-            builder.Property(updateRequest => updateRequest.FacebookURL).HasColumnType("varchar(255)").IsRequired(false);
-            builder.Property(updateRequest => updateRequest.InstagramURL).HasColumnType("varchar(255)").IsRequired(false);
-            builder.Property(updateRequest => updateRequest.LinkedInURL).HasColumnType("varchar(255)").IsRequired(false);
+            builder.Property(updateRequest => updateRequest.Logo).HasColumnType("nvarchar(max)");
+            builder.Property(updateRequest => updateRequest.FacebookURL).HasColumnType("nvarchar(max)").IsRequired(false);
+            builder.Property(updateRequest => updateRequest.InstagramURL).HasColumnType("nvarchar(max)").IsRequired(false);
+            builder.Property(updateRequest => updateRequest.LinkedInURL).HasColumnType("nvarchar(max)").IsRequired(false);
         }
     }
 }

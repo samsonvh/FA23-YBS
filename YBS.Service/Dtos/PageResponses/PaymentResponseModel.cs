@@ -9,5 +9,6 @@ public class PaymentResponseModel
     public string PaymentId { get; set; }
     public bool Success { get; set; }
     public string Token { get; set; }
+    public long Amount { get; set; }
     public string VnPayResponseCode { get; set; }
 }

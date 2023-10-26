@@ -27,6 +27,7 @@ namespace YBS.Data.Context
         public DbSet<Agency> Agencies { get; set; }
         public DbSet<Guest> Guests { get; set; }
         public DbSet<Payment> Payments { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);

@@ -20,6 +20,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Guest> GuestRepository { get; }
         IGenericRepositoty<ServicePackage> ServicePackageRepository { get; }
         IGenericRepositoty<Payment> PaymentRepository { get; }
+        IGenericRepositoty<Transaction> TransactionRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

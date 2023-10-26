@@ -57,5 +57,8 @@ namespace YBS
         public const string BOOKING_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         //Payment
         public const string PAYMENT_CREATE_URL = DEFAULT_ROUTE;
+        public const string PAYMENT_CALL_BACK = DEFAULT_ROUTE;
+        //Transaction 
+        public const string TRANSACTION_CREATE = DEFAULT_ROUTE;
     }
 }

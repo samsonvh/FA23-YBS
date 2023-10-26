@@ -342,7 +342,8 @@ namespace YBS.Service.Services.Implements
                 TotalPrice = booking.TotalPrice,
                 MoneyUnit = existedPriceMapper.MoneyUnit,
                 PaymentDate = DateTime.Now,
-                PaymentMethod = EnumPaymentMethod.ELECTRONIC_WALLET,
+                PaymentMethod = pageRequest.PaymentMethod,
+                Type = pageRequest.Type,
                 Status = EnumPaymentStatus.PENDING
             };
             _unitOfWork.PaymentRepository.Add(payment);

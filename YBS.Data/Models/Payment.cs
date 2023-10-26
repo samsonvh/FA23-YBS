@@ -17,6 +17,7 @@ namespace YBS.Data.Models
         public float TotalPrice { get; set; }
         public string MoneyUnit { get; set; }
         public DateTime PaymentDate { get; set; }
+        public EnumPaymentType Type { get; set; }
         public EnumPaymentMethod PaymentMethod { get; set; }
         public EnumPaymentStatus Status { get; set; }
     }

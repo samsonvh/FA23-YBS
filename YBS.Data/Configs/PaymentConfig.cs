@@ -18,6 +18,7 @@ namespace YBS.Data.Configs
             builder.Property(payment => payment.Name).HasColumnType("nvarchar(100)");
             builder.Property(payment => payment.MoneyUnit).HasColumnType("varchar(10)");
             builder.Property(payment => payment.PaymentDate).HasColumnType("datetime");
+            builder.Property(payment => payment.TotalPrice).HasColumnType("float");
         }
     }
 }

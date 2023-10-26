@@ -18,14 +18,24 @@ namespace YBS.Controllers
         public PaymentController(ILogger<PaymentController> logger, IVnPayService vnpayService)
         {
             _logger = logger;
-            _vnpayService = vnpayService ;
+            _vnpayService = vnpayService;
         }
-        [HttpPost]
         [Route(APIDefine.PAYMENT_CREATE_URL)]
-        public async Task<IActionResult> CreatePaymentUrl ([FromBody]PaymentInformationInputDto pageRequest)
+        [HttpPost]
+        public async Task<IActionResult> CreatePaymentUrl([FromBody]PaymentInformationInputDto model)
         {
-            var result = await _vnpayService.CreatePaymentUrl(pageRequest, HttpContext);
-            return Ok(result);
+            var url = await _vnpayService.CreatePaymentUrl(model, HttpContext);
+
+            return Ok(url);
         }
+        [Route(APIDefine.PAYMENT_CALL_BACK)]
+        [HttpGet]
+        public IActionResult PaymentCallback()
+        {
+            var response = _vnpayService.PaymentExecute(Request.Query);
+
+            return Ok(response);
+        }
+
     }
 }
