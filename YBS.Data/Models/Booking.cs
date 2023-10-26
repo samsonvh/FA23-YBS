@@ -39,5 +39,6 @@ namespace YBS.Data.Models
         public DateTime LastModifiedDate { get; set; }
         public EnumBookingStatus Status { get; set; }
         public ICollection<Guest> Guests { get; set; }
+        public ICollection<Payment> Payments { get; set; }
     }
 }

@@ -31,8 +31,9 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task CreateGuestBooking(BookingInputDto pageRequest)
+        public async Task CreateGuestBooking(GuestBookingInputDto pageRequest)
         {
+            //check existed route
             var existedRoute = await _unitOfWork.RouteRepository
                 .Find(trip => trip.Id == pageRequest.RouteId)
                 .FirstOrDefaultAsync();
@@ -40,6 +41,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
             }
+            //check existing yacht type
             var existedYachtType = await _unitOfWork.YachTypeRepository
                 .Find(yachtType => yachtType.Id == pageRequest.YachtTypeId)
                 .FirstOrDefaultAsync();
@@ -47,6 +49,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
             }
+            //check exist price mapper
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository
                 .Find(priceMapper => priceMapper.YachtTypeId == existedYachtType.Id && priceMapper.RouteId == existedRoute.Id)
                 .FirstOrDefaultAsync();
@@ -136,7 +139,7 @@ namespace YBS.Service.Services.Implements
                         {
                             phoneNumber = "0" + phoneNumber;
                         }
-                        if (!leader.PhoneNumber.Equals(phoneNumber) && !leader.IdentityNumber.Equals(identityNumber))
+                        if (!leader.PhoneNumber.Trim().Equals(phoneNumber) && !leader.IdentityNumber.Trim().Equals(identityNumber))
                         {
                             var dateOfBirth = worksheet.Cells[row, 2].GetValue<DateTime>();
                             var fullName = worksheet.Cells[row, 1].Value.ToString().Trim();
@@ -169,7 +172,7 @@ namespace YBS.Service.Services.Implements
         }
         private void ValidateGuestExcelFile(CheckGuestInputDto guest)
         {
-            if (guest.DateOfBirth.Year <= 0 || guest.DateOfBirth.Year > 2023)
+            if (guest.DateOfBirth.Year <= 0 || guest.DateOfBirth.Year > DateTime.Now.Year)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
             }
@@ -251,6 +254,100 @@ namespace YBS.Service.Services.Implements
                 return bookingDto;
             }
             return null;
+        }
+
+        public async Task CreateMemberBooking(MemberBookingInputDto pageRequest)
+        {
+            //check existed route
+            var existedRoute = await _unitOfWork.RouteRepository
+                .Find(trip => trip.Id == pageRequest.RouteId)
+                .FirstOrDefaultAsync();
+            if (existedRoute == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
+            }
+            //check existed yacht type
+            var existedYachtType = await _unitOfWork.YachTypeRepository
+                .Find(yachtType => yachtType.Id == pageRequest.YachtTypeId)
+                .FirstOrDefaultAsync();
+            if (existedYachtType == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
+            }
+            //check existed price mapper
+            var existedPriceMapper = await _unitOfWork.PriceMapperRepository
+                .Find(priceMapper => priceMapper.YachtTypeId == existedYachtType.Id && priceMapper.RouteId == existedRoute.Id)
+                .FirstOrDefaultAsync();
+            if (existedPriceMapper == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Route Not Found");
+            }
+            //check existed member
+            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == pageRequest.MemberId).FirstOrDefaultAsync();
+            if (existedMember == null)
+            {
+                throw new APIException ((int)HttpStatusCode.BadRequest, "Member Not Found");
+            }
+
+            //check existed service package
+            var servicePackage = await _unitOfWork.ServicePackageRepository
+                .Find(servicePackage => servicePackage.Id == pageRequest.ServicePackageId)
+                .FirstOrDefaultAsync();
+            float totalPrice = existedPriceMapper.Price;
+            if (servicePackage != null)
+            {
+                //add price if price mapper exists 
+                totalPrice += servicePackage.Price;
+            }
+            List<Guest> guestList = new List<Guest>();
+            //doc file guest
+            if (pageRequest.GuestList != null)
+            {
+                var leader = new CheckGuestInputDto()
+                {
+                    IdentityNumber = existedMember.IdentityNumber,
+                    PhoneNumber = existedMember.PhoneNumber,
+                };
+                guestList = await ImportGuestExcel(pageRequest.GuestList, leader);
+            }
+
+            var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
+            var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
+
+            //add booking
+            var booking = _mapper.Map<Booking>(pageRequest);
+            booking.Status = EnumBookingStatus.PENDING;
+            booking.TotalPrice = totalPrice;
+            booking.MoneyUnit = existedPriceMapper.MoneyUnit;
+            //add guest list
+            var guest = _mapper.Map<Guest>(existedMember);
+            guest.IsLeader = true;
+            guest.Status = EnumGuestStatus.NOT_YET;
+            guestList.Add(guest);
+            booking.Guests = guestList;
+            _unitOfWork.BookingRepository.Add(booking);
+            await _unitOfWork.SaveChangesAsync();
+            //add trip
+            var trip = _mapper.Map<Trip>(pageRequest);
+            trip.BookingId = booking.Id;
+            trip.ActualStartingTime = actualStartingDate;
+            trip.ActualEndingTime = actualEndingDate;
+            trip.Status = EnumTripStatus.NOT_STARTED;
+            _unitOfWork.TripRepository.Add(trip);
+            //add payment
+            var payment = new Payment()
+            {
+                BookingId = booking.Id,
+                Name = "Thanh toán cho " + existedRoute.Name,
+                TotalPrice = booking.TotalPrice,
+                MoneyUnit = existedPriceMapper.MoneyUnit,
+                PaymentDate = DateTime.Now,
+                PaymentMethod = EnumPaymentMethod.ELECTRONIC_WALLET,
+                Status = EnumPaymentStatus.PENDING
+            };
+            _unitOfWork.PaymentRepository.Add(payment);
+            //save trip
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

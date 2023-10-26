@@ -23,6 +23,8 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberListingDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));
+            CreateMap<Member,Guest>()
+                .ForMember(guest => guest.Id, option => option.Ignore());
             //membership package
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
             CreateMap<MembershipPackage, MembershipPackageDto>();
@@ -56,9 +58,10 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(route => route.ExpectedEndingTime, option => option.Ignore());
 
             //booking
-            CreateMap<BookingInputDto, Booking>();
+            CreateMap<GuestBookingInputDto, Booking>();
             CreateMap<Booking, Guest>();
-            CreateMap<BookingInputDto, Guest>();
+            CreateMap<GuestBookingInputDto, Guest>();
+            CreateMap<MemberBookingInputDto,Booking>();
             CreateMap<Booking, BookingListingDto>()
                 .ForMember(bookingListDto => bookingListDto.Leader,
                             option => option.MapFrom(booking => booking.MemberId == null
@@ -102,7 +105,8 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
             //trip
-            CreateMap<BookingInputDto, Trip>();
+            CreateMap<GuestBookingInputDto, Trip>();
+            CreateMap<MemberBookingInputDto, Trip>();
         }
     }
 }

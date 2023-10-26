@@ -118,6 +118,7 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
 builder.Services.AddScoped<IFirebaseStorageService,FirebaseStorageService>();
+builder.Services.AddScoped<IVnPayService,VnPayService>();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();

@@ -111,7 +111,7 @@ namespace YBS.Service.Services.Implements
         {
             try
             {
-                var audience = _configuration["JWT:Audience_Payload"];
+                var audience = _configuration["JWT:Google_Client_Id"];
                 GoogleJsonWebSignature.ValidationSettings settings = new GoogleJsonWebSignature.ValidationSettings
                 {
                     Audience = new string[]

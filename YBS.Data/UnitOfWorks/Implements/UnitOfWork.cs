@@ -26,6 +26,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<PriceMapper> _priceMapperRepository;
         private readonly IGenericRepositoty<Guest> _guestRepository;
         private readonly IGenericRepositoty<ServicePackage> _servicePackageRepository;
+        private readonly IGenericRepositoty<Payment> _paymentRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -194,6 +195,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _servicePackageRepository;
                 }
                 return new GenericRepository<ServicePackage>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Payment> PaymentRepository
+        {
+            get
+            {
+                if (_paymentRepository is not null)
+                {
+                    return _paymentRepository;
+                }
+                return new GenericRepository<Payment>(_context);
             }
         }
 

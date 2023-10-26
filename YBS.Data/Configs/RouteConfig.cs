@@ -20,7 +20,7 @@ namespace YBS.Data.Configs
             builder.Property(route => route.Name).HasMaxLength(100).IsRequired();
             builder.Property(route => route.Beginning).HasMaxLength(255).IsRequired();
             builder.Property(route => route.Destination).HasMaxLength(255).IsRequired();
-            builder.Property(route => route.ImageURL).HasColumnType("varchar(max)").IsRequired();
+            builder.Property(route => route.ImageURL).HasColumnType("nvarchar(max)").IsRequired();
             builder.Property(route => route.ExpectedStartingTime).HasColumnType("time").IsRequired();
             builder.Property(route => route.ExpectedEndingTime).HasColumnType("time").IsRequired();
             builder.Property(route => route.Type).HasColumnType("nvarchar").HasMaxLength(50).IsRequired();
