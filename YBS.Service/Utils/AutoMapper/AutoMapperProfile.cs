@@ -46,6 +46,12 @@ namespace YBS.Service.Utils.AutoMapper
             //yachType
             CreateMap<YachtType, YachtTypeListingDto>();
 
+            //dock
+            CreateMap<Dock, DockDto>()
+               .ForMember(dockDto => dockDto.Image, option => option.Ignore());
+            CreateMap<Dock, DockListingDto>();
+            CreateMap<DockInputDto, Dock>();
+
             //route
             CreateMap<Route, RouteListingDto>()
                 .ForMember(routeListingDto => routeListingDto.ImageURL, option => option.Ignore());

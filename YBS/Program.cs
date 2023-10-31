@@ -33,7 +33,7 @@ builder.Services.AddScoped<IYachtService, YachtService>();
 builder.Services.AddScoped<IYachtTypeService, YachtTypeService>();
 builder.Services.AddScoped<IRouteService, RouteService>();
 builder.Services.AddScoped<IBookingService, BookingService>();  
-
+builder.Services.AddScoped<IDockService, DockService>();
 
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
