@@ -50,19 +50,6 @@ namespace YBS.Controllers
             return BadRequest("Failed to create dock ");
         }
 
-        [Consumes("multipart/form-data")]
-        [Route(APIDefine.DOCK_UPDATE)]
-        [HttpPut]
-        public async Task<IActionResult> Update( int id, [FromForm] DockInputDto dockInputDto)
-        {
-            var updatedDock = await _dockService.Update(id, dockInputDto);
-            if (updatedDock != null)
-            {
-                return Ok("Update dock successful");
-            }
-            return BadRequest("Fail to update dock");
-        }
-
         [Route(APIDefine.DOCK_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)

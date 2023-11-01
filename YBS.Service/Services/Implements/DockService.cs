@@ -113,47 +113,6 @@ namespace YBS.Service.Services.Implements
             return _mapper.Map<DockDto>(dock);
         }
 
-        public async Task<DockDto> Update(int id, DockInputDto pageRequest)
-        {
-            var dock = await _unitOfWork.DockRepository
-        .Find(dock => dock.Id == id)
-        .FirstOrDefaultAsync();
-            if (dock == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Dock not found");
-            }
-
-            dock.CompanyId = pageRequest.CompanyId;
-            dock.Name = pageRequest.Name;
-            dock.Address = pageRequest.Address;
-            dock.Latitude = pageRequest.Latitude;
-            dock.Longtitude = pageRequest.Longtitude;
-            dock.Description = pageRequest.Description;
-
-            var imageUrls = new List<string>();
-
-            foreach (var image in pageRequest.ImageFiles)
-            {
-                var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, 1, "Dock");
-                imageUrls.Add(imageUri.ToString());
-            }
-
-            if (!string.IsNullOrWhiteSpace(dock.Image))
-            {
-                var existingUrls = dock.Image.Split(',').Select(url => url.Trim());
-                imageUrls.AddRange(existingUrls);
-            }
-
-            dock.Image = string.Join(",", imageUrls);
-
-            _unitOfWork.DockRepository.Update(dock);
-            var result = await _unitOfWork.SaveChangesAsync();
-            if (result <= 0)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating dock");
-            }
-            return _mapper.Map<DockDto>(dock);
-        }
         public async Task<bool> ChangeStatus(int id, string status)
         {
             var dock = await _unitOfWork.DockRepository

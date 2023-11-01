@@ -53,7 +53,6 @@ namespace YBS
         public const string DOCK_GET_ALL = DEFAULT_ROUTE;
         public const string DOCK_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CREATE = DEFAULT_ROUTE;
-        public const string DOCK_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Booking

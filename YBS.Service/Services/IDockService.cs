@@ -15,7 +15,6 @@ namespace YBS.Service.Services
         Task<DefaultPageResponse<DockListingDto>> GetDockList(DockPageRequest pageRequest);
         Task<DockDto> GetDockDetail(int id);
         Task<DockDto> Create(DockInputDto pageRequest);
-        Task<DockDto> Update(int id, DockInputDto pageRequest);
         Task<bool> ChangeStatus(int id, string status);
     }
 }
