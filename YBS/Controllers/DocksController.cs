@@ -16,7 +16,6 @@ namespace YBS.Controllers
             _dockService = dockService;
         }
 
-
         [Route(APIDefine.DOCK_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllDocks([FromQuery] DockPageRequest pageRequest)
