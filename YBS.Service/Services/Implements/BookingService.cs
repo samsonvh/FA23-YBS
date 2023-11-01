@@ -241,8 +241,6 @@ namespace YBS.Service.Services.Implements
         {
             var booking = await _unitOfWork.BookingRepository
                 .Find(booking => booking.Id == id)
-                .Include(booking => booking.ServicePackage)
-                .Include(booking => booking.Agency)
                 .Include(booking => booking.Guests)
                 .Include(booking => booking.Trip)
                 .Include(booking => booking.Yacht)
@@ -335,18 +333,16 @@ namespace YBS.Service.Services.Implements
             trip.Status = EnumTripStatus.NOT_STARTED;
             _unitOfWork.TripRepository.Add(trip);
             //add payment
-            var payment = new Payment()
+            var payment = new BookingPayment()
             {
                 BookingId = booking.Id,
                 Name = "Thanh toán cho " + existedRoute.Name,
                 TotalPrice = booking.TotalPrice,
                 MoneyUnit = existedPriceMapper.MoneyUnit,
                 PaymentDate = DateTime.Now,
-                PaymentMethod = pageRequest.PaymentMethod,
-                Type = pageRequest.Type,
                 Status = EnumPaymentStatus.PENDING
             };
-            _unitOfWork.PaymentRepository.Add(payment);
+            _unitOfWork.BookingPaymentRepository.Add(payment);
             //save trip
             await _unitOfWork.SaveChangesAsync();
         }

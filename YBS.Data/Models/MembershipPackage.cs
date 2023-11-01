@@ -16,5 +16,6 @@ namespace YBS.Data.Models
         public DateTime LastModifiedDate { get; set; }
         public EnumMembershipPackageStatus Status { get; set; }
         public ICollection<Member> Members { get; set; }
+        public ICollection<MembershipRegistration>? MembershipRegistrations { get; set; }
     }
 }

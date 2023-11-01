@@ -10,10 +10,18 @@ namespace YBS.Data.Models
     public class Transaction
     {
         public int Id { get; set; }
-        public int? PaymentId { get; set; }
-        [ForeignKey("PaymentId")]
-        public Payment? Payment { get; set; }
-        public string Code { get; set; }
+        public int? BookingPaymentId { get; set; }
+        [ForeignKey("BookingPaymentId")]
+        public BookingPayment? BookingPayment { get; set; }
+        public int? WalletId { get; set; }
+        [ForeignKey("WalletId")]
+        public Wallet? Wallet { get; set; }
+        public int? MembershipRegistrationId { get; set; }
+        [ForeignKey("MembershipRegistrationId")]
+        public MembershipRegistration? MembershipRegistration { get; set; }
+        public string Name { get; set; }
+        public EnumTransactionType Type { get; set; }
+        public EnumPaymentMethod PaymentMethod { get; set; }
         public float Amount { get; set; }
         public string MoneyUnit { get; set; }
         public DateTime CreationDate { get; set; }

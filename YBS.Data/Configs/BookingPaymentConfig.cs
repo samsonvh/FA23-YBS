@@ -8,11 +8,11 @@ using YBS.Data.Models;
 
 namespace YBS.Data.Configs
 {
-    public class PaymentMethod : IEntityTypeConfiguration<Payment>
+    public class BookingPaymentConfig : IEntityTypeConfiguration<BookingPayment>
     {
-        public void Configure(EntityTypeBuilder<Payment> builder)
+        public void Configure(EntityTypeBuilder<BookingPayment> builder)
         {
-            builder.ToTable("Payment");
+            builder.ToTable("BookingPayment");
             builder.HasKey(payment => payment.Id);
             builder.Property(payment => payment.Id).ValueGeneratedOnAdd();
             builder.Property(payment => payment.Name).HasColumnType("nvarchar(100)");

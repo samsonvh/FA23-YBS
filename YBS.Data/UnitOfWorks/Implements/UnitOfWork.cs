@@ -26,7 +26,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<PriceMapper> _priceMapperRepository;
         private readonly IGenericRepositoty<Guest> _guestRepository;
         private readonly IGenericRepositoty<ServicePackage> _servicePackageRepository;
-        private readonly IGenericRepositoty<Payment> _paymentRepository;
+        private readonly IGenericRepositoty<BookingPayment> _bookingPaymentRepository;
         private readonly IGenericRepositoty<Transaction> _transactionRepository;
 
         public UnitOfWork(YBSContext context)
@@ -199,15 +199,15 @@ namespace YBS.Data.UnitOfWorks.Implements
             }
         }
 
-        public IGenericRepositoty<Payment> PaymentRepository
+        public IGenericRepositoty<BookingPayment> BookingPaymentRepository
         {
             get
             {
-                if (_paymentRepository is not null)
+                if (_bookingPaymentRepository is not null)
                 {
-                    return _paymentRepository;
+                    return _bookingPaymentRepository;
                 }
-                return new GenericRepository<Payment>(_context);
+                return new GenericRepository<BookingPayment>(_context);
             }
         }
 

@@ -20,15 +20,9 @@ namespace YBS.Data.Models
         public int? MemberId { get; set; }
         [ForeignKey("MemberId")]
         public Member? Member { get; set; }
-        public int? ServicePackageId { get; set; }
-        [ForeignKey("ServicePackageId")]
-        public ServicePackage? ServicePackage { get; set; }
         public int? MembershipPackageId { get; set; }
         [ForeignKey("MembershipPackageId")]
         public MembershipPackage? MembershipPackage { get; set; }
-        public int? AgencyId { get; set; }
-        [ForeignKey("AgencyId")]
-        public Agency? Agency { get; set; }
         public int YachtTypeId { get; set; }
         [ForeignKey("YachtTypeId")]
         public YachtType YachtType { get; set; }
@@ -39,6 +33,7 @@ namespace YBS.Data.Models
         public DateTime LastModifiedDate { get; set; }
         public EnumBookingStatus Status { get; set; }
         public ICollection<Guest> Guests { get; set; }
-        public ICollection<Payment> Payments { get; set; }
+        public BookingPayment? BookingPayment { get; set; }
+        public ICollection<BookingServicePackage>? BookingServicePackages { get; set; }
     }
 }

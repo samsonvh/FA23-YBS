@@ -15,7 +15,6 @@ namespace YBS.Data.Configs
         {
             builder.ToTable("UpdateRequest");
             builder.HasKey(updateRequest => updateRequest.Id);
-
             builder.Property(updateRequest => updateRequest.Id).ValueGeneratedOnAdd();
             builder.Property(updateRequest => updateRequest.Name).HasColumnType("nvarchar(100)");
             builder.Property(updateRequest => updateRequest.Address).HasColumnType("nvarchar(200)");

@@ -20,6 +20,6 @@ namespace YBS.Service.Dtos.InputDtos
         public IFormFile? GuestList { get; set; }
         public DateTime OccurDate { get; set; }
         public EnumPaymentMethod PaymentMethod { get; set; }
-        public EnumPaymentType Type { get; set; }
+        public EnumTransactionStatus Type { get; set; }
     }
 }

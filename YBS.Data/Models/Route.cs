@@ -22,7 +22,8 @@ namespace YBS.Data.Models
         public TimeSpan ExpectedEndingTime { get; set; }
         public string Type { get; set; }
         public EnumRouteStatus Status { get; set; }
-        public ICollection<Booking> Bookings { get; set; }
+        public ICollection<RouteServicePackage>? RouteServicePackages { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
         public ICollection<PriceMapper> PriceMappers { get; set; }
     }
 }

@@ -10,6 +10,6 @@ namespace YBS.Service.Dtos.InputDtos
     {
         public int PaymentId { get; set; }
         public string Name { get; set; }
-        public EnumPaymentType PaymentType { get; set; }
+        public EnumTransactionType PaymentType { get; set; }
     }
 }

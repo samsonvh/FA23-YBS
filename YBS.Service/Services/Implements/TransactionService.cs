@@ -35,7 +35,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "{\"RspCode\":\"97\",\"Message\":\"Invalid signature\"}");
             }
-            var existedPayment = await _unitOfWork.PaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
+            var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)
             {

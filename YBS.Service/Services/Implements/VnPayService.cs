@@ -25,7 +25,7 @@ namespace YBS.Service.Services.Implements
         }
         public async Task<string> CreatePaymentUrl(PaymentInformationInputDto pageRequest, HttpContext context)
         {
-            var existedPayment = await _unitOfWork.PaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
+            var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
                                                                     .Include(payment => payment.Booking)
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)

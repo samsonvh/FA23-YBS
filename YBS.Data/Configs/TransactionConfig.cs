@@ -15,7 +15,7 @@ namespace YBS.Data.Configs
             builder.ToTable("Transaction");
             builder.HasKey(transaction => transaction.Id);
             builder.Property(transaction => transaction.Id).ValueGeneratedOnAdd();
-            builder.Property(transaction => transaction.Code).HasColumnType("nvarchar(20)");
+            builder.Property(transaction => transaction.Name).HasColumnType("nvarchar(20)");
             builder.Property(transaction => transaction.MoneyUnit).HasColumnType("varchar(15)");
             builder.Property(transaction => transaction.CreationDate).HasColumnType("datetime");    
             builder.Property(transaction => transaction.Amount).HasColumnType("float");    
