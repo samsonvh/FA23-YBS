@@ -18,5 +18,8 @@ namespace YBS.Data.Models
         public float Price { get; set; }
         public string MoneyUnit { get; set; }
         public EnumServicePackageStatus Status { get; set; }
+        public ICollection<RouteServicePackage>? RouteServicePackages { get; set; }
+        public ICollection<BookingServicePackage>? BookingServicePackages { get; set; }
+        public ICollection<ServicePackageItem> ServicePackageItems { get; set; }    
     }
 }

@@ -19,10 +19,17 @@ namespace YBS.Controllers
 
         [Route(APIDefine.BOOKING_GUEST_CREATE)]
         [HttpPost]
-        public async Task<IActionResult> GuestCreateBooking([FromForm] BookingInputDto pageRequest)
+        public async Task<IActionResult> CreateGuestBooking([FromForm] GuestBookingInputDto pageRequest)
         {
             await _bookingService.CreateGuestBooking(pageRequest);
             return Ok("Guest create booking successful"); 
+        }
+        [Route(APIDefine.BOOKING_MEMBER_CREATE)]
+        [HttpPost]
+        public async Task<IActionResult> CreateMemberBooking([FromForm] MemberBookingInputDto pageRequest)
+        {
+            await _bookingService.CreateMemberBooking(pageRequest);
+            return Ok("Member create booking successful"); 
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]

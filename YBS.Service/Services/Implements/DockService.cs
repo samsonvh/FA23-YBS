@@ -67,7 +67,7 @@ namespace YBS.Service.Services.Implements
             var result = _mapper.Map<DockDto>(dock);
             List<string> imgUrlList = new List<string>();
 
-            var arrayImgSplit = dock.Image.Split(',');
+            var arrayImgSplit = dock.ImageUrl.Split(',');
             foreach (var imgSplit in arrayImgSplit)
             {
                 imgUrlList.Add(imgSplit.Trim());
@@ -107,7 +107,7 @@ namespace YBS.Service.Services.Implements
 
             var dock = _mapper.Map<Dock>(pageRequest);
             dock.Status = EnumDockStatus.AVAILABLE;
-            dock.Image = imageUrL;
+            dock.ImageUrl = imageUrL;
             _unitOfWork.DockRepository.Add(dock);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<DockDto>(dock);

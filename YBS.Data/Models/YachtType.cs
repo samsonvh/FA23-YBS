@@ -14,5 +14,7 @@ namespace YBS.Data.Models
         public EnumYachtTypeStatus Status { get; set; }
         public ICollection<Yacht> Yachts { get; set; }
         public ICollection<DockYachtType> DockYachtTypes { get; set; }
+        public ICollection<PriceMapper> PriceMappers { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

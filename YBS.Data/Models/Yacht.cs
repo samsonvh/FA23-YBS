@@ -11,6 +11,7 @@ namespace YBS.Data.Models
     {
         public int Id { get; set; }
         public int CompanyId { get; set; }
+        [ForeignKey("CompanyId")]
         public Company Company { get; set; }
         public int YachtTypeId { get; set; }
         [ForeignKey("YachtTypeId")]
@@ -37,5 +38,8 @@ namespace YBS.Data.Models
         public int Cabin { get; set; }
         public DateTime CreationDate { get; set; }
         public EnumYachtStatus Status { get; set; }
+        public ICollection<YachtMooring>? YachtMoorings { get; set; }
+        public ICollection<Facility> Facilities { get; set; }
+        public ICollection<Booking>? Bookings { get; set; }
     }
 }

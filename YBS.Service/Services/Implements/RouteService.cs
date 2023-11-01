@@ -91,18 +91,8 @@ namespace YBS.Service.Services.Implements
                     var routeListingDto = _mapper.Map<RouteListingDto>(route);
                     if (route.ImageURL != null)
                     {
-                        List<string> imgUrlList = new List<string>();
                         var arrayImgSplit = route.ImageURL.Trim().Split(',');
-                        int arrayLength = arrayImgSplit.Length;
-                        if (arrayImgSplit.Length > 3)
-                        {
-                            arrayLength = 3;
-                        }
-                        for (int i = 0; i < arrayLength; i++)
-                        {
-                            imgUrlList.Add(arrayImgSplit[i].Trim());
-                        }
-                        routeListingDto.ImageURL = imgUrlList;
+                        routeListingDto.ImageURL = arrayImgSplit[0];
                     }
                     resultList.Add(routeListingDto);
                 }

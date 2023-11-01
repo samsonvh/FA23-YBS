@@ -14,9 +14,10 @@ namespace YBS.Service.Services
 {
     public interface IBookingService
     {
-        Task CreateGuestBooking (BookingInputDto pageRequest);
+        Task CreateGuestBooking (GuestBookingInputDto pageRequest);
         Task<bool> ChangeStatusBookingNonMember(int id, string status);
         Task<DefaultPageResponse<BookingListingDto>> GetAll (BookingPageRequest pageRequest);
         Task<BookingDto> GetDetailBooking(int id);
+        Task CreateMemberBooking (MemberBookingInputDto pageRequest);
     }
 }
