@@ -19,7 +19,7 @@ namespace YBS.Data.Configs
             builder.Property(dock => dock.Address).HasColumnType("nvarchar(100)");
             builder.Property(dock => dock.Latitude).HasColumnType("float");
             builder.Property(dock => dock.Longtitude).HasColumnType("float");
-            builder.Property(dock => dock.Image).HasColumnType("varchar(max)");
+            builder.Property(dock => dock.ImageUrl).HasColumnType("nvarchar(max)");
             builder.Property(dock => dock.Description).HasColumnType("nvarchar(max)").IsRequired(false);
             builder.Property(dock => dock.CreationDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
             builder.Property(dock => dock.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");

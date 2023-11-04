@@ -10,10 +10,8 @@ namespace YBS.Data.Models
     {
         public int Id { get; set; }
         public int DockId { get; set; }
-        [ForeignKey("DockId")]
         public Dock Dock { get; set; }
         public int YachtTypeId { get; set; }
-        [ForeignKey("YachtTypeId")]
         public YachtType YachtType { get; set; }
     }
 }

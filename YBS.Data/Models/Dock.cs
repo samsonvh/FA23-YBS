@@ -18,10 +18,11 @@ namespace YBS.Data.Models
         public float Latitude { get; set; }
         public float Longtitude { get; set; }
         public string Description { get; set; }
-        public string Image { get; set; }
+        public string ImageUrl { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public EnumDockStatus Status { get; set; }
         public ICollection<DockYachtType> DockYachtTypes { get; set; }
+        public ICollection<YachtMooring>? YachtMoorings { get; set; }
     }
 }

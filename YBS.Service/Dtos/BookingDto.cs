@@ -20,8 +20,8 @@ namespace YBS.Service.Dtos
         public string YachtName { get; set; }
         public int AgencyId { get; set; }
         public string ServicePackageName { get; set; }
-        public DateTime ExpectedStartingTime { get; set; }
         public DateTime ActualStartingTime { get; set; }
+        public DateTime ActualEndingTime { get; set; }
         public DateTime CreationDate { get; set; }
         public string? Note { get; set; }
         public int NumberOfGuest { get; set; }

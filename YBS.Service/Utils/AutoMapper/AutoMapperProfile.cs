@@ -23,6 +23,8 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberListingDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));
+            CreateMap<Member,Guest>()
+                .ForMember(guest => guest.Id, option => option.Ignore());
             //membership package
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
             CreateMap<MembershipPackage, MembershipPackageDto>();
@@ -46,6 +48,12 @@ namespace YBS.Service.Utils.AutoMapper
             //yachType
             CreateMap<YachtType, YachtTypeListingDto>();
 
+            //dock
+            CreateMap<Dock, DockDto>()
+               .ForMember(dockDto => dockDto.Image, option => option.Ignore());
+            CreateMap<Dock, DockListingDto>();
+            CreateMap<DockInputDto, Dock>();
+
             //route
             CreateMap<Route, RouteListingDto>()
                 .ForMember(routeListingDto => routeListingDto.ImageURL, option => option.Ignore());
@@ -56,9 +64,10 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(route => route.ExpectedEndingTime, option => option.Ignore());
 
             //booking
-            CreateMap<BookingInputDto, Booking>();
+            CreateMap<GuestBookingInputDto, Booking>();
             CreateMap<Booking, Guest>();
-            CreateMap<BookingInputDto, Guest>();
+            CreateMap<GuestBookingInputDto, Guest>();
+            CreateMap<MemberBookingInputDto,Booking>();
             CreateMap<Booking, BookingListingDto>()
                 .ForMember(bookingListDto => bookingListDto.Leader,
                             option => option.MapFrom(booking => booking.MemberId == null
@@ -89,11 +98,8 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.PhoneNumber, options => options.MapFrom(booking => booking.MemberId == null ? booking.Guests.First(booking => booking.IsLeader == true).PhoneNumber : booking.Member.PhoneNumber))
                 .ForMember(bookingDto => bookingDto.YachtName, options => options.MapFrom(booking => booking.Yacht.Name != null
                                                                                                         ? booking.Yacht.Name : null))
-                .ForMember(bookingDto => bookingDto.AgencyId, options => options.MapFrom(booking => booking.AgencyId != null
-                                                                                                        ? booking.AgencyId : null))
-                .ForMember(bookingDto => bookingDto.ServicePackageName, options => options.MapFrom(booking => booking.ServicePackage.Name != null
-                                                                                                                ? booking.ServicePackage.Name : null))
                 .ForMember(bookingDto => bookingDto.ActualStartingTime, options => options.MapFrom(booking => booking.Trip.ActualStartingTime))
+                .ForMember(bookingDto => bookingDto.ActualEndingTime, options => options.MapFrom(booking => booking.Trip.ActualEndingTime))
                 .ForMember(bookingDto => bookingDto.RouteName, options => options.MapFrom(booking => booking.Route.Name))
                 .ForMember(bookingDto => bookingDto.CreationDate, options => options.MapFrom(booking => booking.CreationDate))
                 .ForMember(bookingDto => bookingDto.NumberOfGuest, options => options.MapFrom(booking => booking.Guests.Count()))
@@ -102,7 +108,10 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
             //trip
-            CreateMap<BookingInputDto, Trip>();
+            CreateMap<GuestBookingInputDto, Trip>();
+            CreateMap<MemberBookingInputDto, Trip>();
+            //transaction
+            CreateMap<TransactionInputDto,Transaction>();
         }
     }
 }
