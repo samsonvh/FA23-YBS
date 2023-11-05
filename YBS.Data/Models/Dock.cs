@@ -22,7 +22,13 @@ namespace YBS.Data.Models
         public DateTime CreationDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public EnumDockStatus Status { get; set; }
+        // [InverseProperty("Dock")]
         public ICollection<DockYachtType> DockYachtTypes { get; set; }
         public ICollection<YachtMooring>? YachtMoorings { get; set; }
+        [InverseProperty("FromDock")]
+        public ICollection<ActivityPlace> ActivityPlacesFrom { get; set; }
+
+        [InverseProperty("ToDock")]
+        public ICollection<ActivityPlace> ActivityPlacesTo { get; set; }
     }
 }

@@ -25,5 +25,6 @@ namespace YBS.Data.Models
         public ICollection<RouteServicePackage>? RouteServicePackages { get; set; }
         public ICollection<Booking>? Bookings { get; set; }
         public ICollection<PriceMapper> PriceMappers { get; set; }
+        public ICollection<Activity> Activities { get; set; }
     }
 }
