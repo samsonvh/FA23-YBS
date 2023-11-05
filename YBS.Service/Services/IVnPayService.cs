@@ -10,7 +10,7 @@ namespace YBS.Service.Services
 {
     public interface IVnPayService
     {
-        Task <string> CreatePaymentUrl(PaymentInformationInputDto model, HttpContext context);
+        Task <string> CreatePaymentUrl(PaymentInformationInputDto model);
         PaymentResponseModel PaymentExecute(IQueryCollection collections);
     }
 }

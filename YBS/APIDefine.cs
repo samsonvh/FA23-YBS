@@ -35,11 +35,12 @@ namespace YBS
         public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
 
         //Membership Package
-        public const string MEMBERSHIP_PACKAGE = "membership-packages";
+        public const string MEMBERSHIP_PACKAGE = "api/v{version:apiVersion}/membership-packages";
         public const string MEMBERSHIP_PACKAGE_CREATE = MEMBERSHIP_PACKAGE;
         public const string MEMBERSHIP_PACKAGE_DETAIL = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_UPDATE = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_GET_ALL = MEMBERSHIP_PACKAGE;
+        public const string MEMBERSHIP_PACKAGE_CREATE_PAYMENT_URL = MEMBERSHIP_PACKAGE + "/create-payment-url";
         //Yacht
         public const string YACHT_CREATE = DEFAULT_ROUTE;
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";

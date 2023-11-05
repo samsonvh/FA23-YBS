@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Firebase.Storage;
-using Google.Cloud.Storage.V1;
+// using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 
@@ -22,6 +22,7 @@ namespace YBS.Service.Services.Implements
         {
             var stream = image.OpenReadStream();
             string task;
+        
             switch (objectType)
             {
                 case "Yacht":

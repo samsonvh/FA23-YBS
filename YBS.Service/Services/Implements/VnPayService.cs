@@ -23,7 +23,7 @@ namespace YBS.Service.Services.Implements
             _configuration = configuration;
             _unitOfWork = unitOfWork;
         }
-        public async Task<string> CreatePaymentUrl(PaymentInformationInputDto pageRequest, HttpContext context)
+        public async Task<string> CreatePaymentUrl(PaymentInformationInputDto pageRequest)
         {
             var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
                                                                     .Include(payment => payment.Booking)
@@ -41,7 +41,7 @@ namespace YBS.Service.Services.Implements
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
-            var ipAddress = VnPayLibrary.GetIpAddress(context);
+            var ipAddress = VnPayLibrary.GetIpAddress();
             var pay = new VnPayLibrary();
             pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
@@ -51,7 +51,7 @@ namespace YBS.Service.Services.Implements
             pay.AddRequestData("vnp_CurrCode", existedPriceMapper.MoneyUnit);
             pay.AddRequestData("vnp_IpAddr", ipAddress);
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{pageRequest.Name} {existedPayment.TotalPrice}");
+            pay.AddRequestData("vnp_OrderInfo", $"{pageRequest.Name}");
             pay.AddRequestData("vnp_OrderType", nameof(pageRequest.PaymentType).ToString().Trim());
             pay.AddRequestData("vnp_ReturnUrl", _configuration["PaymentCallBack:ReturnUrl"]);
             pay.AddRequestData("vnp_TxnRef", tick);
@@ -65,7 +65,7 @@ namespace YBS.Service.Services.Implements
         public PaymentResponseModel PaymentExecute(IQueryCollection collections)
         {
             var pay = new VnPayLibrary();
-            var response = pay.GetFullResponseData(collections, _configuration["Vnpay:HashSecret"]);
+            var response = pay.GetFullResponseData(collections, _configuration["VnPay:HashSecret"]);
             return response;
         }
 

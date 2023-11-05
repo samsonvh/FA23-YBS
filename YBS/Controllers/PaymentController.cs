@@ -24,7 +24,7 @@ namespace YBS.Controllers
         [HttpPost]
         public async Task<IActionResult> CreatePaymentUrl([FromBody]PaymentInformationInputDto model)
         {
-            var url = await _vnpayService.CreatePaymentUrl(model, HttpContext);
+            var url = await _vnpayService.CreatePaymentUrl(model);
 
             return Ok(url);
         }

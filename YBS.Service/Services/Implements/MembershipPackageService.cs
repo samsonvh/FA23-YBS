@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
@@ -22,10 +24,12 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWorks;
         private readonly IMapper _mapper;
-        public MembershipPackageService(IUnitOfWork unitOfWorks, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public MembershipPackageService(IUnitOfWork unitOfWorks, IMapper mapper, IConfiguration configuration)
         {
             _unitOfWorks = unitOfWorks;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task Create(MembershipPackageInputDto pageRequest)
@@ -44,6 +48,60 @@ namespace YBS.Service.Services.Implements
             }
         }
 
+        public async Task<string> CreatePaymentUrl(MembershipPackageInformationInputDto pageRequest, HttpContext context)
+        {
+            var existedMembershipPackage = await _unitOfWorks.MembershipPackageRepository.Find(membershipPackage => membershipPackage.Id == pageRequest.MembershipPackageId)
+                                                                                        .FirstOrDefaultAsync();
+            if (existedMembershipPackage == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Membership Package Not Found");
+            }
+            var existedEmail = await _unitOfWorks.AccountRepository.Find(account => account.Email == pageRequest.Email)
+                                                                    .FirstOrDefaultAsync();
+            if (existedEmail != null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Account with that email: " + pageRequest.Email + " already existed");
+            }
+            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
+            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
+            var tick = DateTime.Now.Ticks.ToString();
+            var ipAddress = VnPayLibrary.GetIpAddress();
+            var callBackUrl = "http://" + context.Request.Host + _configuration["PaymentCallBack:ReturnUrl"];
+            var names = pageRequest.FullName.Split(' ');
+            string? firstName; 
+            if (names.Length == 1)
+            {
+                firstName = names[0];
+            }
+            // string firstName = names[0];
+            string lastName = names[1];
+            var pay = new VnPayLibrary();
+
+            //add basic information
+            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
+            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
+            pay.AddRequestData("vnp_Amount", ((int)existedMembershipPackage.Price * 100).ToString());
+            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
+            pay.AddRequestData("vnp_CurrCode", existedMembershipPackage.MoneyUnit);
+            pay.AddRequestData("vnp_IpAddr", ipAddress);
+            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
+            pay.AddRequestData("vnp_OrderInfo", $"Thanh Toan Cho {existedMembershipPackage.Name}");
+            pay.AddRequestData("vnp_OrderType", nameof(pageRequest.TransactionType).ToString().Trim());
+            pay.AddRequestData("vnp_ReturnUrl", callBackUrl);
+            pay.AddRequestData("vnp_TxnRef", tick);
+            pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(15).ToString("yyyyMMddHHmmss"));
+            //add account information   
+            pay.AddRequestData("vnp_Bill_Mobile", pageRequest.PhoneNumber.Trim());
+            pay.AddRequestData("vnp_Bill_Email", pageRequest.PhoneNumber.Trim());
+            var paymentUrl =
+                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
+
+
+            return paymentUrl;
+        }
+
+
         public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest)
         {
             if (pageRequest.MinPrice > pageRequest.MaxPrice && pageRequest.MaxPrice > 0)
@@ -51,10 +109,10 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Max Price must be greater than Min Price");
             }
             var query = _unitOfWorks.MembershipPackageRepository.Find(membershipPackage =>
-            (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) && 
-            (pageRequest.MinPrice == null || pageRequest.MaxPrice == null || 
-            (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0 && membershipPackage.Price >= pageRequest.MinPrice && membershipPackage.Price <= pageRequest.MaxPrice) || 
-            (pageRequest.MinPrice > 0 && pageRequest.MaxPrice == 0 && pageRequest.MinPrice <= membershipPackage.Price) || (pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0)) && 
+            (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) &&
+            (pageRequest.MinPrice == null || pageRequest.MaxPrice == null ||
+            (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0 && membershipPackage.Price >= pageRequest.MinPrice && membershipPackage.Price <= pageRequest.MaxPrice) ||
+            (pageRequest.MinPrice > 0 && pageRequest.MaxPrice == 0 && pageRequest.MinPrice <= membershipPackage.Price) || (pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0)) &&
             (!pageRequest.Status.HasValue || membershipPackage.Status == pageRequest.Status));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
             var totalCount = data.Count();
@@ -102,7 +160,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWorks.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Error occur while updating membership package");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Error occur while updating membership package");
             }
         }
     }

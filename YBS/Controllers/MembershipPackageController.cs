@@ -48,5 +48,12 @@ namespace YBS.Controllers
             await _membershipPackageService.Update(pageRequest,id);
             return Ok("Update MembershipPackage Successfully");
         }
+        [HttpPost]
+        [Route(APIDefine.MEMBERSHIP_PACKAGE_CREATE_PAYMENT_URL)]
+        public async Task<IActionResult> CreatePaymentUrl ([FromForm] MembershipPackageInformationInputDto pageRequest)
+        {
+           var url =  await _membershipPackageService.CreatePaymentUrl(pageRequest, HttpContext);
+            return Ok(url);
+        }
     }
 }

@@ -18,17 +18,18 @@ namespace YBS.Controllers
             _accountService = accountService;
         }
         [Route(APIDefine.ACCOUNT_GET_ALL)]
+        [RoleAuthorization("ADMIN")]
         [HttpGet]
         public async Task<IActionResult> GetAccountList([FromQuery] AccountPageRequest pageRequest)
         {
             return Ok(await _accountService.GetAllAccounts(pageRequest));
         }
-        // [Route("GenPass")]
-        // [HttpGet]
-        // public async Task<IActionResult> Test([FromQuery] string password )
-        // {
-        //     return Ok(await _accountService.HashPassword(password));
-        // }
+        [Route("GenPass")]
+        [HttpGet]
+        public async Task<IActionResult> Test([FromQuery] string password )
+        {
+            return Ok(await _accountService.HashPassword(password));
+        }
         [Route(APIDefine.ACCOUNT_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetDetailAccount ([FromRoute] int id)
