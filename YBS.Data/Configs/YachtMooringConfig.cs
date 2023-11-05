@@ -16,8 +16,12 @@ namespace YBS.Data.Configs
             builder.HasKey(yachtMooring => yachtMooring.Id);
             builder.Property(yachtMooring => yachtMooring.Id).ValueGeneratedOnAdd();
             builder.Property(yachtMooring =>yachtMooring.ArrivalTime).HasColumnType("datetime");
-            builder.HasOne(yachtMooring => yachtMooring.Yacht).WithMany(yacht => yacht.YachtMoorings).OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(yachtMooring => yachtMooring.Dock).WithMany(dock => dock.YachtMoorings).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(yachtMooring => yachtMooring.Yacht).WithMany(yacht => yacht.YachtMoorings)
+                                                            .HasForeignKey(yachtMooring => yachtMooring.YachtId)
+                                                            .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(yachtMooring => yachtMooring.Dock).WithMany(dock => dock.YachtMoorings)
+                                                            .HasForeignKey(yachtMooring => yachtMooring.DockId)
+                                                            .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

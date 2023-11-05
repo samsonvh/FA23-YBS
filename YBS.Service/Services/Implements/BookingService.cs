@@ -288,16 +288,18 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException ((int)HttpStatusCode.BadRequest, "Member Not Found");
             }
-
-            //check existed service package
-            var servicePackage = await _unitOfWork.ServicePackageRepository
-                .Find(servicePackage => servicePackage.Id == pageRequest.ServicePackageId)
-                .FirstOrDefaultAsync();
             float totalPrice = existedPriceMapper.Price;
-            if (servicePackage != null)
+            //check existed service package
+            foreach (var existedServicePackageId in pageRequest.ListServicePackageId)
             {
-                //add price if price mapper exists 
-                totalPrice += servicePackage.Price;
+                var existedServicePackage = await _unitOfWork.ServicePackageRepository
+                .Find(servicePackage => servicePackage.Id == existedServicePackageId)
+                .FirstOrDefaultAsync();
+                if (existedServicePackage == null)
+                {
+                    throw new APIException((int)HttpStatusCode.BadRequest,"Service Package with name: " + existedServicePackage.Name + "does not exist");
+                }
+                totalPrice += existedServicePackage.Price;
             }
             List<Guest> guestList = new List<Guest>();
             //doc file guest
@@ -310,7 +312,6 @@ namespace YBS.Service.Services.Implements
                 };
                 guestList = await ImportGuestExcel(pageRequest.GuestList, leader);
             }
-
             var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
             var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
 

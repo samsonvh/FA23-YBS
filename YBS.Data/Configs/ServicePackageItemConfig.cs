@@ -15,8 +15,12 @@ namespace YBS.Data.Configs
             builder.ToTable("ServicePackageItem");
             builder.HasKey(servicePackageItem => servicePackageItem.Id);
             builder.Property(servicePackageItem => servicePackageItem.Id).ValueGeneratedOnAdd();
-            builder.HasOne(servicePackageItem => servicePackageItem.Service).WithMany(service => service.ServicePackageItems).OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(servicePackageItem => servicePackageItem.ServicePackage).WithMany(servicePackage => servicePackage.ServicePackageItems).OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(servicePackageItem => servicePackageItem.Service).WithMany(service => service.ServicePackageItems)
+                                                                            .HasForeignKey(servicePackageItem => servicePackageItem.ServiceId)
+                                                                            .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(servicePackageItem => servicePackageItem.ServicePackage).WithMany(servicePackage => servicePackage.ServicePackageItems)
+                                                                                    .HasForeignKey(servicePackageItem => servicePackageItem.ServicePackageId)
+                                                                                    .OnDelete(DeleteBehavior.NoAction);
         }
     }
 }

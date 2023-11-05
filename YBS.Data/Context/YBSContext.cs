@@ -34,6 +34,8 @@ namespace YBS.Data.Context
         public DbSet<BookingPayment> BookingPayments { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<Wallet> Wallets { get; set; }
+        public DbSet<Activity> Activities { get; set; }
+        public DbSet<ActivityPlace> ActivityPlaces { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfigurationsFromAssembly(typeof(YBSContext).Assembly);
