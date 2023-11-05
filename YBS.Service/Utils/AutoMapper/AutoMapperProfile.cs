@@ -48,6 +48,12 @@ namespace YBS.Service.Utils.AutoMapper
             //yachType
             CreateMap<YachtType, YachtTypeListingDto>();
 
+            //dock
+            CreateMap<Dock, DockDto>()
+               .ForMember(dockDto => dockDto.Image, option => option.Ignore());
+            CreateMap<Dock, DockListingDto>();
+            CreateMap<DockInputDto, Dock>();
+
             //route
             CreateMap<Route, RouteListingDto>()
                 .ForMember(routeListingDto => routeListingDto.ImageURL, option => option.Ignore());
@@ -93,6 +99,7 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.YachtName, options => options.MapFrom(booking => booking.Yacht.Name != null
                                                                                                         ? booking.Yacht.Name : null))
                 .ForMember(bookingDto => bookingDto.ActualStartingTime, options => options.MapFrom(booking => booking.Trip.ActualStartingTime))
+                .ForMember(bookingDto => bookingDto.ActualEndingTime, options => options.MapFrom(booking => booking.Trip.ActualEndingTime))
                 .ForMember(bookingDto => bookingDto.RouteName, options => options.MapFrom(booking => booking.Route.Name))
                 .ForMember(bookingDto => bookingDto.CreationDate, options => options.MapFrom(booking => booking.CreationDate))
                 .ForMember(bookingDto => bookingDto.NumberOfGuest, options => options.MapFrom(booking => booking.Guests.Count()))
@@ -105,6 +112,14 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<MemberBookingInputDto, Trip>();
             //transaction
             CreateMap<TransactionInputDto,Transaction>();
+            CreateMap<Transaction, TransactionListingDto>();
+
+            //membershipRegistration
+            CreateMap<MembershipRegistration, MembershipRegistrationDto>();
+            CreateMap<MembershipRegistration, MembershipRegistrationListingDto>();
+
+            //payment
+            CreateMap<BookingPayment, BookingPaymentListingDto>();
         }
     }
 }

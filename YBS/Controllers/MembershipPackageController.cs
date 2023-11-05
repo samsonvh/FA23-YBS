@@ -8,6 +8,7 @@ using Microsoft.Extensions.Logging;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
+using YBS.Service.Services.Implements;
 
 namespace YBS.Controllers
 {
@@ -54,6 +55,17 @@ namespace YBS.Controllers
         {
            var url =  await _membershipPackageService.CreatePaymentUrl(pageRequest, HttpContext);
             return Ok(url);
+        }
+        [Route(APIDefine.MEMBERSHIP_PACKAGE_CHANGE_STATUS)]
+        [HttpPatch]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)
+        {
+            bool statusChanged = await _membershipPackageService.ChangeStatus(id, status);
+            if (statusChanged)
+            {
+                return Ok("Change status membershipPackage successful.");
+            }
+            return BadRequest("Change status membershipPackage fail.");
         }
     }
 }

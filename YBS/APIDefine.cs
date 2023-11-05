@@ -41,6 +41,8 @@ namespace YBS
         public const string MEMBERSHIP_PACKAGE_UPDATE = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_GET_ALL = MEMBERSHIP_PACKAGE;
         public const string MEMBERSHIP_PACKAGE_CREATE_PAYMENT_URL = MEMBERSHIP_PACKAGE + "/create-payment-url";
+        public const string MEMBERSHIP_PACKAGE_CHANGE_STATUS = MEMBERSHIP_PACKAGE + "/{id}";
+
         //Yacht
         public const string YACHT_CREATE = DEFAULT_ROUTE;
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
@@ -49,6 +51,12 @@ namespace YBS
 
         //YachtType
         public const string YACHT_TYPE_GET_ALL = "api/v{version:apiVersion}/yacht-types";
+
+        //Dock
+        public const string DOCK_GET_ALL = DEFAULT_ROUTE;
+        public const string DOCK_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string DOCK_CREATE = DEFAULT_ROUTE;
+        public const string DOCK_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Booking
         public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
@@ -61,5 +69,14 @@ namespace YBS
         public const string PAYMENT_CALL_BACK = DEFAULT_ROUTE;
         //Transaction 
         public const string TRANSACTION_CREATE = DEFAULT_ROUTE;
+        public const string TRANSACTION_GET_ALL = DEFAULT_ROUTE;
+
+        //MembershipRegostration
+        public const string MEMBERSHIP_REGISTRATION = "api/v{version:apiVersion}/membership-registrations";
+        public const string MEMBERSHIP_REGISTRATION_GET_ALL = MEMBERSHIP_REGISTRATION;
+        public const string MEMBERSHIP_REGISTRATION_DETAIL = MEMBERSHIP_REGISTRATION + "/{id}";
+
+        //bookingPayment
+        public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/booking-payments";
     }
 }

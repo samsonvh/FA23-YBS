@@ -14,5 +14,6 @@ namespace YBS.Service.Services
         Task Create (MembershipPackageInputDto pageRequest);
         Task Update (MembershipPackageInputDto pageRequest, int id);
         Task<string> CreatePaymentUrl (MembershipPackageInformationInputDto pageRequest, HttpContext context);
+        Task<bool> ChangeStatus(int id, string status); 
     }
 }

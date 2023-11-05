@@ -26,8 +26,10 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<PriceMapper> _priceMapperRepository;
         private readonly IGenericRepositoty<Guest> _guestRepository;
         private readonly IGenericRepositoty<ServicePackage> _servicePackageRepository;
+        private readonly IGenericRepositoty<Dock> _dockRepository;
         private readonly IGenericRepositoty<BookingPayment> _bookingPaymentRepository;
         private readonly IGenericRepositoty<Transaction> _transactionRepository;
+        private readonly IGenericRepositoty<MembershipRegistration> _membershipRegistrationRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -199,6 +201,17 @@ namespace YBS.Data.UnitOfWorks.Implements
             }
         }
 
+        public IGenericRepositoty<Dock> DockRepository
+        {
+            get
+            {
+                if (_dockRepository is not null)
+                {
+                    return _dockRepository;
+                }
+                return new GenericRepository<Dock>(_context);
+            }
+        }
         public IGenericRepositoty<BookingPayment> BookingPaymentRepository
         {
             get
@@ -220,6 +233,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _transactionRepository;
                 }
                 return new GenericRepository<Transaction>(_context);
+            }
+        }
+
+        public IGenericRepositoty<MembershipRegistration> MembershipRegistrationRepository
+        {
+            get
+            {
+                if (_membershipRegistrationRepository is not null)
+                {
+                    return _membershipRegistrationRepository;
+                }
+                return new GenericRepository<MembershipRegistration>(_context);
             }
         }
 

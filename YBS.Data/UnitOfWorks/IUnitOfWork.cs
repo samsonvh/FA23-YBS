@@ -8,6 +8,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Account> AccountRepository { get; }
         IGenericRepositoty<Member> MemberRepository { get; }
         IGenericRepositoty<Company> CompanyRepository { get; }
+        IGenericRepositoty<Dock> DockRepository { get; }
         IGenericRepositoty<MembershipPackage> MembershipPackageRepository { get; }
         IGenericRepositoty<Role> RoleRepository { get; }
         IGenericRepositoty<RefreshToken> RefreshTokenRepository { get; }
@@ -21,6 +22,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<ServicePackage> ServicePackageRepository { get; }
         IGenericRepositoty<BookingPayment> BookingPaymentRepository { get; }
         IGenericRepositoty<Transaction> TransactionRepository { get; }
+        IGenericRepositoty<MembershipRegistration> MembershipRegistrationRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }
