@@ -35,11 +35,13 @@ namespace YBS
         public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
 
         //Membership Package
-        public const string MEMBERSHIP_PACKAGE = "membership-packages";
+        public const string MEMBERSHIP_PACKAGE = "api/v{version:apiVersion}/membership-packages";
         public const string MEMBERSHIP_PACKAGE_CREATE = MEMBERSHIP_PACKAGE;
         public const string MEMBERSHIP_PACKAGE_DETAIL = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_UPDATE = MEMBERSHIP_PACKAGE + "/{id}";
         public const string MEMBERSHIP_PACKAGE_GET_ALL = MEMBERSHIP_PACKAGE;
+        public const string MEMBERSHIP_PACKAGE_CHANGE_STATUS = MEMBERSHIP_PACKAGE + "/{id}";
+
         //Yacht
         public const string YACHT_CREATE = DEFAULT_ROUTE;
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
@@ -66,5 +68,14 @@ namespace YBS
         public const string PAYMENT_CALL_BACK = DEFAULT_ROUTE;
         //Transaction 
         public const string TRANSACTION_CREATE = DEFAULT_ROUTE;
+        public const string TRANSACTION_GET_ALL = DEFAULT_ROUTE;
+
+        //MembershipRegostration
+        public const string MEMBERSHIP_REGISTRATION = "api/v{version:apiVersion}/membership-registrations";
+        public const string MEMBERSHIP_REGISTRATION_GET_ALL = MEMBERSHIP_REGISTRATION;
+        public const string MEMBERSHIP_REGISTRATION_DETAIL = MEMBERSHIP_REGISTRATION + "/{id}";
+
+        //bookingPayment
+        public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/booking-payments";
     }
 }

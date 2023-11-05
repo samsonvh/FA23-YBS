@@ -15,6 +15,5 @@ namespace YBS.Service.Dtos.InputDtos
         public float? Point { get; set; }
         public int? EffectiveDuration { get; set; }
         public string? TimeUnit { get; set; }
-        public EnumMembershipPackageStatus Status { get; set; }
     }
 }

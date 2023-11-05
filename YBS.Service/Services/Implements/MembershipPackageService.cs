@@ -20,24 +20,25 @@ namespace YBS.Service.Services.Implements
 {
     public class MembershipPackageService : IMembershipPackageService
     {
-        private readonly IUnitOfWork _unitOfWorks;
+        private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public MembershipPackageService(IUnitOfWork unitOfWorks, IMapper mapper)
+        public MembershipPackageService(IUnitOfWork unitOfWork, IMapper mapper)
         {
-            _unitOfWorks = unitOfWorks;
+            _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
         public async Task Create(MembershipPackageInputDto pageRequest)
         {
-            var existedMembership = await _unitOfWorks.MembershipPackageRepository.Find(membershipPackage => membershipPackage.Name == pageRequest.Name).FirstOrDefaultAsync();
+            var existedMembership = await _unitOfWork.MembershipPackageRepository.Find(membershipPackage => membershipPackage.Name == pageRequest.Name).FirstOrDefaultAsync();
             if (existedMembership != null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Membership Package with name:" + existedMembership.Name + "already exists");
             }
             var membershipAdd = _mapper.Map<MembershipPackage>(pageRequest);
-            _unitOfWorks.MembershipPackageRepository.Add(membershipAdd);
-            var result = await _unitOfWorks.SaveChangesAsync();
+            membershipAdd.Status = EnumMembershipPackageStatus.AVAILABLE;
+            _unitOfWork.MembershipPackageRepository.Add(membershipAdd);
+            var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating membership package");
@@ -50,7 +51,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Max Price must be greater than Min Price");
             }
-            var query = _unitOfWorks.MembershipPackageRepository.Find(membershipPackage =>
+            var query = _unitOfWork.MembershipPackageRepository.Find(membershipPackage =>
             (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) && 
             (pageRequest.MinPrice == null || pageRequest.MaxPrice == null || 
             (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0 && membershipPackage.Price >= pageRequest.MinPrice && membershipPackage.Price <= pageRequest.MaxPrice) || 
@@ -74,7 +75,7 @@ namespace YBS.Service.Services.Implements
 
         public async Task<MembershipPackageDto> GetDetailMembershipPackage(int id)
         {
-            var membershipPackage = await _unitOfWorks.MembershipPackageRepository.GetByID(id);
+            var membershipPackage = await _unitOfWork.MembershipPackageRepository.GetByID(id);
             if (membershipPackage == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");
@@ -85,7 +86,7 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(MembershipPackageInputDto pageRequest, int id)
         {
-            var existedMembershipPackage = await _unitOfWorks.MembershipPackageRepository.GetByID(id);
+            var existedMembershipPackage = await _unitOfWork.MembershipPackageRepository.GetByID(id);
             if (existedMembershipPackage == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");
@@ -97,13 +98,31 @@ namespace YBS.Service.Services.Implements
             existedMembershipPackage.Point = (float)pageRequest.Point;
             existedMembershipPackage.EffectiveDuration = (int)pageRequest.EffectiveDuration;
             existedMembershipPackage.TimeUnit = pageRequest.TimeUnit;
-            existedMembershipPackage.Status = pageRequest.Status;
-            _unitOfWorks.MembershipPackageRepository.Update(existedMembershipPackage);
-            var result = await _unitOfWorks.SaveChangesAsync();
+            _unitOfWork.MembershipPackageRepository.Update(existedMembershipPackage);
+            var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest,"Error occur while updating membership package");
             }
         }
+
+        public async Task<bool> ChangeStatus(int id, string status)
+        {
+            var membershipPackage = await _unitOfWork.MembershipPackageRepository
+                .Find(membershipPackage => membershipPackage.Id == id)
+                .FirstOrDefaultAsync();
+            if (membershipPackage != null && Enum.TryParse<EnumMembershipPackageStatus>(status, out var dockStatus))
+            {
+                if (Enum.IsDefined(typeof(EnumDockStatus), dockStatus))
+                {
+                    membershipPackage.Status = dockStatus;
+                    _unitOfWork.MembershipPackageRepository.Update(membershipPackage);
+                    await _unitOfWork.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
