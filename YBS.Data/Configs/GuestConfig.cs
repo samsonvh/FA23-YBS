@@ -19,7 +19,6 @@ namespace YBS.Data.Configs
             builder.Property(guest => guest.DateOfBirth).HasColumnType("date");
             builder.Property(guest => guest.IdentityNumber).HasColumnType("varchar(12)");
             builder.Property(guest => guest.PhoneNumber).HasColumnType("varchar(12)");
-            builder.Property(guest => guest.PhoneNumber).HasColumnType("varchar(12)");
         }
     }
 }

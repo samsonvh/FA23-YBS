@@ -11,7 +11,11 @@ using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
 using YBS.Service.Dtos.InputDtos;
+using YBS.Service.Dtos.ListingDtos;
+using YBS.Service.Dtos.PageRequests;
+using YBS.Service.Dtos.PageResponses;
 using YBS.Service.Exceptions;
+using YBS.Service.Utils;
 
 namespace YBS.Service.Services.Implements
 {
@@ -64,6 +68,29 @@ namespace YBS.Service.Services.Implements
             }
             _unitOfWork.TransactionRepository.Add(transaction);
             await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async Task<DefaultPageResponse<TransactionListingDto>> GetAllTransactions(TransactionPageRequest pageRequest)
+        {
+            var query = _unitOfWork.TransactionRepository
+                .Find(transaction =>
+                   (string.IsNullOrWhiteSpace(pageRequest.Name) || transaction.Name.Contains(pageRequest.Name)) &&
+                   (!pageRequest.Status.HasValue || transaction.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<TransactionListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<TransactionListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
         }
     }
 }

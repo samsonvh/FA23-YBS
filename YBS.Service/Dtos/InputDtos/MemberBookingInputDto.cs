@@ -12,7 +12,7 @@ namespace YBS.Service.Dtos.InputDtos
         public int RouteId { get; set; }
         public int? YachtId { get; set; }
         public int MemberId { get; set; }
-        public int? ServicePackageId { get; set; }
+        public List<int>? ListServicePackageId { get; set; }
         public int? MembershipPackageId { get; set; }
         public int YachtTypeId { get; set; }
         public string? Note { get; set; }

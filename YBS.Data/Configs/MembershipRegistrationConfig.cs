@@ -15,8 +15,11 @@ namespace YBS.Data.Configs
             builder.ToTable("MembershipRegistration");
             builder.HasKey(membershipRegistration => membershipRegistration.Id);
             builder.Property(membershipRegistration => membershipRegistration.Id).ValueGeneratedOnAdd();
-            builder.HasOne(membershipRegistration => membershipRegistration.Member).WithMany(member => member.MembershipRegistrations).OnDelete(DeleteBehavior.NoAction);
-            builder.HasOne(membershipRegistration => membershipRegistration.MembershipPackage).WithMany(membershipPackage => membershipPackage.MembershipRegistrations);
+            builder.HasOne(membershipRegistration => membershipRegistration.Member).WithMany(member => member.MembershipRegistrations)
+                                                                                    .HasForeignKey(membershipRegistration => membershipRegistration.MemberId)
+                                                                                    .OnDelete(DeleteBehavior.NoAction);
+            builder.HasOne(membershipRegistration => membershipRegistration.MembershipPackage).WithMany(membershipPackage => membershipPackage.MembershipRegistrations)
+                                                                                                .HasForeignKey(membershipRegistration => membershipRegistration.MembershipPackageId);
             builder.Property(membershipRegistration => membershipRegistration.Amount).HasColumnType("float");
             builder.Property(membershipRegistration => membershipRegistration.MoneyUnit).HasColumnType("varchar(10)");
             builder.Property(membershipRegistration => membershipRegistration.DateRegistered).HasColumnType("datetime");

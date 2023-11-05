@@ -112,6 +112,14 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<MemberBookingInputDto, Trip>();
             //transaction
             CreateMap<TransactionInputDto,Transaction>();
+            CreateMap<Transaction, TransactionListingDto>();
+
+            //membershipRegistration
+            CreateMap<MembershipRegistration, MembershipRegistrationDto>();
+            CreateMap<MembershipRegistration, MembershipRegistrationListingDto>();
+
+            //payment
+            CreateMap<BookingPayment, BookingPaymentListingDto>();
         }
     }
 }

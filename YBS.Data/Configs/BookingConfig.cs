@@ -15,7 +15,7 @@ namespace YBS.Data.Configs
             builder.ToTable("Booking");
             builder.HasKey(booking => booking.Id);
             builder.Property(booking => booking.Id).ValueGeneratedOnAdd();
-            builder.Property(booking => booking.Note).HasColumnType("nvarchar(100)").IsRequired(false);
+            builder.Property(booking => booking.Note).HasColumnType("nvarchar(max)").IsRequired(false);
             builder.Property(booking => booking.MoneyUnit).HasColumnType("varchar(10)");
             builder.Property(company => company.CreationDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
             builder.Property(company => company.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
