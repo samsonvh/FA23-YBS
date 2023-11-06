@@ -50,16 +50,9 @@ namespace YBS.Service.Services.Implements
         }
         public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest)
         {
-            if (pageRequest.MinPrice > pageRequest.MaxPrice && pageRequest.MaxPrice > 0)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Max Price must be greater than Min Price");
-            }
             var query = _unitOfWork.MembershipPackageRepository.Find(membershipPackage =>
-            (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) &&
-            (pageRequest.MinPrice == null || pageRequest.MaxPrice == null ||
-            (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0 && membershipPackage.Price >= pageRequest.MinPrice && membershipPackage.Price <= pageRequest.MaxPrice) ||
-            (pageRequest.MinPrice > 0 && pageRequest.MaxPrice == 0 && pageRequest.MinPrice <= membershipPackage.Price) || (pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0)) &&
-            (!pageRequest.Status.HasValue || membershipPackage.Status == pageRequest.Status));
+                (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) && 
+                (!pageRequest.Status.HasValue || membershipPackage.Status == pageRequest.Status));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
             var totalCount = data.Count();
             var pageCount = totalCount / pageRequest.PageSize + 1;

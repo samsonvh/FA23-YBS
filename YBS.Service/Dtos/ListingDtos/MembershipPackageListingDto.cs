@@ -13,5 +13,6 @@ namespace YBS.Service.Dtos.ListingDtos
         public float Price { get; set; }
         public string MoneyUnit { get; set; }
         public float Point { get; set; }
+        public string Status { get; set; }
     }
 }
