@@ -28,7 +28,7 @@ namespace YBS.Controllers
             return Ok("Create transaction successfully");
         }
 
-        [RoleAuthorization(nameof(EnumRole.MEMBER))]
+        /*[RoleAuthorization(nameof(EnumRole.MEMBER))]*/
         [Route(APIDefine.TRANSACTION_CREATE)]
         [HttpGet]
         public async Task<IActionResult> GetAllTransaction([FromQuery] TransactionPageRequest pageRequest)
