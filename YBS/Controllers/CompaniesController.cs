@@ -37,7 +37,7 @@ namespace YBS.Controllers
             return NotFound("Company not found");
         }
 
-        [RoleAuthorization(nameof(EnumRole.ADMIN))]
+        /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
         [HttpPost]
         [Route(APIDefine.COMPANY_CREATE)]
         public async Task<IActionResult> Create([FromBody] CompanyInputDto companyInputDto)
@@ -51,7 +51,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to create company");
         }
 
-        [RoleAuthorization(nameof(EnumRole.ADMIN))]
+        /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
         [Route(APIDefine.COMPANY_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)

@@ -32,7 +32,7 @@ namespace YBS.Controllers
             return Ok("Member create booking successful"); 
         }
 
-        [RoleAuthorization(nameof(EnumRole.COMPANY))]
+       /* [RoleAuthorization(nameof(EnumRole.COMPANY))]*/
         [Route(APIDefine.BOOKING_GUEST_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeBookingStatus([FromRoute] int id, [FromBody] string status)
