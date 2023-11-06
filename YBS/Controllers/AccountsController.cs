@@ -7,7 +7,6 @@ using YBS.Services.Dtos.PageRequests;
 
 namespace YBS.Controllers
 {
-    [RoleAuthorization(nameof(EnumRole.ADMIN))]
     [ApiController]
     public class AccountsController : ControllerBase
     {
@@ -18,7 +17,6 @@ namespace YBS.Controllers
         }
 
         [Route(APIDefine.ACCOUNT_GET_ALL)]
-        [RoleAuthorization("ADMIN")]
         [HttpGet]
         public async Task<IActionResult> GetAccountList([FromQuery] AccountPageRequest pageRequest)
         {

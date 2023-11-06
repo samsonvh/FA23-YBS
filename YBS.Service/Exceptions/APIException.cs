@@ -9,7 +9,6 @@ namespace YBS.Service.Exceptions
 {
     public class APIException : Exception
     {
-        private string v;
 
         public int StatusCode { get; set; }
         public string Message { get; set; }
@@ -22,5 +21,6 @@ namespace YBS.Service.Exceptions
             this.StatusCode = StatusCode;
             this.Message = Message;
         }
+
     }
 }

@@ -30,31 +30,24 @@ namespace YBS.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_DETAIL)]
-        public async Task<IActionResult> GetDetailMembershipPackage([FromRoute]int id)
+        public async Task<IActionResult> GetDetailMembershipPackage([FromRoute] int id)
         {
             var result = await _membershipPackageService.GetDetailMembershipPackage(id);
             return Ok(result);
         }
         [HttpPost]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_CREATE)]
-        public async Task<IActionResult> Create([FromBody]MembershipPackageInputDto pageRequest)
+        public async Task<IActionResult> Create([FromBody] MembershipPackageInputDto pageRequest)
         {
             await _membershipPackageService.Create(pageRequest);
             return Ok("Create MembershipPackage Successfully");
         }
         [HttpPut]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_UPDATE)]
-        public async Task<IActionResult> Update([FromBody]MembershipPackageInputDto pageRequest,[FromRoute]int id)
+        public async Task<IActionResult> Update([FromBody] MembershipPackageInputDto pageRequest, [FromRoute] int id)
         {
-            await _membershipPackageService.Update(pageRequest,id);
+            await _membershipPackageService.Update(pageRequest, id);
             return Ok("Update MembershipPackage Successfully");
-        }
-        [HttpPost]
-        [Route(APIDefine.MEMBERSHIP_PACKAGE_CREATE_PAYMENT_URL)]
-        public async Task<IActionResult> CreatePaymentUrl ([FromForm] MembershipPackageInformationInputDto pageRequest)
-        {
-           var url =  await _membershipPackageService.CreatePaymentUrl(pageRequest, HttpContext);
-            return Ok(url);
         }
         [Route(APIDefine.MEMBERSHIP_PACKAGE_CHANGE_STATUS)]
         [HttpPatch]

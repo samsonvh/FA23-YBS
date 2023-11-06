@@ -48,61 +48,6 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating membership package");
             }
         }
-
-        public async Task<string> CreatePaymentUrl(MembershipPackageInformationInputDto pageRequest, HttpContext context)
-        {
-            var existedMembershipPackage = await _unitOfWork.MembershipPackageRepository.Find(membershipPackage => membershipPackage.Id == pageRequest.MembershipPackageId)
-                                                                                        .FirstOrDefaultAsync();
-            if (existedMembershipPackage == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Membership Package Not Found");
-            }
-            var existedEmail = await _unitOfWork.AccountRepository.Find(account => account.Email == pageRequest.Email)
-                                                                    .FirstOrDefaultAsync();
-            if (existedEmail != null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Account with that email: " + pageRequest.Email + " already existed");
-            }
-            var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
-            var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
-            var tick = DateTime.Now.Ticks.ToString();
-            var ipAddress = VnPayLibrary.GetIpAddress();
-            var callBackUrl = "http://" + context.Request.Host + _configuration["PaymentCallBack:ReturnUrl"];
-            var names = pageRequest.FullName.Split(' ');
-            string? firstName; 
-            if (names.Length == 1)
-            {
-                firstName = names[0];
-            }
-            // string firstName = names[0];
-            string lastName = names[1];
-            var pay = new VnPayLibrary();
-
-            //add basic information
-            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
-            pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
-            pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
-            pay.AddRequestData("vnp_Amount", ((int)existedMembershipPackage.Price * 100).ToString());
-            pay.AddRequestData("vnp_CreateDate", timeNow.ToString("yyyyMMddHHmmss"));
-            pay.AddRequestData("vnp_CurrCode", existedMembershipPackage.MoneyUnit);
-            pay.AddRequestData("vnp_IpAddr", ipAddress);
-            pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"Thanh Toan Cho {existedMembershipPackage.Name}");
-            pay.AddRequestData("vnp_OrderType", nameof(pageRequest.TransactionType).ToString().Trim());
-            pay.AddRequestData("vnp_ReturnUrl", callBackUrl);
-            pay.AddRequestData("vnp_TxnRef", tick);
-            pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(15).ToString("yyyyMMddHHmmss"));
-            //add account information   
-            pay.AddRequestData("vnp_Bill_Mobile", pageRequest.PhoneNumber.Trim());
-            pay.AddRequestData("vnp_Bill_Email", pageRequest.PhoneNumber.Trim());
-            var paymentUrl =
-                pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
-
-
-            return paymentUrl;
-        }
-
-
         public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest)
         {
             if (pageRequest.MinPrice > pageRequest.MaxPrice && pageRequest.MaxPrice > 0)

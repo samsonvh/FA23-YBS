@@ -14,28 +14,34 @@ namespace YBS.Controllers
     public class PaymentController : ControllerBase
     {
         private readonly ILogger<PaymentController> _logger;
-        private readonly IVnPayService _vnpayService;
-        public PaymentController(ILogger<PaymentController> logger, IVnPayService vnpayService)
+        private readonly IPaymentService _paymentService;
+        public PaymentController(ILogger<PaymentController> logger, IPaymentService paymentService)
         {
             _logger = logger;
-            _vnpayService = vnpayService;
+            _paymentService = paymentService;
         }
-        [Route(APIDefine.PAYMENT_CREATE_URL)]
+        [Route(APIDefine.PAYMENT_BOOKING_CREATE_URL)]
         [HttpPost]
-        public async Task<IActionResult> CreatePaymentUrl([FromBody]PaymentInformationInputDto model)
+        public async Task<IActionResult> CreateBookingPaymentUrl([FromBody] PaymentInformationInputDto pageRequest)
         {
-            var url = await _vnpayService.CreatePaymentUrl(model);
+            var url = await _paymentService.CreateBookingPaymentUrl(pageRequest);
 
             return Ok(url);
         }
         [Route(APIDefine.PAYMENT_CALL_BACK)]
         [HttpGet]
-        public IActionResult PaymentCallback()
+        public IActionResult BookingPaymentCallback()
         {
-            var response = _vnpayService.PaymentExecute(Request.Query);
-
+            var response = _paymentService.BookingPaymentCallback(Request.Query);
             return Ok(response);
         }
 
+        [HttpPost]
+        [Route(APIDefine.PAYMENT_MEMBERSHIP_CREATE_URL)]
+        public async Task<IActionResult> CreateMembershipPaymentUrl([FromForm] MembershipPackageInformationInputDto pageRequest)
+        {
+            var url = await _paymentService.CreateMembershipPaymentUrl(pageRequest, HttpContext);
+            return Ok(url);
+        }
     }
 }
