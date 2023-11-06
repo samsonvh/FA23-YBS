@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
@@ -22,10 +24,12 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public MembershipPackageService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IConfiguration _configuration;
+        public MembershipPackageService(IUnitOfWork unitOfWork, IMapper mapper, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _configuration = configuration;
         }
 
         public async Task Create(MembershipPackageInputDto pageRequest)
@@ -44,7 +48,6 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating membership package");
             }
         }
-
         public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest)
         {
             if (pageRequest.MinPrice > pageRequest.MaxPrice && pageRequest.MaxPrice > 0)
@@ -52,10 +55,10 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Max Price must be greater than Min Price");
             }
             var query = _unitOfWork.MembershipPackageRepository.Find(membershipPackage =>
-            (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) && 
-            (pageRequest.MinPrice == null || pageRequest.MaxPrice == null || 
-            (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0 && membershipPackage.Price >= pageRequest.MinPrice && membershipPackage.Price <= pageRequest.MaxPrice) || 
-            (pageRequest.MinPrice > 0 && pageRequest.MaxPrice == 0 && pageRequest.MinPrice <= membershipPackage.Price) || (pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0)) && 
+            (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) &&
+            (pageRequest.MinPrice == null || pageRequest.MaxPrice == null ||
+            (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0 && membershipPackage.Price >= pageRequest.MinPrice && membershipPackage.Price <= pageRequest.MaxPrice) ||
+            (pageRequest.MinPrice > 0 && pageRequest.MaxPrice == 0 && pageRequest.MinPrice <= membershipPackage.Price) || (pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0)) &&
             (!pageRequest.Status.HasValue || membershipPackage.Status == pageRequest.Status));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
             var totalCount = data.Count();
@@ -102,7 +105,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Error occur while updating membership package");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Error occur while updating membership package");
             }
         }
 
