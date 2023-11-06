@@ -62,15 +62,18 @@ namespace YBS.Service.Services.Implements
         public async Task<CompanyDto> GetById(int id)
         {
             //get company id
-            var company = await _unitOfWork.CompanyRepository
+            var companyDetail = await _unitOfWork.CompanyRepository
              .Find(company => company.Id == id)
              .Include(company => company.Account)
+             .Include(company => company.Account.Role)
              .FirstOrDefaultAsync();
-            if (company != null)
+            if (companyDetail == null)
             {
-                return _mapper.Map<CompanyDto>(company);
+                throw new APIException((int)HttpStatusCode.BadRequest,"Company Not Found");
             }
-            return null;
+            var result = _mapper.Map<CompanyDto>(companyDetail);
+            result.Role = companyDetail.Account.Role.Name;
+            return result;
         }
 
         public async Task<CompanyDto> Create(CompanyInputDto companyInputDto)

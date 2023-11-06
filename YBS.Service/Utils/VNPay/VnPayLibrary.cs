@@ -61,7 +61,7 @@ public class VnPayLibrary
             VnPayResponseCode = vnpResponseCode
         };
     }
-    public static string GetIpAddress(HttpContext context)
+    public static string GetIpAddress()
     {
 
         var ipAddress = string.Empty;
