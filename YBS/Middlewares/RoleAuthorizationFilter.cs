@@ -28,7 +28,7 @@ namespace YBS.Middlewares
             var roleClaim = claimsPrincipal.FindFirstValue(ClaimTypes.Role);
             if (roleClaim != _role)
             {
-                throw new APIException ((int)HttpStatusCode.Unauthorized,"Unauthorized");
+                throw new APIException((int)HttpStatusCode.Unauthorized, "Unauthorized");
             }
         }
     }
