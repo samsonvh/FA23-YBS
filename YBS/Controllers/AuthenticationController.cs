@@ -1,4 +1,4 @@
-/*using System.Security.Claims;
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using YBS.Data.Enums;
@@ -39,4 +39,4 @@ namespace YBS.Controllers
             return Ok(result);
         }
     }
-}*/
+}

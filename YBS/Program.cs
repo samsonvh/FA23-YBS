@@ -115,7 +115,7 @@ builder.Services.AddCors(options =>
     });
 });
 
-/*builder.Services.AddScoped<IAuthService, AuthService>();*/
+builder.Services.AddScoped<IAuthService, AuthService>();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
