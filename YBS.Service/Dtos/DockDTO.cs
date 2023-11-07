@@ -17,6 +17,6 @@ namespace YBS.Service.Dtos
         public float Longtitude { get; set; }
         public string Description { get; set; }
         public List<String> Image { get; set; }
-        public EnumDockStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }
