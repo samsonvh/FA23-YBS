@@ -37,6 +37,7 @@ builder.Services.AddScoped<IBookingService, BookingService>();
 builder.Services.AddScoped<IDockService, DockService>();
 builder.Services.AddScoped<IMembershipRegistrationService, MembershipRegistrationService>();
 builder.Services.AddScoped<IBookingPaymentService, BookingPaymentService>();
+builder.Services.AddScoped<IWalletService, WalletService>();
 
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);
@@ -112,7 +113,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins, builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "http://localhost:3001").AllowAnyMethod().AllowAnyHeader();
+        builder.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:8081", "http://192.168.4:8081").AllowAnyMethod().AllowAnyHeader();
     });
 });
 

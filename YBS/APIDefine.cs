@@ -79,5 +79,9 @@ namespace YBS
 
         //bookingPayment
         public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/booking-payments";
+
+        //wallet
+        public const string WALLET_GET_ALL = DEFAULT_ROUTE;
+        public const string WALLET_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
     }
 }
