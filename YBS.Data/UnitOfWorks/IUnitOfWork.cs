@@ -23,6 +23,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<BookingPayment> BookingPaymentRepository { get; }
         IGenericRepositoty<Transaction> TransactionRepository { get; }
         IGenericRepositoty<MembershipRegistration> MembershipRegistrationRepository { get; }
+        IGenericRepositoty<Wallet> WalletRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

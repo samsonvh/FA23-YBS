@@ -37,21 +37,21 @@ namespace YBS.Service.Services.Implements
             bool checkSignature = vnpay.ValidateSignature(pageRequest.SecureHash, vnp_HashSecret);
             if (!checkSignature)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "{\"RspCode\":\"97\",\"Message\":\"Invalid signature\"}");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid signature");
             }
             var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "{\"RspCode\":\"01\",\"Message\":\"Order not found\"}");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Payment not found");
             }
             if (existedPayment.TotalPrice != pageRequest.Amount)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "{\"RspCode\":\"04\",\"Message\":\"invalid amount\"}");
+                throw new APIException((int)HttpStatusCode.BadRequest, "invalid amount");
             }
             if (existedPayment.Status != 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "{\"RspCode\":\"02\",\"Message\":\"Order already confirmed\"}");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Order already confirmed");
             }
             var transaction = _mapper.Map<Data.Models.Transaction>(pageRequest);
             if (pageRequest.TransactionStatus == "00" && pageRequest.ResponseCode == "00")

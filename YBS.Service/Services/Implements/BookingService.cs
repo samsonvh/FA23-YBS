@@ -343,7 +343,7 @@ namespace YBS.Service.Services.Implements
             var payment = new BookingPayment()
             {
                 BookingId = booking.Id,
-                Name = "Thanh toán cho " + existedRoute.Name,
+                Name = "Thanh toan cho " + existedRoute.Name,
                 TotalPrice = booking.TotalPrice,
                 MoneyUnit = existedPriceMapper.MoneyUnit,
                 PaymentDate = DateTime.Now,

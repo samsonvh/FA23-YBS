@@ -15,8 +15,8 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Account, AccountListingDto>()
                 .ForMember(account => account.Role, option => option.MapFrom(account => account.Role.Name));
             //member
-            CreateMap<MemberInputDto, Account>();
-            CreateMap<MemberInputDto, Member>();
+            CreateMap<MemberRegisterInputDto, Account>();
+            CreateMap<MemberRegisterInputDto, Member>();
             CreateMap<Member, MemberDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));

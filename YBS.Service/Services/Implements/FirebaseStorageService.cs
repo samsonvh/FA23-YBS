@@ -18,7 +18,7 @@ namespace YBS.Service.Services.Implements
             _configuration = configuration;
             BucketName = _configuration["Firebase:BucketName"];
         }
-        public async Task<Uri> UploadFile(string name, IFormFile image, int counter, string objectType, string type = null)
+        public async Task<Uri> UploadFile(string name, IFormFile image, string objectType, string type = null)
         {
             var stream = image.OpenReadStream();
             string task;
