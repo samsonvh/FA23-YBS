@@ -30,6 +30,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<BookingPayment> _bookingPaymentRepository;
         private readonly IGenericRepositoty<Transaction> _transactionRepository;
         private readonly IGenericRepositoty<MembershipRegistration> _membershipRegistrationRepository;
+        private readonly IGenericRepositoty<Wallet> _walletRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -245,6 +246,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _membershipRegistrationRepository;
                 }
                 return new GenericRepository<MembershipRegistration>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Wallet> WalletRepository
+        {
+            get
+            {
+                if (_walletRepository is not null)
+                {
+                    return _walletRepository;
+                }
+                return new GenericRepository<Wallet>(_context);
             }
         }
 
