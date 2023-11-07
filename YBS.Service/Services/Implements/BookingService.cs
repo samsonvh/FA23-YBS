@@ -131,11 +131,11 @@ namespace YBS.Service.Services.Implements
                     {
                         string identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
                         string phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
-                        if (!identityNumber.Substring(0,1).Equals("0"))
+                        if (!identityNumber.Substring(0, 1).Equals("0"))
                         {
                             identityNumber = "0" + identityNumber;
                         }
-                        if (!phoneNumber.Substring(0,1).Equals("0"))
+                        if (!phoneNumber.Substring(0, 1).Equals("0"))
                         {
                             phoneNumber = "0" + phoneNumber;
                         }
@@ -286,21 +286,25 @@ namespace YBS.Service.Services.Implements
             var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == pageRequest.MemberId).FirstOrDefaultAsync();
             if (existedMember == null)
             {
-                throw new APIException ((int)HttpStatusCode.BadRequest, "Member Not Found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
             }
             float totalPrice = existedPriceMapper.Price;
             //check existed service package
-            foreach (var existedServicePackageId in pageRequest.ListServicePackageId)
+            if (pageRequest.ListServicePackageId.Count > 1)
             {
-                var existedServicePackage = await _unitOfWork.ServicePackageRepository
-                .Find(servicePackage => servicePackage.Id == existedServicePackageId)
-                .FirstOrDefaultAsync();
-                if (existedServicePackage == null)
+                foreach (var existedServicePackageId in pageRequest.ListServicePackageId)
                 {
-                    throw new APIException((int)HttpStatusCode.BadRequest,"Service Package with name: " + existedServicePackage.Name + "does not exist");
+                    var existedServicePackage = await _unitOfWork.ServicePackageRepository
+                    .Find(servicePackage => servicePackage.Id == existedServicePackageId)
+                    .FirstOrDefaultAsync();
+                    if (existedServicePackage == null)
+                    {
+                        throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
+                    }
+                    totalPrice += existedServicePackage.Price;
                 }
-                totalPrice += existedServicePackage.Price;
             }
+
             List<Guest> guestList = new List<Guest>();
             //doc file guest
             if (pageRequest.GuestList != null)

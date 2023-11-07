@@ -30,14 +30,16 @@ namespace YBS.Services.Services.Implements
         }
         public async Task<MemberDto> GetDetailMember(int id)
         {
-            var memberDetail = await _unitOfWorks.MemberRepository.Find(memberDetail => memberDetail.Id == id).Include(memberDetail => memberDetail.Account)
-            .Select(memberDetail => _mapper.Map<MemberDto>(memberDetail))
+            var memberDetail = await _unitOfWorks.MemberRepository.Find(member => member.Id == id)
+            .Include(member => member.Account)
+            .Include(member => member.Account.Role)
             .FirstOrDefaultAsync();
             if (memberDetail == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Detail Member Not Found");
             }
-            var result = memberDetail;
+            var result = _mapper.Map<MemberDto>(memberDetail);
+            result.Role = memberDetail.Account.Role.Name;
             return result;
         }
 

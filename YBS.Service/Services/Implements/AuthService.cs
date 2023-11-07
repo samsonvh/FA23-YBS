@@ -98,7 +98,8 @@ namespace YBS.Service.Services.Implements
                     RefreshToken = refreshToken,
                     Role = account.Role.Name,
                     UserName = account.Username,
-                    Email = account.Email
+                    Email = account.Email,
+                    Image = payload.Picture
                 };
             }
             else

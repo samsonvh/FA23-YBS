@@ -32,8 +32,9 @@ namespace YBS.Service.Utils.AutoMapper
 
             //company
             CreateMap<Company, CompanyDto>()
-                .ForMember(dest => dest.Email, options => options.MapFrom(company => company.Account.Email))
-                .ForMember(company => company.Username, options => options.MapFrom(company => company.Account.Username));
+                .ForMember(companyDto => companyDto.Email, options => options.MapFrom(company => company.Account.Email))
+                .ForMember(companyDto => companyDto.Username, options => options.MapFrom(company => company.Account.Username))
+                .ForMember(companyDto => companyDto.Role, option => option.Ignore());
             CreateMap<Company, CompanyListingDto>();
             CreateMap<CompanyInputDto, Company>();
 

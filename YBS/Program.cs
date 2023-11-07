@@ -4,6 +4,7 @@ using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Versioning;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using OfficeOpenXml;
@@ -120,8 +121,9 @@ builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddScoped<IMemberService, MemberService>();
 builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>();
 builder.Services.AddScoped<IFirebaseStorageService,FirebaseStorageService>();
-builder.Services.AddScoped<IVnPayService,VnPayService>();
+builder.Services.AddScoped<IPaymentService,PaymentService>();
 builder.Services.AddScoped<ITransactionService,TransactionService>();
+builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
@@ -140,7 +142,6 @@ app.UseAuthentication();
 
 app.UseAuthorization();
 app.UseCors(MyAllowSpecificOrigins);
-
 app.MapControllers();
 app.UseMiddleware<GlobalExceptionHandlerMiddleware>();
 app.UseCors(MyAllowSpecificOrigins);
