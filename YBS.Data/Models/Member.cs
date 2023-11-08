@@ -9,9 +9,6 @@ namespace YBS.Data.Models
         public int AccountId { get; set; }
         [ForeignKey("AccountId")]
         public Account Account { get; set; }
-        public int? MembershipPackageId { get; set; }
-        [ForeignKey("MembershipPackageId")]
-        public MembershipPackage? MembershipPackage { get; set; }
         public string FullName { get; set; }
         public DateTime DateOfBirth { get; set; }
         public string PhoneNumber { get; set; }

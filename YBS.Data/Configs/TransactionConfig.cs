@@ -18,7 +18,14 @@ namespace YBS.Data.Configs
             builder.Property(transaction => transaction.Name).HasColumnType("nvarchar(500)");
             builder.Property(transaction => transaction.MoneyUnit).HasColumnType("varchar(15)");
             builder.Property(transaction => transaction.CreationDate).HasColumnType("datetime");    
-            builder.Property(transaction => transaction.Amount).HasColumnType("float");    
+            builder.Property(transaction => transaction.Amount).HasColumnType("float");
+            builder.Property(transaction => transaction.VNPayTmnCode).HasColumnType("varchar(10)").IsRequired(false);
+            builder.Property(transaction => transaction.VNPayTxnRef).HasColumnType("varchar(10)").IsRequired(false);
+            builder.Property(transaction => transaction.VNPayResponseCode).HasColumnType("varchar(10)").IsRequired(false);
+            builder.Property(transaction => transaction.VNPAYBankCode).HasColumnType("varchar(10)").IsRequired(false);
+            builder.Property(transaction => transaction.VNPAYcardType).HasColumnType("varchar(10)").IsRequired(false);
+            builder.Property(transaction => transaction.VNPAYTransactionNo).HasColumnType("varchar(10)").IsRequired(false);
+            builder.Property(transaction => transaction.VNPayTransactionStatus).HasColumnType("varchar(10)").IsRequired(false);    
         }
     }
 }

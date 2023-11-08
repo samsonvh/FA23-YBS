@@ -23,7 +23,6 @@ namespace YBS.Data.Models
         public ICollection<Service>? Services { get; set; }
         public ICollection<YachtType> YachtTypes { get; set; }
         public ICollection<ServicePackage>? ServicePackages { get; set; }
-        public ICollection<Yacht> Yachts { get; set; }
         public ICollection<Dock> Docks { get; set; }
         public ICollection<Route> Routes { get; set; }
     }
