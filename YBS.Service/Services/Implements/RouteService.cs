@@ -45,7 +45,7 @@ namespace YBS.Service.Services.Implements
                 var counter = 1;
                 foreach (var image in pageRequest.ImageFiles)
                 {
-                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, counter, "Route");
+                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, "Route");
                     if (counter == pageRequest.ImageFiles.Count)
                     {
                         imageUrL += imageUri;

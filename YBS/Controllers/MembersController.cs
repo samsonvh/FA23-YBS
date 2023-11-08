@@ -35,17 +35,17 @@ namespace FA23_YBS_BACKEND.Controllers
         }
         [HttpPost]
         [Route(APIDefine.MEMBER_CREATE)]
-        public async Task<IActionResult> Register([FromBody]MemberInputDto pageRequest)
+        public async Task<IActionResult> Register([FromBody]MemberRegisterInputDto pageRequest)
         {
             await _memberService.Register(pageRequest);
             return Ok("Register Member Successfully");
         }
-        [HttpPut]
-        [Route(APIDefine.MEMBER_UPDATE)]
-        public async Task<IActionResult> Update([FromRoute] int id,[FromBody]MemberInputDto pageRequest)
-        {
-            await _memberService.Update(pageRequest,id);
-            return Ok("Update Member Successfully");
-        }
+        // [HttpPut]
+        // [Route(APIDefine.MEMBER_UPDATE)]
+        // public async Task<IActionResult> Update([FromRoute] int id,[FromBody]MemberRegisterInputDto pageRequest)
+        // {
+        //     await _memberService.Update(pageRequest,id);
+        //     return Ok("Update Member Successfully");
+        // }
     }
 }

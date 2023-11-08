@@ -10,8 +10,9 @@ namespace YBS.Service.Services
 {
     public interface IPaymentService
     {
-        Task <string> CreateBookingPaymentUrl(PaymentInformationInputDto model);
-        PaymentResponseModel BookingPaymentCallback(IQueryCollection collections);
+        Task <string> CreateBookingPaymentUrl(PaymentInformationInputDto model, HttpContext context);
+        BookingPaymentResponseModel CallBackBookingPayment(IQueryCollection collections);
         Task<string> CreateMembershipPaymentUrl (MembershipPackageInformationInputDto pageRequest, HttpContext context);
+        MembershipPaymentResponseModel CallBackMembershipPayment(IQueryCollection collections);
     }
 }

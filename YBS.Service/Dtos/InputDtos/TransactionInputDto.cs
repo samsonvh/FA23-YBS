@@ -8,7 +8,6 @@ namespace YBS.Service.Dtos.InputDtos
     public class TransactionInputDto
     {
         public int PaymentId { get; set; }
-        public string Code { get; set; }
         public float Amount { get; set; }
         public string MoneyUnit { get; set; }
         public string TransactionStatus { get; set; }

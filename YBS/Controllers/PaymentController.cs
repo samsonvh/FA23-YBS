@@ -24,15 +24,15 @@ namespace YBS.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBookingPaymentUrl([FromBody] PaymentInformationInputDto pageRequest)
         {
-            var url = await _paymentService.CreateBookingPaymentUrl(pageRequest);
+            var url = await _paymentService.CreateBookingPaymentUrl(pageRequest, HttpContext);
 
             return Ok(url);
         }
-        [Route(APIDefine.PAYMENT_CALL_BACK)]
+        [Route(APIDefine.PAYMENT_BOOKING_CALL_BACK)]
         [HttpGet]
-        public IActionResult BookingPaymentCallback()
+        public IActionResult CallBackBookingPayment()
         {
-            var response = _paymentService.BookingPaymentCallback(Request.Query);
+            var response = _paymentService.CallBackBookingPayment(Request.Query);
             return Ok(response);
         }
 
@@ -42,6 +42,13 @@ namespace YBS.Controllers
         {
             var url = await _paymentService.CreateMembershipPaymentUrl(pageRequest, HttpContext);
             return Ok(url);
+        }
+        [Route(APIDefine.PAYMENT_MEMBERSHIP_CALL_BACK)]
+        [HttpGet]
+        public IActionResult CallBackMembershipPayment()
+        {
+            var response = _paymentService.CallBackMembershipPayment(Request.Query);
+            return Ok(response);
         }
     }
 }

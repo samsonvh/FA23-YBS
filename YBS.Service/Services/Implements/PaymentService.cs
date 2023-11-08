@@ -26,15 +26,23 @@ namespace YBS.Service.Services.Implements
             _unitOfWork = unitOfWork;
             _memoryCache = memoryCache;
         }
-        public PaymentResponseModel BookingPaymentCallback(IQueryCollection collections)
+        public BookingPaymentResponseModel CallBackBookingPayment(IQueryCollection collections)
         {
             var pay = new VnPayLibrary();
-            var response = pay.GetFullResponseData(collections, _configuration["VnPay:HashSecret"]);
+            var response = pay.GetFullBookingPaymentResponseData(collections, _configuration["VnPay:HashSecret"], _memoryCache, nameof(PaymentInformationInputDto));
             return response;
         }
-        public async Task<string> CreateBookingPaymentUrl(PaymentInformationInputDto pageRequest)
+
+        public MembershipPaymentResponseModel CallBackMembershipPayment(IQueryCollection collections)
         {
-            var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
+            var pay = new VnPayLibrary();
+            var response = pay.GetFullMembershipPaymentResponseData(collections, _configuration["VnPay:HashSecret"],_memoryCache, nameof(MembershipPackageInformationInputDto));
+            return response;
+        }
+
+        public async Task<string> CreateBookingPaymentUrl(PaymentInformationInputDto pageRequest, HttpContext context)
+        {
+            var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.BookingPaymentId)
                                                                     .Include(payment => payment.Booking)
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)
@@ -46,13 +54,15 @@ namespace YBS.Service.Services.Implements
             if (existedPriceMapper == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Price Mapper Not Found");
-            }
+            }   
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var ipAddress = VnPayLibrary.GetIpAddress();
+            var callBackUrl = "https://" + context.Request.Host + _configuration["PaymentCallBack:BookingPaymentReturnUrl"];
             var pay = new VnPayLibrary();
-            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]);
+            //add basic parameter to VNPay 
+            pay.AddRequestData("vnp_Version", _configuration["Vnpay:Version"]); 
             pay.AddRequestData("vnp_Command", _configuration["Vnpay:Command"]);
             pay.AddRequestData("vnp_TmnCode", _configuration["Vnpay:TmnCode"]);
             pay.AddRequestData("vnp_Amount", ((int)existedPayment.TotalPrice * 100).ToString());
@@ -60,11 +70,13 @@ namespace YBS.Service.Services.Implements
             pay.AddRequestData("vnp_CurrCode", existedPriceMapper.MoneyUnit);
             pay.AddRequestData("vnp_IpAddr", ipAddress);
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
-            pay.AddRequestData("vnp_OrderInfo", $"{pageRequest.Name}");
-            pay.AddRequestData("vnp_OrderType", nameof(pageRequest.PaymentType).ToString().Trim());
-            pay.AddRequestData("vnp_ReturnUrl", _configuration["PaymentCallBack:ReturnUrl"]);
+            pay.AddRequestData("vnp_OrderInfo", $"{existedPayment.Name}");
+            pay.AddRequestData("vnp_OrderType", pageRequest.TransactionType.ToString().Trim());
+            pay.AddRequestData("vnp_ReturnUrl", callBackUrl);
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(15).ToString("yyyyMMddHHmmss"));
+            //Cached PaymentInformationInputDto
+            _memoryCache.Set(nameof(PaymentInformationInputDto),pageRequest,DateTime.Now.AddMinutes(20));
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 
@@ -85,11 +97,17 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Account with that email: " + pageRequest.Email + " already existed");
             }
+            var existUsername = await _unitOfWork.AccountRepository.Find(account => account.Username == pageRequest.Username)
+                                                            .FirstOrDefaultAsync();
+            if (existUsername != null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Account with that username: " + pageRequest.Username + " already existed");
+            }
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
             var tick = DateTime.Now.Ticks.ToString();
             var ipAddress = VnPayLibrary.GetIpAddress();
-            var callBackUrl = "http://" + context.Request.Host + _configuration["PaymentCallBack:BookingPaymentReturnUrl"];
+            var callBackUrl = "https://" + context.Request.Host + _configuration["PaymentCallBack:MembershipPaymentReturnUrl"];
             string? fullName = pageRequest.FullName;
             
 
@@ -105,13 +123,13 @@ namespace YBS.Service.Services.Implements
             pay.AddRequestData("vnp_IpAddr", ipAddress);
             pay.AddRequestData("vnp_Locale", _configuration["Vnpay:Locale"]);
             pay.AddRequestData("vnp_OrderInfo", $"Thanh Toan Cho {existedMembershipPackage.Name}");
-            pay.AddRequestData("vnp_OrderType", nameof(pageRequest.TransactionType).ToString().Trim());
+            pay.AddRequestData("vnp_OrderType", pageRequest.TransactionType.ToString().Trim());
             pay.AddRequestData("vnp_ReturnUrl", callBackUrl);
             pay.AddRequestData("vnp_TxnRef", tick);
             pay.AddRequestData("vnp_ExpireDate", timeNow.AddMinutes(15).ToString("yyyyMMddHHmmss"));
             //add account information   
             pay.AddRequestData("vnp_Bill_Mobile", pageRequest.PhoneNumber.Trim());
-            pay.AddRequestData("vnp_Bill_Email", pageRequest.PhoneNumber.Trim());
+            pay.AddRequestData("vnp_Bill_Email", pageRequest.Email.Trim());
 
             if (fullName != null)
             {
@@ -122,22 +140,23 @@ namespace YBS.Service.Services.Implements
                 if (spaceIndex == -1)
                 {
                     lastName = fullName;
-                    pay.AddRequestData("vnp_Bill_LastName", pageRequest.PhoneNumber.Trim());
+                    pay.AddRequestData("vnp_Bill_LastName", lastName.Trim());
                 }
                 else
                 {
                     firstName = fullName.Substring(0,spaceIndex);
 
                     lastName = fullName.Substring(spaceIndex, pageRequest.FullName.Length - spaceIndex);
-                    pay.AddRequestData("vnp_Bill_FirstName", pageRequest.PhoneNumber.Trim());
-                    pay.AddRequestData("vnp_Bill_LastName", pageRequest.PhoneNumber.Trim());
+                    pay.AddRequestData("vnp_Bill_FirstName", firstName.Trim());
+                    pay.AddRequestData("vnp_Bill_LastName", lastName.Trim());
                 }
             }
             pay.AddRequestData("vnp_Bill_Address", pageRequest.Address.Trim());
             pay.AddRequestData("vnp_Bill_Country", pageRequest.Nationality.Trim());
 
-            //temporary store data in server 
-            _memoryCache.Set(nameof(pageRequest),pageRequest,DateTime.Now.AddMinutes(20));
+            //Cached MembershipPackageInformationInputDto 
+            _memoryCache.Set(nameof(MembershipPackageInformationInputDto),pageRequest,DateTime.Now.AddMinutes(20));
+            //create payment url
             var paymentUrl =
                 pay.CreateRequestUrl(_configuration["Vnpay:BaseUrl"], _configuration["Vnpay:HashSecret"]);
 

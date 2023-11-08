@@ -5,6 +5,8 @@ using System.Security.Cryptography;
 using System.Text;
 using CodeMegaVNPay.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Caching.Memory;
+using YBS.Service.Dtos.InputDtos;
 
 public class VnPayLibrary
 {
@@ -12,7 +14,7 @@ public class VnPayLibrary
     private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VnPayCompare());
 
 
-    public PaymentResponseModel GetFullResponseData(IQueryCollection collection, string hashSecret)
+    public BookingPaymentResponseModel GetFullBookingPaymentResponseData(IQueryCollection collection, string hashSecret, IMemoryCache memoryCache, string cachedKey)
     {
         var vnPay = new VnPayLibrary();
 
@@ -24,17 +26,85 @@ public class VnPayLibrary
                 vnPay.AddResponseData(key, value);
             }
         }
-
-
-        var orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
-        var vnPayTranId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-        var vnpResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-        var amount = Convert.ToInt64(vnPay.GetResponseData("vnp_Amount")) / 100;
-
+        var tmnCode = vnPay.GetResponseData("vnp_TmnCode").Trim();
+        var txnRef = vnPay.GetResponseData("vnp_TxnRef").Trim();
+        var amount = float.Parse(vnPay.GetResponseData("vnp_Amount")) / 100;
+        var orderInfo = vnPay.GetResponseData("vnp_OrderInfo").Trim(); //transaction name
+        var responseCode = vnPay.GetResponseData("vnp_ResponseCode").Trim();
+        var bankCode = vnPay.GetResponseData("vnp_BankCode").Trim();
+        var cardType = vnPay.GetResponseData("vnp_CardType").Trim();
+        var payDate = vnPay.GetResponseData("vnp_PayDate").Trim();
+        var transactionNo = vnPay.GetResponseData("vnp_TransactionNo").Trim();
+        var transactionStatus = vnPay.GetResponseData("vnp_TransactionStatus").Trim();
 
         var vnpSecureHash =
             collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
-        var orderInfo = vnPay.GetResponseData("vnp_OrderInfo");
+
+        var checkSignature =
+            vnPay.ValidateSignature(vnpSecureHash, hashSecret); //check Signature
+
+        if (!checkSignature)
+            return new BookingPaymentResponseModel()
+            {
+                Success = false
+            };
+
+        var result = new BookingPaymentResponseModel()
+        {
+            Success = true,
+            //field response from vnpay exist in db 
+            Name = orderInfo,
+            Amount = amount,
+            //field response from vnpay not exist in db
+            TmnCode = tmnCode,
+            TxnRef = txnRef,
+            ResponseCode = responseCode,
+            BankCode = bankCode,
+            cardType = cardType,
+            TransactionNo = transactionNo,
+            TransactionStatus = transactionStatus,
+            SecureHash = vnpSecureHash,
+        };
+        //retrieve object from cache
+        PaymentInformationInputDto paymentInformationInputDto;
+        if (memoryCache.TryGetValue(cachedKey, out paymentInformationInputDto))
+        {
+            result.BookingPaymentId = paymentInformationInputDto.BookingPaymentId;
+            result.TransactionType = nameof(paymentInformationInputDto.TransactionType);
+            result.PaymentMethod = nameof(paymentInformationInputDto.PaymentMethod);
+            result.MoneyUnit = paymentInformationInputDto.MoneyUnit;
+        }
+        if (DateTime.TryParseExact(payDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+        {
+            result.PaymentDate = date;
+        }
+        return result;
+    }
+
+    public MembershipPaymentResponseModel GetFullMembershipPaymentResponseData(IQueryCollection collection, string hashSecret, IMemoryCache memoryCache, string cachedKey)
+    {
+        var vnPay = new VnPayLibrary();
+
+
+        foreach (var (key, value) in collection)
+        {
+            if (!string.IsNullOrEmpty(key) && key.StartsWith("vnp_"))
+            {
+                vnPay.AddResponseData(key, value);
+            }
+        }
+        var tmnCode = vnPay.GetResponseData("vnp_TmnCode").Trim();
+        var txnRef = vnPay.GetResponseData("vnp_TxnRef").Trim();
+        var amount = float.Parse(vnPay.GetResponseData("vnp_Amount")) / 100;
+        var transactionName = vnPay.GetResponseData("vnp_OrderInfo").Trim(); //transaction name
+        var responseCode = vnPay.GetResponseData("vnp_ResponseCode").Trim();
+        var bankCode = vnPay.GetResponseData("vnp_BankCode").Trim();
+        var cardType = vnPay.GetResponseData("vnp_CardType").Trim();
+        var payDate = vnPay.GetResponseData("vnp_PayDate").Trim();
+        var transactionNo = vnPay.GetResponseData("vnp_TransactionNo").Trim();
+        var transactionStatus = vnPay.GetResponseData("vnp_TransactionStatus").Trim();
+        var vnpSecureHash =
+            collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
 
 
         var checkSignature =
@@ -42,24 +112,55 @@ public class VnPayLibrary
 
 
         if (!checkSignature)
-            return new PaymentResponseModel()
+            return new MembershipPaymentResponseModel()
             {
                 Success = false
             };
 
 
-        return new PaymentResponseModel()
+        var result = new MembershipPaymentResponseModel()
         {
             Success = true,
-            PaymentMethod = "VnPay",
-            OrderDescription = orderInfo,
-            OrderId = orderId.ToString(),
-            PaymentId = vnPayTranId.ToString(),
-            TransactionId = vnPayTranId.ToString(),
-            Token = vnpSecureHash,
+            //Transaction field
+            TransactionName = transactionName,
             Amount = amount,
-            VnPayResponseCode = vnpResponseCode
+            //field response from vnpay not exist in db
+            TmnCode = tmnCode,
+            TxnRef = txnRef,
+            ResponseCode = responseCode,
+            BankCode = bankCode,
+            cardType = cardType,
+            TransactionNo = transactionNo,
+            TransactionStatus = transactionStatus,
+            SecureHash = vnpSecureHash,
         };
+        //retrieve object from cache
+        MembershipPackageInformationInputDto membershipPackageInformationInputDto;
+        if (memoryCache.TryGetValue(cachedKey, out membershipPackageInformationInputDto))
+        {
+            result.MembershipPackageId = membershipPackageInformationInputDto.MembershipPackageId;
+            result.TransactionType = membershipPackageInformationInputDto.TransactionType.ToString();
+            result.PaymentMethod = membershipPackageInformationInputDto.PaymentMethod.ToString();
+            result.MoneyUnit = membershipPackageInformationInputDto.MoneyUnit;
+            result.Username = membershipPackageInformationInputDto.Username;
+            result.Password = membershipPackageInformationInputDto.Password;
+            result.DateOfBirth = membershipPackageInformationInputDto.DateOfBirth;
+            result.Nationality = membershipPackageInformationInputDto.Nationality;
+            result.Gender = membershipPackageInformationInputDto.Gender; 
+            result.Address = membershipPackageInformationInputDto.Address;
+            result.IdentityNumber = membershipPackageInformationInputDto.IdentityNumber;
+            result.Email = membershipPackageInformationInputDto.Email;
+            result.FullName = membershipPackageInformationInputDto.FullName;
+            result.PhoneNumber = membershipPackageInformationInputDto.PhoneNumber;
+        }
+        memoryCache.Remove(cachedKey);
+        memoryCache.Dispose();
+
+        if (DateTime.TryParseExact(payDate, "yyyyMMddHHmmss", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime date))
+        {
+            result.PaymentDate = date;
+        }
+        return result;
     }
     public static string GetIpAddress()
     {
