@@ -10,9 +10,6 @@ namespace YBS.Data.Models
     public class Yacht
     {
         public int Id { get; set; }
-        public int CompanyId { get; set; }
-        [ForeignKey("CompanyId")]
-        public Company Company { get; set; }
         public int YachtTypeId { get; set; }
         [ForeignKey("YachtTypeId")]
         public virtual YachtType YachtType { get; set; }

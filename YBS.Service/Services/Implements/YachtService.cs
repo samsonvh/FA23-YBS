@@ -153,10 +153,10 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Yacht not found");
             }
-            if (pageRequest.CompanyId > 0)
-            {
-                existedYacht.CompanyId = (int)pageRequest.CompanyId;
-            }
+            // if (pageRequest.CompanyId > 0)
+            // {
+            //     existedYacht.CompanyId = (int)pageRequest.CompanyId;
+            // }
             if (pageRequest.YachtTypeId > 0)
             {
                 existedYacht.YachtTypeId = (int)pageRequest.YachtTypeId;

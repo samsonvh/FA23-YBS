@@ -19,6 +19,10 @@ namespace YBS.Data.Configs
             builder.Property(booking => booking.MoneyUnit).HasColumnType("varchar(10)");
             builder.Property(company => company.CreationDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
             builder.Property(company => company.LastModifiedDate).HasColumnType("datetime").HasDefaultValueSql("getDate()");
+             builder.HasOne(booking => booking.YachtType).WithMany(yachtType => yachtType.Bookings)
+                                                                                    .HasForeignKey(booking => booking.YachtTypeId)
+                                                                                    .OnDelete(DeleteBehavior.NoAction);
+        
         }
     }
 }

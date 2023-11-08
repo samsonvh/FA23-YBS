@@ -25,6 +25,13 @@ namespace YBS.Data.Models
         public float Amount { get; set; }
         public string MoneyUnit { get; set; }
         public DateTime CreationDate { get; set; }
+        public string VNPayTmnCode { get; set; }
+        public string VNPayTxnRef { get; set; }
+        public string VNPayResponseCode { get; set; }
+        public string VNPAYBankCode { get; set; }
+        public string VNPAYcardType { get; set; }
+        public string VNPAYTransactionNo { get; set; }
+        public string VNPayTransactionStatus { get; set; }
         public EnumTransactionStatus Status { get; set; }
     }
 }
