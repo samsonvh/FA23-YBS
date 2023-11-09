@@ -96,6 +96,7 @@ namespace YBS.Service.Services.Implements
                 {
                     AccessToken = accessToken,
                     RefreshToken = refreshToken,
+                    Id = account.Id,
                     Role = account.Role.Name,
                     UserName = account.Username,
                     Email = account.Email,
