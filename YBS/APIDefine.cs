@@ -49,7 +49,12 @@ namespace YBS
         public const string YACHT_GET_ALL = DEFAULT_ROUTE;
 
         //YachtType
-        public const string YACHT_TYPE_GET_ALL = "api/v{version:apiVersion}/yacht-types";
+        public const string YACHT_TYPE_DEFAULT = "api/v{version:apiVersion}/yacht-types";
+        public const string YACHT_TYPE_GET_ALL = YACHT_TYPE_DEFAULT;
+        public const string YACHT_TYPE_GET_DETAIL = YACHT_TYPE_DEFAULT + "/{id}";
+        public const string YACHT_TYPE_CREATE = YACHT_TYPE_DEFAULT;
+        public const string YACHT_TYPE_UPDATE = YACHT_TYPE_DEFAULT + "/{id}";
+        public const string YACHT_TYPE_CHANGE_STATUS = YACHT_TYPE_DEFAULT + "/{id}";
 
         //Dock
         public const string DOCK_GET_ALL = DEFAULT_ROUTE;
