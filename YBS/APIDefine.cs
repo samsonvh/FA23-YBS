@@ -33,6 +33,7 @@ namespace YBS
         public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string ROUTE_CREATE= DEFAULT_ROUTE;
         public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
+        public const string ROUTE_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Membership Package
         public const string MEMBERSHIP_PACKAGE = "api/v{version:apiVersion}/membership-packages";
@@ -47,9 +48,15 @@ namespace YBS
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_GET_ALL = DEFAULT_ROUTE;
+        public const string YACHT_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //YachtType
-        public const string YACHT_TYPE_GET_ALL = "api/v{version:apiVersion}/yacht-types";
+        public const string YACHT_TYPE_DEFAULT = "api/v{version:apiVersion}/yacht-types";
+        public const string YACHT_TYPE_GET_ALL = YACHT_TYPE_DEFAULT;
+        public const string YACHT_TYPE_GET_DETAIL = YACHT_TYPE_DEFAULT + "/{id}";
+        public const string YACHT_TYPE_CREATE = YACHT_TYPE_DEFAULT;
+        public const string YACHT_TYPE_UPDATE = YACHT_TYPE_DEFAULT + "/{id}";
+        public const string YACHT_TYPE_CHANGE_STATUS = YACHT_TYPE_DEFAULT + "/{id}";
 
         //Dock
         public const string DOCK_GET_ALL = DEFAULT_ROUTE;

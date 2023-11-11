@@ -45,5 +45,17 @@ namespace YBS.Controllers
             await _routeService.Update(pageRequest, id);
             return Ok("Update Route Successfully");
         }
+
+        [Route(APIDefine.ROUTE_CHANGE_STATUS)]
+        [HttpPatch]
+        public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromForm] string status)
+        {
+            var changedRoute = await _routeService.ChangeStatusRoute(id, status);
+            if (changedRoute)
+            {
+                return Ok("Update route successful.");
+            }
+            return BadRequest("Update route fail.");
+        }
     }
 }

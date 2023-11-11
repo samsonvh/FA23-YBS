@@ -43,5 +43,17 @@ namespace YBS.Controllers
             await _yachtService.Update(id,pageRequest);
             return Ok("Update Yacht Successfully");
         }
+
+        [HttpPatch]
+        [Route(APIDefine.YACHT_CHANGE_STATUS)]
+        public async Task<IActionResult> ChangeStatusYaccht([FromRoute] int id, [FromForm] string status)
+        {
+            var changedStatus = await _yachtService.ChangeStatusYacht(id, status);  
+            if(changedStatus)
+            {
+                return Ok("Change status yacht successful.");
+            }
+            return BadRequest("Change status yacht fail.");
+        }
     }
 }
