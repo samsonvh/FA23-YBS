@@ -46,9 +46,9 @@ namespace YBS.Controllers
         }
         [Route(APIDefine.BOOKING_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAll ([FromQuery] BookingPageRequest pageRequest)
+        public async Task<IActionResult> GetAllBookings([FromQuery] BookingPageRequest pageRequest, [FromRoute] int companyId)
         {
-            var result = await _bookingService.GetAll(pageRequest);
+            var result = await _bookingService.GetAllBookings(pageRequest, companyId);
             return Ok(result);
         }
 

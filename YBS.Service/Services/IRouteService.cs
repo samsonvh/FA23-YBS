@@ -14,7 +14,7 @@ namespace YBS.Service.Services
 {
     public interface IRouteService
     {
-        Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest);
+        Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest, int companyId);
         Task<RouteDto> GetDetailRoute(int id);
         Task Create (RouteInputDto pageRequest);
         Task Update (RouteInputDto pageRequest, int id);

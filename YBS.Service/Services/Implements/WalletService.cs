@@ -26,10 +26,11 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task<DefaultPageResponse<WalletListingDto>> GetAllWallets(WalletPageRequest pageRequest)
+        public async Task<DefaultPageResponse<WalletListingDto>> GetAllWallets(WalletPageRequest pageRequest, int memberId)
         {
             var query = _unitOfWork.WalletRepository.Find(wallet =>
-                (!pageRequest.Status.HasValue || wallet.Status == pageRequest.Status.Value));
+                wallet.MemberId == memberId &&
+                !pageRequest.Status.HasValue || wallet.Status == pageRequest.Status.Value);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(wallet => wallet.Id);
             var totalItem = data.Count();

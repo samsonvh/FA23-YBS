@@ -17,9 +17,9 @@ namespace YBS.Controllers
 
         [Route(APIDefine.YACHT_TYPE_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllYachtType([FromQuery] YachtTypePageRequest pageRequest)
+        public async Task<IActionResult> GetAllYachtType([FromQuery] YachtTypePageRequest pageRequest,[FromRoute] int companyId)
         {
-            return Ok(await _yachtTypeService.GetAllYachtType(pageRequest));
+            return Ok(await _yachtTypeService.GetAllYachtType(pageRequest,companyId));
         }
     }
 }

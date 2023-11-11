@@ -27,7 +27,7 @@ public class MembershipPaymentResponseModel
     public string Address { get; set; }//vnpay return 
     public string IdentityNumber { get; set; }
 
-    //VNPay Return Field (don't have in db field)
+    //VNPay Return Field 
     public string TmnCode { get; set; }
     public string TxnRef { get; set; }
     public string ResponseCode { get; set; }

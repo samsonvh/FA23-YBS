@@ -11,7 +11,7 @@ namespace YBS.Service.Services
 {
     public interface IYachtTypeService
     {
-        Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest);
+        Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest, int companyId);
 
     }
 }

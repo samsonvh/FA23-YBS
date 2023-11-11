@@ -12,6 +12,7 @@ namespace FA23_YBS_BACKEND.Controllers
 {
     
     [ApiController]
+    [Consumes("multipart/form-data")]
     public class MembersController : ControllerBase
     {
         private readonly IMemberService _memberService;
@@ -21,9 +22,9 @@ namespace FA23_YBS_BACKEND.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBER_GET_ALL)]
-        public async Task<IActionResult> GetAll([FromQuery] MemberPageRequest pageRequest)
+        public async Task<IActionResult> GetAllMembers([FromQuery] MemberPageRequest pageRequest)
         {
-            var result = await _memberService.GetAll(pageRequest);
+            var result = await _memberService.GetAllMembers(pageRequest);
             return Ok(result);
         }
         [HttpGet]
@@ -40,12 +41,12 @@ namespace FA23_YBS_BACKEND.Controllers
             await _memberService.Register(pageRequest);
             return Ok("Register Member Successfully");
         }
-        // [HttpPut]
-        // [Route(APIDefine.MEMBER_UPDATE)]
-        // public async Task<IActionResult> Update([FromRoute] int id,[FromBody]MemberRegisterInputDto pageRequest)
-        // {
-        //     await _memberService.Update(pageRequest,id);
-        //     return Ok("Update Member Successfully");
-        // }
+        [HttpPut]
+        [Route(APIDefine.MEMBER_UPDATE)]
+        public async Task<IActionResult> Update([FromRoute] int id,[FromForm]MemberUpdateInputDto pageRequest)
+        {
+            await _memberService.Update(pageRequest,id);
+            return Ok("Update Member Successfully");
+        }
     }
 }

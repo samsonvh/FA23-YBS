@@ -29,11 +29,11 @@ namespace YBS.Controllers
         }
 
         [RoleAuthorization(nameof(EnumRole.MEMBER))]
-        [Route(APIDefine.TRANSACTION_CREATE)]
+        [Route(APIDefine.TRANSACTION_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllTransaction([FromQuery] TransactionPageRequest pageRequest)
+        public async Task<IActionResult> GetAllTransaction([FromQuery] TransactionPageRequest pageRequest, int memberId)
         {
-            return Ok(await _transactionService.GetAllTransactions(pageRequest));
+            return Ok(await _transactionService.GetAllTransactions(pageRequest, memberId));
         }
     }
 }

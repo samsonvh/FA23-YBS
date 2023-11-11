@@ -32,13 +32,6 @@ namespace YBS.Service.Services.Implements
         }
         public async Task Create(TransactionInputDto pageRequest)
         {
-            VnPayLibrary vnpay = new VnPayLibrary();
-            string vnp_HashSecret = _configuration["VnPay:HashSecret"];
-            bool checkSignature = vnpay.ValidateSignature(pageRequest.SecureHash, vnp_HashSecret);
-            if (!checkSignature)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid signature");
-            }
             var existedPayment = await _unitOfWork.BookingPaymentRepository.Find(payment => payment.Id == pageRequest.PaymentId)
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)
@@ -54,13 +47,13 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Order already confirmed");
             }
             var transaction = _mapper.Map<Data.Models.Transaction>(pageRequest);
-            if (pageRequest.TransactionStatus == "00" && pageRequest.ResponseCode == "00")
+            if (pageRequest.VNPayTransactionStatus == "00" && pageRequest.VNPayResponseCode == "00")
             {
                 //thanh toan thanh cong 
                 existedPayment.Status = EnumPaymentStatus.DONE;
                 transaction.Status = EnumTransactionStatus.SUCCESS;
             }
-            else 
+            else
             {
                 //thanh toan that bai 
                 existedPayment.Status = EnumPaymentStatus.ABORT;
@@ -70,11 +63,13 @@ namespace YBS.Service.Services.Implements
             await _unitOfWork.SaveChangesAsync();
         }
 
-        public async Task<DefaultPageResponse<TransactionListingDto>> GetAllTransactions(TransactionPageRequest pageRequest)
+        public async Task<DefaultPageResponse<TransactionListingDto>> GetAllTransactions(TransactionPageRequest pageRequest, int memberId)
         {
             var query = _unitOfWork.TransactionRepository
                 .Find(transaction =>
-                   (string.IsNullOrWhiteSpace(pageRequest.Name) || transaction.Name.Contains(pageRequest.Name)) &&
+                    transaction.BookingPayment.Booking.MemberId == memberId &&
+                   (string.IsNullOrWhiteSpace(pageRequest.Name) || transaction.Name.Trim().ToUpper()
+                                                                    .Contains(pageRequest.Name.Trim().ToUpper())) &&
                    (!pageRequest.Status.HasValue || transaction.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);

@@ -32,11 +32,14 @@ namespace YBS.Service.Services.Implements
             _firebaseStorageService = firebaseStorageService;
         }
 
-        public async Task<DefaultPageResponse<DockListingDto>> GetDockList(DockPageRequest pageRequest)
+        public async Task<DefaultPageResponse<DockListingDto>> GetAllDocks(DockPageRequest pageRequest, int companyId)
         {
             var query = _unitOfWork.DockRepository.Find(dock =>
-            (string.IsNullOrWhiteSpace(pageRequest.Name) || dock.Name.Contains(pageRequest.Name)) &&
-            (string.IsNullOrWhiteSpace(pageRequest.Address) || dock.Address.Contains(pageRequest.Address)) &&
+            dock.CompanyId == companyId &&
+            (string.IsNullOrWhiteSpace(pageRequest.Name) || dock.Name.Trim().ToUpper()
+                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Address) || dock.Address.Trim().ToUpper()
+                                                            .Contains(pageRequest.Address.Trim().ToUpper())) &&
             (!pageRequest.Status.HasValue || dock.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
@@ -130,6 +133,11 @@ namespace YBS.Service.Services.Implements
                 }
             }
             return false;
+        }
+
+        public async Task Update(DockInputDto pageRequest, int id)
+        {
+            var existedDock = await _unitOfWork.DockRepository.Find(dock => dock.Id == id).FirstOrDefaultAsync();
         }
     }
 }

@@ -23,12 +23,14 @@ namespace YBS.Service.Services.Implements
     public class CompanyService : ICompanyService
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly IMapper _mapper;
 
-        public CompanyService(IUnitOfWork unitOfWork, IMapper mapper)
+        public CompanyService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _firebaseStorageService = firebaseStorageService;
         }
 
         public async Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest)
@@ -36,7 +38,7 @@ namespace YBS.Service.Services.Implements
             var query = _unitOfWork.CompanyRepository.Find(company => true);
             if (!string.IsNullOrWhiteSpace(pageRequest.Name))
             {
-                query = query.Where(company => company.Name.Contains(pageRequest.Name));
+                query = query.Where(company => company.Name.Trim().ToUpper().Contains(pageRequest.Name.Trim().ToUpper()));
             }
             if (pageRequest.Status.HasValue)
             {
@@ -69,7 +71,7 @@ namespace YBS.Service.Services.Implements
              .FirstOrDefaultAsync();
             if (companyDetail == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Company Not Found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
             }
             var result = _mapper.Map<CompanyDto>(companyDetail);
             result.Role = companyDetail.Account.Role.Name;
@@ -107,6 +109,7 @@ namespace YBS.Service.Services.Implements
                 _unitOfWork.RoleRepository.Add(companyRole);
                 await _unitOfWork.SaveChangesAsync();
             }
+            //create account
             var account = new Account
             {
                 RoleId = companyRole.Id,
@@ -117,9 +120,15 @@ namespace YBS.Service.Services.Implements
             };
             _unitOfWork.AccountRepository.Add(account);
             await _unitOfWork.SaveChangesAsync();
+            //create company
             var company = _mapper.Map<Company>(companyInputDto);
             company.AccountId = account.Id;
             company.Status = EnumCompanyStatus.ACTIVE;
+            if (companyInputDto.Logo != null)
+            {
+                var imageUrl = await _firebaseStorageService.UploadFile(company.Name, companyInputDto.Logo, "Companies");
+                company.Logo = imageUrl.ToString();
+            }
             _unitOfWork.CompanyRepository.Add(company);
             await _unitOfWork.SaveChangesAsync();
             var companyDto = _mapper.Map<CompanyDto>(company);

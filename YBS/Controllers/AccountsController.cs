@@ -8,6 +8,7 @@ using YBS.Services.Dtos.PageRequests;
 namespace YBS.Controllers
 {
     [ApiController]
+    // [RoleAuthorization("ADMIN")]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;
@@ -18,7 +19,7 @@ namespace YBS.Controllers
 
         [Route(APIDefine.ACCOUNT_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAccountList([FromQuery] AccountPageRequest pageRequest)
+        public async Task<IActionResult> GetAllAccounts([FromQuery] AccountPageRequest pageRequest)
         {
             return Ok(await _accountService.GetAllAccounts(pageRequest));
         }

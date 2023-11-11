@@ -40,7 +40,7 @@ namespace YBS.Controllers
         /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
         [HttpPost]
         [Route(APIDefine.COMPANY_CREATE)]
-        public async Task<IActionResult> Create([FromBody] CompanyInputDto companyInputDto)
+        public async Task<IActionResult> Create([FromForm] CompanyInputDto companyInputDto)
         {
             var company = await _companyService.Create(companyInputDto);
             if (company != null)
@@ -50,7 +50,6 @@ namespace YBS.Controllers
             }
             return BadRequest("Failed to create company");
         }
-
         /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
         [Route(APIDefine.COMPANY_CHANGE_STATUS)]
         [HttpPatch]

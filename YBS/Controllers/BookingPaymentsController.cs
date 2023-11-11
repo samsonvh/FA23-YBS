@@ -19,9 +19,15 @@ namespace YBS.Controllers
         /*[RoleAuthorization(nameof(EnumRole.COMPANY))]*/
         [Route(APIDefine.BOOKING_PAYMENT_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllBookingPayments([FromQuery] BookingPaymentPageRequest pageRequest)
+        public async Task<IActionResult> GetAllBookingPayments([FromQuery] BookingPaymentPageRequest pageRequest, [FromRoute] int companyId)
         {
-            return Ok(await _bookingPaymentService.GetAllBookingPayment(pageRequest));
+            return Ok(await _bookingPaymentService.GetAllBookingPayments(pageRequest, companyId));
+        }
+        [Route(APIDefine.BOOKING_PAYMENT_DETAIL)]
+        [HttpGet]
+        public async Task<IActionResult> GetDetailBookingPayment([FromRoute] int id)
+        {
+            return Ok(await _bookingPaymentService.GetDetailBookingPayment(id));
         }
     }
 }

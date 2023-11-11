@@ -10,6 +10,9 @@ namespace YBS.Data.Models
     public class Service
     {
         public int Id { get; set; }
+        public int CompanyId { get; set; }
+        [ForeignKey("CompanyId")]
+        public Company Company { get; set; }
         public EnumServiceType Type { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }

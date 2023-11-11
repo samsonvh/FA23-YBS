@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.UnitOfWorks;
@@ -10,6 +11,7 @@ using YBS.Service.Dtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
+using YBS.Service.Exceptions;
 using YBS.Service.Utils;
 
 namespace YBS.Service.Services.Implements
@@ -29,7 +31,7 @@ namespace YBS.Service.Services.Implements
         public async Task<DefaultPageResponse<MembershipRegistrationListingDto>> GetMembershipRegistrationList(MembershipRegistrationRequest pageRequest)
         {
             var query = _unitOfWork.MembershipRegistrationRepository
-                .Find(membershipRegistration => (!pageRequest.Status.HasValue || membershipRegistration.Status == pageRequest.Status));
+                .Find(membershipRegistration => !pageRequest.Status.HasValue || membershipRegistration.Status == pageRequest.Status);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(membershipRegistration => membershipRegistration.Id);
             var totalItem = data.Count();
@@ -52,11 +54,11 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.MembershipRegistrationRepository
                 .Find(membershipRegistration => membershipRegistration.Id == id)
                 .FirstOrDefaultAsync();
-            if(result != null)
+            if(result == null)
             {
-                return _mapper.Map<MembershipRegistrationDto>(result);
+                throw new APIException((int)HttpStatusCode.BadRequest,"Membership Package Not Found");
             }
-            return null;
+            return _mapper.Map<MembershipRegistrationDto>(result);
         }
     }
 }

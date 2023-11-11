@@ -29,7 +29,7 @@ namespace YBS
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Route
-        public const string ROUTE_GET_ALL = DEFAULT_ROUTE;
+        public const string ROUTE_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string ROUTE_CREATE= DEFAULT_ROUTE;
         public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
@@ -46,22 +46,23 @@ namespace YBS
         public const string YACHT_CREATE = DEFAULT_ROUTE;
         public const string YACHT_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string YACHT_UPDATE = DEFAULT_ROUTE + "/{id}";
-        public const string YACHT_GET_ALL = DEFAULT_ROUTE;
+        public const string YACHT_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
 
         //YachtType
-        public const string YACHT_TYPE_GET_ALL = "api/v{version:apiVersion}/yacht-types";
+        public const string YACHT_TYPE_GET_ALL = "api/v{version:apiVersion}/company/{companyId}/yacht-types";
 
         //Dock
-        public const string DOCK_GET_ALL = DEFAULT_ROUTE;
+        public const string DOCK_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string DOCK_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CREATE = DEFAULT_ROUTE;
+        public const string DOCK_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Booking
         public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
         public const string BOOKING_MEMBER_CREATE = DEFAULT_ROUTE + "/members";
         public const string BOOKING_GUEST_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
-        public const string BOOKING_GET_ALL = DEFAULT_ROUTE;
+        public const string BOOKING_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string BOOKING_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         //Payment
         public const string PAYMENT_BOOKING_CREATE_URL = DEFAULT_ROUTE + "/booking";
@@ -70,7 +71,7 @@ namespace YBS
         public const string PAYMENT_MEMBERSHIP_CALL_BACK = DEFAULT_ROUTE + "/membership";
         //Transaction 
         public const string TRANSACTION_CREATE = DEFAULT_ROUTE;
-        public const string TRANSACTION_GET_ALL = DEFAULT_ROUTE;
+        public const string TRANSACTION_GET_ALL = DEFAULT_ROUTE + "memberId";
 
         //MembershipRegostration
         public const string MEMBERSHIP_REGISTRATION = "api/v{version:apiVersion}/membership-registrations";
@@ -78,10 +79,10 @@ namespace YBS
         public const string MEMBERSHIP_REGISTRATION_DETAIL = MEMBERSHIP_REGISTRATION + "/{id}";
 
         //bookingPayment
-        public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/booking-payments";
-
+        public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/company/{companyId}/booking-payments";
+        public const string BOOKING_PAYMENT_DETAIL = DEFAULT_ROUTE + "/{id}";
         //wallet
-        public const string WALLET_GET_ALL = DEFAULT_ROUTE;
+        public const string WALLET_GET_ALL = DEFAULT_ROUTE + "/{memberId}";
         public const string WALLET_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
     }
 }

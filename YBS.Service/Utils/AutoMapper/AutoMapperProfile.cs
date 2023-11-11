@@ -121,6 +121,7 @@ namespace YBS.Service.Utils.AutoMapper
 
             //payment
             CreateMap<BookingPayment, BookingPaymentListingDto>();
+            CreateMap<BookingPayment, BookingPaymentDto>();
 
             //wallet
             CreateMap<Wallet, WalletDto>();

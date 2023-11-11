@@ -26,7 +26,12 @@ namespace YBS.Service.Dtos.InputDtos
         public float Amount { get; set; }
         public string MoneyUnit { get; set; }
         //vnpay return field
-        public string TransactionStatus { get; set; }
-        public string ResponseCode { get; set; }
+        public string VNPayTmnCode { get; set; }
+        public string VNPayTxnRef { get; set; }
+        public string VNPayResponseCode { get; set; }
+        public string VNPAYBankCode { get; set; }
+        public string VNPAYcardType { get; set; }
+        public string VNPAYTransactionNo { get; set; }
+        public string VNPayTransactionStatus { get; set; }
     }
 }

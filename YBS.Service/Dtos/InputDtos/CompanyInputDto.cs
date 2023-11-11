@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace YBS.Service.Dtos.InputDtos
 {
@@ -11,7 +12,7 @@ namespace YBS.Service.Dtos.InputDtos
         public string Name { get; set; }
         public string Address { get; set; }
         public string HotLine { get; set; }
-        public string Logo { get; set; }
+        public IFormFile? Logo { get; set; }
         public string Email { get; set; }
         public string Username { get; set; }
         public string Password { get; set; }

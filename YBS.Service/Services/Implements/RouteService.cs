@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -57,11 +58,27 @@ namespace YBS.Service.Services.Implements
                     counter++;
                 }
             }
+            List<ActivityInputDto> activityInputDtos = JsonConvert.DeserializeObject<List<ActivityInputDto>>(pageRequest.ActivityList);
+            
+            List<Activity> activityList = new List<Activity>();
+            foreach (ActivityInputDto activityInput in activityInputDtos)
+            {
+                Activity activity = new Activity()
+                {
+                    Name = activityInput.Name,
+                    Description = activityInput.Description,
+                    OccuringTime = activityInput.OccuringTime,
+                    OrderIndex = activityInput.OrderIndex,
+                    Status = EnumActivityStatus.AVAILABLE
+                };
+                activityList.Add(activity);
+            }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
             routeAdd.ImageURL = imageUrL;
             routeAdd.Status = EnumRouteStatus.AVAILABLE;
             routeAdd.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
             routeAdd.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
+            routeAdd.Activities = activityList;
             _unitOfWork.RouteRepository.Add(routeAdd);
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
@@ -70,13 +87,17 @@ namespace YBS.Service.Services.Implements
             }
         }
 
-        public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest)
+        public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest, int companyId)
         {
             var query = _unitOfWork.RouteRepository
                 .Find(route =>
-                       (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Contains(pageRequest.Name)) &&
-                       (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Contains(pageRequest.Beginning)) &&
-                       (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Contains(pageRequest.Destination)) &&
+                        route.CompanyId == companyId &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Trim().ToUpper()
+                                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Trim().ToUpper()
+                                                                            .Contains(pageRequest.Beginning.Trim().ToUpper())) &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Trim().ToUpper()
+                                                                                .Contains(pageRequest.Destination.Trim().ToUpper())) &&
                        (!pageRequest.Status.HasValue || route.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(route => route.Id);

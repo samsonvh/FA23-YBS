@@ -18,9 +18,9 @@ namespace YBS.Controllers
 
         [Route(APIDefine.ROUTE_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest)
+        public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
         {
-            return Ok(await _routeService.GetAllRoutes(pageRequest));   
+            return Ok(await _routeService.GetAllRoutes(pageRequest, companyId));   
         }
 
         [Route(APIDefine.ROUTE_GET_DETAIL)]

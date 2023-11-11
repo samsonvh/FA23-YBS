@@ -24,11 +24,13 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest)
+        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest, int companyId)
         {
             var query = _unitOfWork.YachTypeRepository
                 .Find(yachtType =>
-                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yachtType.Name.Contains(pageRequest.Name)) &&
+                        yachtType.CompanyId == companyId &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yachtType.Name.Trim().ToUpper()
+                                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
                        (!pageRequest.Status.HasValue || yachtType.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(yachtType => yachtType.Id);
