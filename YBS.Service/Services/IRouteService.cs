@@ -18,5 +18,6 @@ namespace YBS.Service.Services
         Task<RouteDto> GetDetailRoute(int id);
         Task Create (RouteInputDto pageRequest);
         Task Update (RouteInputDto pageRequest, int id);
+        Task<bool> ChangeStatusRoute(int id, string status);
     }
 }

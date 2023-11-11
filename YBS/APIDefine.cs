@@ -33,6 +33,7 @@ namespace YBS
         public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string ROUTE_CREATE= DEFAULT_ROUTE;
         public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
+        public const string ROUTE_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Membership Package
         public const string MEMBERSHIP_PACKAGE = "api/v{version:apiVersion}/membership-packages";
