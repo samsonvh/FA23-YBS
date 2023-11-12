@@ -20,5 +20,6 @@ namespace YBS.Service.Services
         Task<List<string>> GetDestinationFilter();
         Task Create (RouteInputDto pageRequest);
         Task Update (RouteInputDto pageRequest, int id);
+        Task<bool> ChangeStatusRoute(int id, string status);
     }
 }

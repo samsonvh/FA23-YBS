@@ -48,6 +48,8 @@ namespace YBS.Service.Utils.AutoMapper
 
             //yachType
             CreateMap<YachtType, YachtTypeListingDto>();
+            CreateMap<YachtType, YachtTypeDto>();
+            CreateMap<YachtTypeInputDto, YachtType>();
 
             //dock
             CreateMap<Dock, DockDto>()
@@ -126,6 +128,16 @@ namespace YBS.Service.Utils.AutoMapper
             //wallet
             CreateMap<Wallet, WalletDto>();
             CreateMap<Wallet, WalletListingDto>();
+
+            //service
+            CreateMap<Data.Models.Service, ServiceDto>();
+            CreateMap<ServiceInputDto, Data.Models.Service>();
+            CreateMap<Data.Models.Service, ServiceListingDto>();
+
+            //servicePackage
+            CreateMap<ServicePackage, ServicePackageDto>();
+            CreateMap<ServicePackageInputDto, ServicePackage>();
+            CreateMap<ServicePackage, ServicePackageListingDto>();
         }
     }
 }

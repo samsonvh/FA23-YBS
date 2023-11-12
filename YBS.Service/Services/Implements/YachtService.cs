@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using YBS.Data.Enums;
 using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
+using YBS.Data.UnitOfWorks.Implements;
 using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
@@ -31,6 +32,7 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
         }
+
         public async Task Create(YachtInputDto pageRequest)
         {
             var company = await _unitOfWorks.CompanyRepository.Find(company => company.Id == pageRequest.CompanyId).FirstOrDefaultAsync();
@@ -217,6 +219,25 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while saving yacht");
             }
+        }
+
+        public async Task<bool> ChangeStatusYacht(int id, string status)
+        {
+            var yacht = await _unitOfWorks.YachRepository
+               .Find(yacht => yacht.Id == id)
+               .FirstOrDefaultAsync();
+
+            if (yacht != null && Enum.TryParse<EnumYachtStatus>(status, out var yachtStatus))
+            {
+                if (Enum.IsDefined(typeof(EnumYachtStatus), yachtStatus))
+                {
+                    yacht.Status = yachtStatus;
+                    _unitOfWorks.YachRepository.Update(yacht);
+                    await _unitOfWorks.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }

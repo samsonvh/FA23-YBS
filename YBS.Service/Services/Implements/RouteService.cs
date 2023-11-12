@@ -255,5 +255,25 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating route");
             }
         }
+
+        public async Task<bool> ChangeStatusRoute(int id, string status)
+        {
+            var route = await _unitOfWork.RouteRepository
+                 .Find(route => route.Id == id)
+                 .FirstOrDefaultAsync();
+
+            if (route != null && Enum.TryParse<EnumRouteStatus>(status, out var routeStatus))
+            {
+                if (Enum.IsDefined(typeof(EnumRouteStatus), routeStatus))
+                {
+                    route.Status = routeStatus;
+                    _unitOfWork.RouteRepository.Update(route);
+                    await _unitOfWork.SaveChangesAsync();
+                    return true;
+                }
+            }
+            return false;
+        }
+
     }
 }
