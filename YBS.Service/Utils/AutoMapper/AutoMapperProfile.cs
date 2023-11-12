@@ -132,6 +132,11 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Data.Models.Service, ServiceDto>();
             CreateMap<ServiceInputDto, Data.Models.Service>();
             CreateMap<Data.Models.Service, ServiceListingDto>();
+
+            //servicePackage
+            CreateMap<ServicePackage, ServicePackageDto>();
+            CreateMap<ServicePackageInputDto, ServicePackage>();
+            CreateMap<ServicePackage, ServicePackageListingDto>();
         }
     }
 }

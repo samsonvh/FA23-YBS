@@ -97,5 +97,13 @@ namespace YBS
         public const string SERVICE_CREATE = DEFAULT_ROUTE;
         public const string SERVICE_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string SERVICE_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
+
+        //servicePackage
+        public const string SERVICE_PACKAGE_DEFAULT = "api/v{version:apiVersion}/service-packages";
+        public const string SERVICE_PACKAGE_GET_ALL = SERVICE_PACKAGE_DEFAULT;
+        public const string SERVICE_PACKAGE_GET_DETAIL = SERVICE_PACKAGE_DEFAULT + "/{id}";
+        public const string SERVICE_PACKAGE_CREATE = SERVICE_PACKAGE_DEFAULT;
+        public const string SERVICE_PACKAGE_UPDATE = SERVICE_PACKAGE_DEFAULT + "/{id}";
+        public const string SERVICE_PACKAGE_CHANGE_STATUS = SERVICE_PACKAGE_DEFAULT + "/{id}";
     }
 }
