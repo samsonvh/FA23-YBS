@@ -38,6 +38,8 @@ builder.Services.AddScoped<IDockService, DockService>();
 builder.Services.AddScoped<IMembershipRegistrationService, MembershipRegistrationService>();
 builder.Services.AddScoped<IBookingPaymentService, BookingPaymentService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);

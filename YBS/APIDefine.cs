@@ -90,5 +90,12 @@ namespace YBS
         //wallet
         public const string WALLET_GET_ALL = DEFAULT_ROUTE;
         public const string WALLET_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
+
+        //service
+        public const string SERVICE_GET_ALL = DEFAULT_ROUTE;
+        public const string SERVICE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string SERVICE_CREATE = DEFAULT_ROUTE;
+        public const string SERVICE_UPDATE = DEFAULT_ROUTE + "/{id}";
+        public const string SERVICE_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
     }
 }

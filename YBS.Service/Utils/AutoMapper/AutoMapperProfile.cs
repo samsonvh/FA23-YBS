@@ -127,6 +127,11 @@ namespace YBS.Service.Utils.AutoMapper
             //wallet
             CreateMap<Wallet, WalletDto>();
             CreateMap<Wallet, WalletListingDto>();
+
+            //service
+            CreateMap<Data.Models.Service, ServiceDto>();
+            CreateMap<ServiceInputDto, Data.Models.Service>();
+            CreateMap<Data.Models.Service, ServiceListingDto>();
         }
     }
 }
