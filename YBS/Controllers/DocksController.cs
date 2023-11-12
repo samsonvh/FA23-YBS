@@ -55,8 +55,8 @@ namespace YBS.Controllers
         public async Task<IActionResult> Update([FromForm] DockInputDto dockInputDto, [FromRoute] int id)
         {
             await _dockService.Update(dockInputDto, id);
-            
-            return BadRequest("Failed to create dock ");
+
+            return Ok("Update Dock successfully");
         }
 
         [Route(APIDefine.DOCK_CHANGE_STATUS)]

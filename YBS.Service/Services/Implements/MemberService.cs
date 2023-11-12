@@ -179,7 +179,9 @@ namespace YBS.Services.Services.Implements
 
         public async Task Update(MemberUpdateInputDto pageRequest, int id)
         {
-            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == id).FirstOrDefaultAsync();
+            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == id)
+                                                                    .Include(member => member.Account)
+                                                                    .FirstOrDefaultAsync();
             if (existedMember == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
@@ -192,26 +194,12 @@ namespace YBS.Services.Services.Implements
             {
                 if (existedMember.AvatarURL != null && existedMember.AvatarURL.Contains(PrefixUrl) && existedMember.AvatarURL.Contains("?"))
                 {
-                    //remove prefixUrl 
-                    var oldPath = existedMember.AvatarURL.Remove(0, PrefixUrl.Length);
-                    //find postfix index
-                    var postFixIndex = oldPath.IndexOf("?");
-                    //remove postfix
-                    oldPath = oldPath.Remove(postFixIndex,oldPath.Length - postFixIndex);
-                    //Replace %2F to /
-                   oldPath = oldPath.Replace("%2F","/");
-                   //Split path 
-                   var resultSplit = oldPath.Split('/');
+                    var resultSplit = FirebaseExtension.GetFullPath(existedMember.AvatarURL, PrefixUrl);
                    // object type/name/fileName
-                    Uri avatarUri = await _firebaseStorageService
-                    .RenamedFolder(resultSplit[1],resultSplit[2],resultSplit[0],existedMember.FullName,pageRequest.AvatarImageFile,"Members");
-                    existedMember.AvatarURL = avatarUri.ToString();
+                   await _firebaseStorageService.DeleteFile(resultSplit[0], resultSplit[1], resultSplit[2]);
                 }
-                else 
-                {
-                    var avatarUri = await _firebaseStorageService.UploadFile(existedMember.FullName,pageRequest.AvatarImageFile,"Members");
+                    var avatarUri = await _firebaseStorageService.UploadFile(existedMember.Account.Username,pageRequest.AvatarImageFile,"Members");
                     existedMember.AvatarURL = avatarUri.ToString();
-                }
             }
             existedMember.FullName = pageRequest.FullName;
             existedMember.DateOfBirth = (DateTime)pageRequest.DateOfBirth;

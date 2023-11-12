@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -26,11 +27,15 @@ namespace YBS.Service.Services.Implements
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFirebaseStorageService _firebaseStorageService;
-        public RouteService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService)
+        private readonly IConfiguration _configuration;
+        private readonly string prefixUrl;
+        public RouteService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService, IConfiguration configuration)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
+            _configuration = configuration;
+            prefixUrl = _configuration["Firebase:PrefixUrl"];
         }
 
         public async Task Create(RouteInputDto pageRequest)
@@ -46,7 +51,7 @@ namespace YBS.Service.Services.Implements
                 var counter = 1;
                 foreach (var image in pageRequest.ImageFiles)
                 {
-                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, "Route");
+                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, "Routes");
                     if (counter == pageRequest.ImageFiles.Count)
                     {
                         imageUrL += imageUri;
@@ -59,7 +64,7 @@ namespace YBS.Service.Services.Implements
                 }
             }
             List<ActivityInputDto> activityInputDtos = JsonConvert.DeserializeObject<List<ActivityInputDto>>(pageRequest.ActivityList);
-            
+
             List<Activity> activityList = new List<Activity>();
             foreach (ActivityInputDto activityInput in activityInputDtos)
             {
@@ -98,7 +103,14 @@ namespace YBS.Service.Services.Implements
                                                                             .Contains(pageRequest.Beginning.Trim().ToUpper())) &&
                        (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Trim().ToUpper()
                                                                                 .Contains(pageRequest.Destination.Trim().ToUpper())) &&
-                       (!pageRequest.Status.HasValue || route.Status == pageRequest.Status.Value));
+                       (!pageRequest.Status.HasValue || route.Status == pageRequest.Status.Value) &&
+                       ((pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0) ||
+                        (pageRequest.MinPrice == 0 && pageRequest.MaxPrice >= route.PriceMappers.First().Price) ||
+                        (pageRequest.MinPrice == 0 && pageRequest.MinPrice <= route.PriceMappers.First().Price) ||
+                        (pageRequest.MaxPrice >= route.PriceMappers.First().Price && pageRequest.MinPrice == 0 && pageRequest.MinPrice <= route.PriceMappers.First().Price)
+                       )
+
+                        );
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(route => route.Id);
             var totalItem = data.Count();
@@ -129,6 +141,34 @@ namespace YBS.Service.Services.Implements
             return result;
         }
 
+        public async Task<List<string>> GetBeginningFilter()
+        {
+            var routeList = await _unitOfWork.RouteRepository.GetAll().ToListAsync();
+            List<string> beginningList = new List<string>();
+            foreach (var route in routeList)
+            {
+                if (!beginningList.Contains(route.Beginning))
+                {
+                    beginningList.Add(route.Beginning);
+                }
+            }
+            return beginningList;
+        }
+
+        public async Task<List<string>> GetDestinationFilter()
+        {
+            var routeList = await _unitOfWork.RouteRepository.GetAll().ToListAsync();
+            List<string> destinationList = new List<string>();
+            foreach (var route in routeList)
+            {
+                if (!destinationList.Contains(route.Destination))
+                {
+                    destinationList.Add(route.Destination);
+                }
+            }
+            return destinationList;
+        }
+
         public async Task<RouteDto> GetDetailRoute(int id)
         {
             var route = await _unitOfWork.RouteRepository
@@ -154,30 +194,61 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(RouteInputDto pageRequest, int id)
         {
-            var route = await _unitOfWork.RouteRepository.Find(route => route.Id == id).FirstOrDefaultAsync();
-            if (route == null)
+            var existedRoute = await _unitOfWork.RouteRepository.Find(route => route.Id == id).FirstOrDefaultAsync();
+            if (existedRoute == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Route not found");
             }
             if (pageRequest.CompanyId > 0)
             {
-                route.CompanyId = (int)pageRequest.CompanyId;
+                existedRoute.CompanyId = (int)pageRequest.CompanyId;
             }
             if (pageRequest.ExpectedStartingTime.CompareTo(pageRequest.ExpectedEndingTime) > 0)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Expected Starting Time must be beofre Expected Ending Time");
             }
-            route.Name = pageRequest.Name;
-            route.Beginning = pageRequest.Beginning;
-            route.Destination = pageRequest.Destination;
-            route.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
-            route.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
-            route.Type = pageRequest.Type;
+            existedRoute.Name = pageRequest.Name;
+            existedRoute.Beginning = pageRequest.Beginning;
+            existedRoute.Destination = pageRequest.Destination;
+            existedRoute.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
+            existedRoute.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
+            existedRoute.Type = pageRequest.Type;
             if (pageRequest.Status != null)
             {
-                route.Status = (EnumRouteStatus)pageRequest.Status;
+                existedRoute.Status = (EnumRouteStatus)pageRequest.Status;
             }
-            _unitOfWork.RouteRepository.Update(route);
+            if (pageRequest.ImageFiles != null)
+            {
+                if (existedRoute.ImageURL != null && existedRoute.ImageURL.Contains(prefixUrl) && existedRoute.ImageURL.Contains("?"))
+                {
+                    var image = existedRoute.ImageURL.Split(",");
+                    //remove old image
+                    foreach (var imageFile in image)
+                    {
+                        var resultSplit = FirebaseExtension.GetFullPath(imageFile, prefixUrl);
+                        // object type/name/fileName
+                        await _firebaseStorageService.DeleteFile(resultSplit[0], resultSplit[1], resultSplit[2]);
+                    }
+                }
+                //upload new image
+                string newImageUrl = null;
+                var counter = 1;
+                foreach (var imageFile in pageRequest.ImageFiles)
+                {
+                    var imageUrl = await _firebaseStorageService.UploadFile(pageRequest.Name, imageFile, "Routes");
+                    if (counter == pageRequest.ImageFiles.Count)
+                    {
+                        newImageUrl += imageUrl;
+                    }
+                    else
+                    {
+                        newImageUrl += imageUrl + ",";
+                    }
+                    counter++;
+                }
+                existedRoute.ImageURL = newImageUrl;
+            }
+            _unitOfWork.RouteRepository.Update(existedRoute);
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {

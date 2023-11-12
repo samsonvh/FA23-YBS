@@ -1,8 +1,11 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 using Firebase.Storage;
+using Google.Apis.Util;
+
 // using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
@@ -25,7 +28,7 @@ namespace YBS.Service.Services.Implements
             var firebaseStorage = new FirebaseStorage(BucketName);
             var stream = image.OpenReadStream();
             string task;
-        
+
             switch (objectType)
             {
                 case "Yacht":
@@ -50,14 +53,15 @@ namespace YBS.Service.Services.Implements
             return imageUri;
         }
 
-        public async Task<Uri> RenamedFolder(string oldName,string oldFileName ,string oldObjectType, string name, IFormFile image, string objectType, string oldType = null,  string type = null)
+        public async Task<Uri> RenamedFolder(string oldName, string oldFileName, string oldObjectType, string name, IFormFile image, string objectType, string oldType = null, string type = null)
         {
             var firebaseStorage = new FirebaseStorage(BucketName);
             //get all item exist in old folder
             var stream = image.OpenReadStream();
             var taskFirebase = firebaseStorage.Child(oldObjectType)
                                 .Child(oldName)
-                                .Child(oldFileName);
+                                .Child(oldFileName)
+                                .ThrowIfNull("Firebase Path Not Found");
             await taskFirebase.DeleteAsync();
             string task;
             switch (objectType)
@@ -81,6 +85,29 @@ namespace YBS.Service.Services.Implements
             var imageUrl = task;
             var imageUri = new Uri(imageUrl);
             return imageUri;
+        }
+
+        public async Task DeleteFile(string objectType, string name, string fileName, string type = null)
+        {
+            var firebaseStorage = new FirebaseStorage(BucketName);
+            //get all item exist in old folder
+            FirebaseStorageReference taskFirebase;
+            switch (objectType)
+            {
+                case "Yacht":
+                    taskFirebase = firebaseStorage.Child(objectType)
+                                .Child(type)
+                               .Child(name)
+                               .Child(fileName);
+                    break;
+                default:
+                    taskFirebase = firebaseStorage.Child(objectType)
+                                .Child(name)
+                                .Child(fileName);
+                    break;
+            }
+
+            await taskFirebase.DeleteAsync();
         }
     }
 }

@@ -45,5 +45,19 @@ namespace YBS.Controllers
             await _routeService.Update(pageRequest, id);
             return Ok("Update Route Successfully");
         }
+        [Route(APIDefine.ROUTE_GET_BEGINNING_FILTER)]
+        [HttpGet]
+        public async Task<IActionResult> BeginningFilter()
+        {
+            var result = await _routeService.GetBeginningFilter();
+            return Ok(result);
+        }
+        [Route(APIDefine.ROUTE_GET_DESTINATION_FILTER)]
+        [HttpGet]
+        public async Task<IActionResult> DestinationFilter()
+        {
+            var result = await _routeService.GetDestinationFilter();
+            return Ok(result);
+        }
     }
 }

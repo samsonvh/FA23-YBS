@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,16 @@ namespace YBS.Service.Services.Implements
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
         private readonly IFirebaseStorageService _firebaseStorageService;
+        private readonly string prefixUrl;
+        private readonly IConfiguration _configuration;
 
-        public DockService(IUnitOfWork unitOfWorks, IMapper mapper, IFirebaseStorageService firebaseStorageService)
+        public DockService(IUnitOfWork unitOfWorks, IMapper mapper, IFirebaseStorageService firebaseStorageService, IConfiguration configuration)
         {
             _unitOfWork = unitOfWorks;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
+            _configuration = configuration;
+            prefixUrl = _configuration["Firebase:PrefixUrl"];
         }
 
         public async Task<DefaultPageResponse<DockListingDto>> GetAllDocks(DockPageRequest pageRequest, int companyId)
@@ -95,7 +100,7 @@ namespace YBS.Service.Services.Implements
                 var counter = 1;
                 foreach (var image in pageRequest.ImageFiles)
                 {
-                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image,"Dock");
+                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, "Docks");
                     if (counter == pageRequest.ImageFiles.Count)
                     {
                         imageUrL += imageUri;
@@ -138,6 +143,51 @@ namespace YBS.Service.Services.Implements
         public async Task Update(DockInputDto pageRequest, int id)
         {
             var existedDock = await _unitOfWork.DockRepository.Find(dock => dock.Id == id).FirstOrDefaultAsync();
+            if (existedDock == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Dock Not Found");
+            }
+            existedDock.CompanyId = pageRequest.CompanyId;
+            existedDock.Name = pageRequest.Name;
+            existedDock.Address = pageRequest.Address;
+            existedDock.Longtitude = pageRequest.Longtitude;
+            existedDock.Latitude = pageRequest.Latitude;
+            existedDock.Description = pageRequest.Description;
+            if (pageRequest.ImageFiles != null)
+            {
+                if (existedDock.ImageUrl != null && existedDock.ImageUrl.Contains(prefixUrl) && existedDock.ImageUrl.Contains("?"))
+                {
+                    var oldImageUrl = existedDock.ImageUrl.Split(",");
+                    //remove old image
+                    foreach (var item in oldImageUrl)
+                    {
+                        var resultList = FirebaseExtension.GetFullPath(item, prefixUrl);
+                        await _firebaseStorageService.DeleteFile(resultList[0], resultList[1], resultList[2]);
+                    }
+                }
+
+                //upload new image
+                string newImageUrl = null;
+                var counter = 1;
+                foreach (var imageFile in pageRequest.ImageFiles)
+                {
+                    var imageUrl = await _firebaseStorageService.UploadFile(pageRequest.Name, imageFile, "Docks");
+                    if (counter == pageRequest.ImageFiles.Count)
+                    {
+                        newImageUrl += imageUrl;
+                    }
+                    else
+                    {
+                        newImageUrl += imageUrl + ",";
+                    }
+                    counter++;
+                }
+                existedDock.ImageUrl = newImageUrl;
+                
+            }
+            existedDock.LastModifiedDate = DateTime.Now;
+            _unitOfWork.DockRepository.Update(existedDock);
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }
