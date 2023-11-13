@@ -108,6 +108,15 @@ namespace YBS.Service.Services.Implements
             var dock = _mapper.Map<Dock>(pageRequest);
             dock.Status = EnumDockStatus.AVAILABLE;
             dock.ImageUrl = imageUrL;
+
+            if (pageRequest.YachtTypeId.Count > 0)
+            {
+                dock.DockYachtTypes = pageRequest.YachtTypeId.Select(yachtTypeId => new DockYachtType
+                {
+                    YachtTypeId = yachtTypeId
+                }).ToList();
+            }
+
             _unitOfWork.DockRepository.Add(dock);
             await _unitOfWork.SaveChangesAsync();
             return _mapper.Map<DockDto>(dock);

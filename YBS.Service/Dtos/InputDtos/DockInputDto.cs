@@ -16,5 +16,6 @@ namespace YBS.Service.Dtos.InputDtos
         public float Longtitude { get; set; }
         public string? Description { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }
+        public List<int> YachtTypeId { get; set; }
     }
 }
