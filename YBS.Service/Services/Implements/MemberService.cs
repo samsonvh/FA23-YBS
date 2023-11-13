@@ -266,6 +266,26 @@ namespace YBS.Services.Services.Implements
                 PageCount = (int)pageCount,
                 TotalItem = totalCount,
                 PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize
+            };
+            return result;
+        }
+        public async Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest)
+        {
+            var query = _unitOfWork.TripRepository.Find(trip =>
+               (!pageRequest.Status.HasValue || trip.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+            ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(trip => trip.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<TripListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<TripListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
                 PageSize = (int)pageRequest.PageSize,
             };
             return result;

@@ -10,6 +10,7 @@ namespace YBS.Data.Enums
     {
         PENDING,
         APPROVE,
-        DECLINE
+        DECLINE,
+        COMPLETED
     }
 }

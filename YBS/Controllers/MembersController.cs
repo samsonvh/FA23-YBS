@@ -69,5 +69,12 @@ namespace FA23_YBS_BACKEND.Controllers
             var result = await _memberService.GetDetailGuest(guestId, bookingId);
             return Ok(result);
         }
+
+        [Route(APIDefine.MEMBER_GET_ALL_TRIP)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrip([FromQuery] TripPageRequest pageRequest)
+        {
+            return Ok(await _memberService.GetTripList(pageRequest));
+        }
     }
 }

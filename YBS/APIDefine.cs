@@ -25,11 +25,17 @@ namespace YBS
         public const string MEMBER_UPDATE_GUEST = DEFAULT_ROUTE + "/booking" + "/{bookingId}" + "/guests" + "/{guestId}";
         public const string MEMBER_GET_ALL_GUEST_LIST = DEFAULT_ROUTE + "/{memberId}" + "/guests";
         public const string MEMBER_GET_DETAIL_GUEST = DEFAULT_ROUTE + "/booking" + "/{bookingId}" + "/guests" + "/{guestId}";
+        public const string MEMBER_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+
         //Company
         public const string COMPANY_GET_ALL = DEFAULT_ROUTE;
         public const string COMPANY_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string COMPANY_CREATE = DEFAULT_ROUTE;
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
+        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+        public const string COMPANY_UPDATE_REQUEST_CREATE = DEFAULT_ROUTE + "/update-requests";
+        public const string COMPANY_UPDATE_REQUEST_GET_DETAIL = DEFAULT_ROUTE + "/update-requests" + "/{id}";
+        public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
 
         //Route
         public const string ROUTE_GET_ALL = DEFAULT_ROUTE + "/{companyId}";

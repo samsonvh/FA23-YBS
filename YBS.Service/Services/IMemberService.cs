@@ -16,6 +16,6 @@ namespace YBS.Services.Services
         Task UpdateGuest (GuestInputDto pageRequest, int id, int bookingId);
         Task<DefaultPageResponse<GuestListingDto>> GetAllGuestList (int memberId, GuestPageRequest pageRequest);
         Task<GuestDto> GetDetailGuest (int guestId, int bookingId);
-    
+        Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest);
     }
 }
