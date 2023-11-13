@@ -40,6 +40,14 @@ namespace FA23_YBS_BACKEND.Controllers
             await _memberService.Register(pageRequest);
             return Ok("Register Member Successfully");
         }
+
+        [Route(APIDefine.MEMBER_GET_ALL_TRIP)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrip([FromQuery] TripPageRequest pageRequest)
+        {
+            return Ok(await _memberService.GetTripList(pageRequest));
+        }
+
         // [HttpPut]
         // [Route(APIDefine.MEMBER_UPDATE)]
         // public async Task<IActionResult> Update([FromRoute] int id,[FromBody]MemberRegisterInputDto pageRequest)

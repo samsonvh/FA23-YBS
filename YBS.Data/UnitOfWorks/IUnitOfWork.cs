@@ -26,6 +26,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Wallet> WalletRepository { get; }
         IGenericRepositoty<Service> ServiceRepository { get; }
         IGenericRepositoty<ServicePackageItem> ServicePackageItemRepository { get; }
+        IGenericRepositoty<UpdateRequest> UpdateRequestRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

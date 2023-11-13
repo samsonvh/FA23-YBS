@@ -17,6 +17,8 @@ using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
 using YBS.Service.Exceptions;
 using YBS.Service.Utils;
+using YBS.Services.Dtos;
+using YBS.Services.Dtos.InputDtos;
 
 namespace YBS.Service.Services.Implements
 {
@@ -169,6 +171,81 @@ namespace YBS.Service.Services.Implements
                 PageSize = (int)pageRequest.PageSize,
             };
             return result;
+        }
+
+        public async Task<UpdateRequestDto> CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto)
+        {
+            var company = await _unitOfWork.CompanyRepository
+                .Find(company => company.Id == updateRequestInputDto.CompanyId)
+                .FirstOrDefaultAsync();
+            if (company != null)
+            {
+                var updateRequest = new UpdateRequest
+                {
+                    CompanyId = updateRequestInputDto.CompanyId,
+                    Name = updateRequestInputDto.Name,
+                    Address = updateRequestInputDto.Address,
+                    Hotline = updateRequestInputDto.Hotline,
+                    Logo = updateRequestInputDto.Logo,
+                    FacebookURL = updateRequestInputDto.FacebookURL,
+                    InstagramURL = updateRequestInputDto.InstagramURL,
+                    LinkedInURL = updateRequestInputDto.LinkedInURL,
+                    Status = EnumCompanyUpdateRequest.PENDING
+                };
+                _unitOfWork.UpdateRequestRepository.Add(updateRequest);
+                await _unitOfWork.SaveChangesAsync();
+                var updateRequestDto = _mapper.Map<UpdateRequestDto>(updateRequest);
+                return updateRequestDto;
+            }
+            return null;
+        }
+
+        public async Task<UpdateRequestDto> GetDetailUpdateRequest(int id)
+        {
+            var updateRequest = await _unitOfWork.UpdateRequestRepository
+                .Find(updateRequest => updateRequest.Id == id)
+                .FirstOrDefaultAsync();
+            if (updateRequest != null)
+            {
+                return _mapper.Map<UpdateRequestDto>(updateRequest);
+            }
+            return null;
+        }
+
+        public async Task<bool> Update(int id, UpdateRequestInputDto updateRequestInputDto)
+        {
+            var updateRequest = await _unitOfWork.UpdateRequestRepository
+                .Find(updateRequest => updateRequest.Id == id)
+                .FirstOrDefaultAsync();
+
+            if (updateRequest != null)
+            {
+                if (updateRequest.Status == EnumCompanyUpdateRequest.PENDING)
+                {
+                    if (updateRequestInputDto.Status == EnumCompanyUpdateRequest.APPROVE)
+                    {
+                        var company = await _unitOfWork.CompanyRepository
+                            .Find(company => company.Id == updateRequestInputDto.CompanyId)
+                            .FirstOrDefaultAsync();
+                        if (company != null)
+                        {
+                            _mapper.Map(updateRequestInputDto, company);
+                            updateRequest.Status = EnumCompanyUpdateRequest.COMPLETED;
+                            _unitOfWork.CompanyRepository.Update(company);
+                            await _unitOfWork.SaveChangesAsync();
+                            return true;
+                        }
+                    }
+                    else if (updateRequestInputDto.Status == EnumCompanyUpdateRequest.DECLINE)
+                    {
+                        updateRequest.Status = EnumCompanyUpdateRequest.DECLINE;
+                        _unitOfWork.UpdateRequestRepository.Update(updateRequest);
+                        await _unitOfWork.SaveChangesAsync();
+                        return false;
+                    }
+                }
+            }
+            return false;
         }
     }
 }

@@ -8,6 +8,8 @@ using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
+using YBS.Services.Dtos;
+using YBS.Services.Dtos.InputDtos;
 
 namespace YBS.Service.Services
 {
@@ -18,6 +20,8 @@ namespace YBS.Service.Services
         Task<CompanyDto> Create(CompanyInputDto companyInputDto);
         Task<bool> ChangeStatus(int id, string status);
         Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest);
-
+        Task<UpdateRequestDto> CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto);
+        Task<UpdateRequestDto> GetDetailUpdateRequest(int id);
+        Task<bool> Update(int id, UpdateRequestInputDto updateRequestInputDto);
     }
 }

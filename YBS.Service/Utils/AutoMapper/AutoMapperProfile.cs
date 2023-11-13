@@ -4,6 +4,7 @@ using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Services.Dtos;
+using YBS.Services.Dtos.InputDtos;
 
 namespace YBS.Service.Utils.AutoMapper
 {
@@ -140,6 +141,11 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<ServicePackage, ServicePackageDto>();
             CreateMap<ServicePackageInputDto, ServicePackage>();
             CreateMap<ServicePackage, ServicePackageListingDto>();
+
+            //updateRequest
+            CreateMap<UpdateRequest, UpdateRequestDto>();
+            CreateMap<UpdateRequestInputDto, UpdateRequest>();
+            CreateMap<UpdateRequestInputDto, Company>();
         }
     }
 }
