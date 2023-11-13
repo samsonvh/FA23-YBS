@@ -33,9 +33,9 @@ namespace YBS.Service.Services.Implements
         public async Task<DefaultPageResponse<ServiceListingDto>> GetAllService(ServicePageRequest pageRequest)
         {
             var query = _unitOfWork.ServiceRepository.Find(service =>
-                (string.IsNullOrWhiteSpace(pageRequest.Name) || service.Name.Trim().Contains(pageRequest.Name.Trim())) &&
+                (string.IsNullOrWhiteSpace(pageRequest.Name) || service.Name.Trim().ToUpper().Contains(pageRequest.Name.Trim().ToUpper()) &&
                (!pageRequest.Type.HasValue || service.Type == pageRequest.Type.Value) &&
-               (!pageRequest.Status.HasValue || service.Status == pageRequest.Status.Value));
+               (!pageRequest.Status.HasValue || service.Status == pageRequest.Status.Value)));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
             var totalItem = data.Count();
@@ -58,11 +58,11 @@ namespace YBS.Service.Services.Implements
             var service = await _unitOfWork.ServiceRepository
                 .Find(service => service.Id == id)
                 .FirstOrDefaultAsync();
-            if(service == null)
+            if (service == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Service not found");
             }
-            return _mapper.Map<ServiceDto>(service);    
+            return _mapper.Map<ServiceDto>(service);
         }
 
         public async Task Create(ServiceInputDto pageRequest)
@@ -98,7 +98,7 @@ namespace YBS.Service.Services.Implements
             _mapper.Map(pageRequest, service);
             _unitOfWork.ServiceRepository.Update(service);
             var result = await _unitOfWork.SaveChangesAsync();
-            if(result <= 0)
+            if (result <= 0)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating route");
             }

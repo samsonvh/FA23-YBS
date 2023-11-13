@@ -15,7 +15,6 @@ namespace YBS.Data.Models
         public EnumServiceType Type { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string MoneyUnit { get; set; }
         public EnumServiceStatus Status { get; set; }
         public ICollection<ServicePackageItem> ServicePackageItems { get; set; }
     }

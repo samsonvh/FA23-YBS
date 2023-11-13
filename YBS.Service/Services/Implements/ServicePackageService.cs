@@ -129,6 +129,16 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(int id, ServicePackageInputDto pageRequest)
         {
+            var existingServicePackage = await _unitOfWork.ServicePackageRepository
+                .Find(existingServicePackage => existingServicePackage.Id == id)
+                .Include(existingServicePackage => existingServicePackage.ServicePackageItems)
+                .FirstOrDefaultAsync();
+
+            if (existingServicePackage == null)
+            {
+                throw new APIException((int)HttpStatusCode.NotFound, "Service package not found");
+            }
+
             var companyId = await _unitOfWork.CompanyRepository
                 .Find(company => company.Id == pageRequest.CompanyId)
                 .FirstOrDefaultAsync();
@@ -138,42 +148,30 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.NotFound, "Company not found");
             }
 
-            var existingServicePackage = await _unitOfWork.ServicePackageRepository
-                .Find(existingServicePackage => existingServicePackage.Id == id)
-                .Include(existingServicePackage => existingServicePackage.ServicePackageItems)
-                .FirstOrDefaultAsync();
+            // Update existing service Package
+            _mapper.Map(pageRequest, existingServicePackage);
 
-            if (existingServicePackage != null)
-            {
-                // Update existing ServicePackage properties
-                _mapper.Map(pageRequest, existingServicePackage);
+            // Get existing and new ServiceIds
+            var existingServiceIds = existingServicePackage.ServicePackageItems.Select(existingServicePackage => existingServicePackage.ServiceId).ToList();
+            var newServiceIds = pageRequest.ServiceId;
 
-                // Get existing and new ServiceIds
-                var existingServiceIds = existingServicePackage.ServicePackageItems.Select(existingServicePackage => existingServicePackage.ServiceId).ToList();
-                var newServiceIds = pageRequest.ServiceId;
+            //remove servicePackageItems if not update
+            var servicePackageRemove = existingServicePackage.ServicePackageItems
+                .Where(existingServicePackage => !newServiceIds.Contains(existingServicePackage.ServiceId))
+                .ToList();
 
-                //remove servicePackageItems if not update
-                var servicePackageRemove = existingServicePackage.ServicePackageItems
-                    .Where(existingServicePackage => !newServiceIds.Contains(existingServicePackage.ServiceId))
-                    .ToList();
+            _unitOfWork.ServicePackageItemRepository.RemoveRange(servicePackageRemove);
 
-                _unitOfWork.ServicePackageItemRepository.RemoveRange(servicePackageRemove);
+            // Add new service package items 
+            var itemsToAdd = newServiceIds
+                .Where(serviceId => !existingServiceIds.Contains(serviceId))
+                .Select(serviceId => new ServicePackageItem
+                {
+                    ServiceId = serviceId,
+                    ServicePackageId = existingServicePackage.Id
+                });
 
-                // Add new ServicePackageItems 
-                var itemsToAdd = newServiceIds
-                    .Where(serviceId => !existingServiceIds.Contains(serviceId))
-                    .Select(serviceId => new ServicePackageItem
-                    {
-                        ServiceId = serviceId,
-                        ServicePackageId = existingServicePackage.Id
-                    });
-
-                _unitOfWork.ServicePackageItemRepository.AddRange(itemsToAdd);
-            }
-            else
-            {
-                throw new APIException((int)HttpStatusCode.NotFound, $"ServicePackage with ID {id} not found");
-            }
+            _unitOfWork.ServicePackageItemRepository.AddRange(itemsToAdd);
 
             await _unitOfWork.SaveChangesAsync();
         }

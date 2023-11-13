@@ -17,7 +17,6 @@ namespace YBS.Data.Configs
             builder.Property(service => service.Id).ValueGeneratedOnAdd();
             builder.Property(service => service.Name).HasColumnType("nvarchar(100)");
             builder.Property(service => service.Description).HasColumnType("nvarchar(max)");
-            builder.Property(service => service.MoneyUnit).HasColumnType("varchar(10)");
         }
     }
 }
