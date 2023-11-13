@@ -13,5 +13,9 @@ namespace YBS.Services.Services
         Task<MemberDto> GetDetailMember(int id);
         Task Register (MemberRegisterInputDto pageRequest);
         Task Update (MemberUpdateInputDto pageRequest, int id);
+        Task UpdateGuest (GuestInputDto pageRequest, int id, int bookingId);
+        Task<DefaultPageResponse<GuestListingDto>> GetAllGuestList (int memberId, GuestPageRequest pageRequest);
+        Task<GuestDto> GetDetailGuest (int guestId, int bookingId);
+    
     }
 }

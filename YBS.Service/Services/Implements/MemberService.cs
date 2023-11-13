@@ -195,11 +195,11 @@ namespace YBS.Services.Services.Implements
                 if (existedMember.AvatarURL != null && existedMember.AvatarURL.Contains(PrefixUrl) && existedMember.AvatarURL.Contains("?"))
                 {
                     var resultSplit = FirebaseExtension.GetFullPath(existedMember.AvatarURL, PrefixUrl);
-                   // object type/name/fileName
-                   await _firebaseStorageService.DeleteFile(resultSplit[0], resultSplit[1], resultSplit[2]);
+                    // object type/name/fileName
+                    await _firebaseStorageService.DeleteFile(resultSplit[0], resultSplit[1], resultSplit[2]);
                 }
-                    var avatarUri = await _firebaseStorageService.UploadFile(existedMember.Account.Username,pageRequest.AvatarImageFile,"Members");
-                    existedMember.AvatarURL = avatarUri.ToString();
+                var avatarUri = await _firebaseStorageService.UploadFile(existedMember.Account.Username, pageRequest.AvatarImageFile, "Members");
+                existedMember.AvatarURL = avatarUri.ToString();
             }
             existedMember.FullName = pageRequest.FullName;
             existedMember.DateOfBirth = (DateTime)pageRequest.DateOfBirth;
@@ -214,6 +214,85 @@ namespace YBS.Services.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating member");
             }
+        }
+
+        public async Task UpdateGuest(GuestInputDto pageRequest, int id, int bookingId)
+        {
+            var existedGuest = await _unitOfWork.GuestRepository.Find(guest => guest.Id == id).FirstOrDefaultAsync();
+            if (existedGuest == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
+            }
+            var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.BookingId == bookingId).FirstOrDefaultAsync();
+            if (existedTrip == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+            }
+            if ((existedTrip.ActualStartingTime - DateTime.Now).Days <= 2)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Can not update guest list due to current time is smaller trip staring time 2 days");
+            }
+            existedGuest.FullName = pageRequest.FullName;
+            existedGuest.DateOfBirth = pageRequest.DateOfBirth;
+            existedGuest.IdentityNumber = pageRequest.IdentityNumber;
+            existedGuest.PhoneNumber = pageRequest.PhoneNumber;
+            existedGuest.Gender = pageRequest.Gender;
+            existedGuest.Gender = pageRequest.Gender;
+            existedGuest.IsLeader = pageRequest.IsLeader;
+            existedGuest.Status = pageRequest.Status;
+            _unitOfWork.GuestRepository.Update(existedGuest);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async  Task<DefaultPageResponse<GuestListingDto>> GetAllGuestList(int memberId, GuestPageRequest pageRequest)
+        {
+            var query = _unitOfWork.GuestRepository.Find(guest =>
+                guest.Booking.MemberId == memberId &&
+                (string.IsNullOrWhiteSpace(pageRequest.FullName) || guest.FullName.Trim().ToUpper()
+                                                                .Contains(pageRequest.FullName.Trim().ToUpper())) &&
+                (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || guest.PhoneNumber.Trim().ToUpper()
+                                                                .Contains(pageRequest.PhoneNumber.Trim().ToUpper())) &&
+                (!pageRequest.Gender.HasValue || guest.Gender == pageRequest.Gender) &&
+                (!pageRequest.Status.HasValue || guest.Status == pageRequest.Status)                                                                                                                
+            );
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
+            var totalCount = data.Count();
+            var pageCount = totalCount / pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<GuestListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<GuestListingDto>()
+            {
+                Data = resultList,
+                PageCount = (int)pageCount,
+                TotalItem = totalCount,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
+
+        public async Task<GuestDto> GetDetailGuest(int guestId, int bookingId)
+        {
+            var existedGuest = await _unitOfWork.GuestRepository.Find(guest => guest.Id == guestId).FirstOrDefaultAsync();
+            if (existedGuest == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
+            }
+            var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.BookingId == bookingId ).FirstOrDefaultAsync();
+            if (existedTrip == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+            }
+            var result = _mapper.Map<GuestDto>(existedGuest);
+            if ((existedTrip.ActualStartingTime - DateTime.Now).Days  <= 2)
+            {
+                result.UpdateStatus = false;
+            }
+            else 
+            {
+                result.UpdateStatus = true;
+            }
+            return result;
         }
     }
 }

@@ -138,6 +138,9 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<ServicePackage, ServicePackageDto>();
             CreateMap<ServicePackageInputDto, ServicePackage>();
             CreateMap<ServicePackage, ServicePackageListingDto>();
+            //guest
+            CreateMap<Guest, GuestListingDto>();
+            CreateMap<Guest, GuestDto>();
         }
     }
 }
