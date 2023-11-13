@@ -27,6 +27,8 @@ namespace YBS
         public const string COMPANY_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string COMPANY_CREATE = DEFAULT_ROUTE;
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
+        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+
 
         //Route
         public const string ROUTE_GET_ALL = DEFAULT_ROUTE;

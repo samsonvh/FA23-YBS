@@ -69,7 +69,7 @@ namespace YBS.Service.Services.Implements
              .FirstOrDefaultAsync();
             if (companyDetail == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Company Not Found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
             }
             var result = _mapper.Map<CompanyDto>(companyDetail);
             result.Role = companyDetail.Account.Role.Name;
@@ -148,6 +148,27 @@ namespace YBS.Service.Services.Implements
             company.Status = companyStatus;
             await _unitOfWork.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest)
+        {
+            var query = _unitOfWork.TripRepository.Find(trip =>
+               (!pageRequest.Status.HasValue || trip.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+            ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(trip => trip.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<TripListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<TripListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
         }
     }
 }

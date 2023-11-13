@@ -110,9 +110,12 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.TotalPrice, options => options.MapFrom(booking => booking.TotalPrice))
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
+           
             //trip
             CreateMap<GuestBookingInputDto, Trip>();
             CreateMap<MemberBookingInputDto, Trip>();
+            CreateMap<Trip, TripListingDto>();
+
             //transaction
             CreateMap<TransactionInputDto,Transaction>();
             CreateMap<Transaction, TransactionListingDto>();

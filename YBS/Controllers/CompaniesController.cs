@@ -63,5 +63,12 @@ namespace YBS.Controllers
             }
             return BadRequest("Failed to change status");
         }
+
+        [Route(APIDefine.COMPANY_GET_ALL_TRIP)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllTrip([FromQuery] TripPageRequest pageRequest)
+        {
+            return Ok(await _companyService.GetTripList(pageRequest));
+        }
     }
 }

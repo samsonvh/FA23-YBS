@@ -17,5 +17,7 @@ namespace YBS.Service.Services
         Task<CompanyDto> GetById(int id);
         Task<CompanyDto> Create(CompanyInputDto companyInputDto);
         Task<bool> ChangeStatus(int id, string status);
+        Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest);
+
     }
 }
