@@ -48,5 +48,10 @@ namespace YBS.Data.Repositories.Implements
         {
             return await _context.Set<T>().FindAsync(id);
         }
+
+        public void RemoveRange(IEnumerable<T> entities)
+        {
+            _context.RemoveRange(entities);
+        }
     }
 }

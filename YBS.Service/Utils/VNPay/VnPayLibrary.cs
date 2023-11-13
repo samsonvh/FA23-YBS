@@ -26,16 +26,16 @@ public class VnPayLibrary
                 vnPay.AddResponseData(key, value);
             }
         }
-        var tmnCode = vnPay.GetResponseData("vnp_TmnCode").Trim();
-        var txnRef = vnPay.GetResponseData("vnp_TxnRef").Trim();
-        var amount = float.Parse(vnPay.GetResponseData("vnp_Amount")) / 100;
+        var tmnCode = vnPay.GetResponseData("vnp_TmnCode").Trim(); //mã website
+        var txnRef = vnPay.GetResponseData("vnp_TxnRef").Trim();//Mã tham chiếu của giao dịch tại hệ thống của merchant
+        var amount = float.Parse(vnPay.GetResponseData("vnp_Amount")) / 100;//Số tiền thanh toán
         var orderInfo = vnPay.GetResponseData("vnp_OrderInfo").Trim(); //transaction name
-        var responseCode = vnPay.GetResponseData("vnp_ResponseCode").Trim();
-        var bankCode = vnPay.GetResponseData("vnp_BankCode").Trim();
-        var cardType = vnPay.GetResponseData("vnp_CardType").Trim();
-        var payDate = vnPay.GetResponseData("vnp_PayDate").Trim();
-        var transactionNo = vnPay.GetResponseData("vnp_TransactionNo").Trim();
-        var transactionStatus = vnPay.GetResponseData("vnp_TransactionStatus").Trim();
+        var responseCode = vnPay.GetResponseData("vnp_ResponseCode").Trim();//Mã phản hồi kết quả thanh toán
+        var bankCode = vnPay.GetResponseData("vnp_BankCode").Trim();// mã ngân hàng thanh toán
+        var cardType = vnPay.GetResponseData("vnp_CardType").Trim();//Loại tài khoản/thẻ khách hàng sử dụng
+        var payDate = vnPay.GetResponseData("vnp_PayDate").Trim();// ngày thanh toán
+        var transactionNo = vnPay.GetResponseData("vnp_TransactionNo").Trim();//Mã giao dịch ghi nhận tại hệ thống VNPAY.
+        var transactionStatus = vnPay.GetResponseData("vnp_TransactionStatus").Trim();//Mã phản hồi kết quả thanh toán
 
         var vnpSecureHash =
             collection.FirstOrDefault(k => k.Key == "vnp_SecureHash").Value; //hash của dữ liệu trả về
@@ -78,6 +78,8 @@ public class VnPayLibrary
         {
             result.PaymentDate = date;
         }
+        memoryCache.Remove(cachedKey);
+        memoryCache.Dispose();
         return result;
     }
 

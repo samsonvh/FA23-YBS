@@ -12,6 +12,6 @@ namespace YBS.Service.Services
     public interface ITransactionService
     {
         public Task Create (TransactionInputDto pageRequest);
-        Task<DefaultPageResponse<TransactionListingDto>> GetAllTransactions(TransactionPageRequest pageRequest);
+        Task<DefaultPageResponse<TransactionListingDto>> GetAllTransactions(TransactionPageRequest pageRequest, int memberId);
     }
 }

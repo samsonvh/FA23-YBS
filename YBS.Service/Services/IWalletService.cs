@@ -12,7 +12,7 @@ namespace YBS.Service.Services
 {
     public interface IWalletService
     {
-        Task<DefaultPageResponse<WalletListingDto>> GetAllWallets(WalletPageRequest pageRequest);
+        Task<DefaultPageResponse<WalletListingDto>> GetAllWallets(WalletPageRequest pageRequest, int memberId);
         Task<WalletDto> GetDetailWallet(int id);
     }
 }

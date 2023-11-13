@@ -21,6 +21,7 @@ namespace YBS.Services.Services.Implements
 {
     public class MemberService : IMemberService
     {
+        public string PrefixUrl { get; set; }
         private readonly IUnitOfWork _unitOfWork;
         public IConfiguration _configuration { get; set; }
         private readonly IMapper _mapper;
@@ -31,6 +32,7 @@ namespace YBS.Services.Services.Implements
             _configuration = configuration;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
+            PrefixUrl = _configuration["Firebase:PrefixUrl"];
         }
         public async Task<MemberDto> GetDetailMember(int id)
         {
@@ -47,12 +49,15 @@ namespace YBS.Services.Services.Implements
             return result;
         }
 
-        public async Task<DefaultPageResponse<MemberListingDto>> GetAll(MemberPageRequest pageRequest)
+        public async Task<DefaultPageResponse<MemberListingDto>> GetAllMembers(MemberPageRequest pageRequest)
         {
             var query = _unitOfWork.MemberRepository.Find(member =>
-            (string.IsNullOrWhiteSpace(pageRequest.Email) || member.Account.Email.Contains(pageRequest.Email))
-            && (string.IsNullOrWhiteSpace(pageRequest.FullName) || member.FullName.Contains(pageRequest.FullName))
-            && (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || member.PhoneNumber.Contains(pageRequest.PhoneNumber))
+            (string.IsNullOrWhiteSpace(pageRequest.Email) || member.Account.Email.Trim().ToUpper()
+                                                            .Contains(pageRequest.Email.Trim().ToUpper()))
+            && (string.IsNullOrWhiteSpace(pageRequest.FullName) || member.FullName.Trim().ToUpper()
+                                                            .Contains(pageRequest.FullName.Trim().ToUpper()))
+            && (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || member.PhoneNumber.Trim().ToUpper()
+                                                            .Contains(pageRequest.PhoneNumber.Trim().ToUpper()))
             && (!pageRequest.Status.HasValue || member.Status == pageRequest.Status))
             .Include(member => member.Account);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
@@ -73,13 +78,6 @@ namespace YBS.Services.Services.Implements
 
         public async Task Register(MemberRegisterInputDto pageRequest)
         {
-            // VnPayLibrary vnpay = new VnPayLibrary();
-            // string vnp_HashSecret = _configuration["VnPay:HashSecret"];
-            // bool checkSignature = vnpay.ValidateSignature(pageRequest.SecureHash, vnp_HashSecret);
-            // if (!checkSignature)
-            // {
-            //     throw new APIException((int)HttpStatusCode.BadRequest, "Invalid signature");
-            // }
             var existedMembershipPackage = await _unitOfWork.MembershipPackageRepository.Find(membershipPackage => membershipPackage.Id == pageRequest.MembershipPackageId)
                                                                     .FirstOrDefaultAsync();
             if (existedMembershipPackage.Price != pageRequest.Amount)
@@ -89,27 +87,28 @@ namespace YBS.Services.Services.Implements
             //Create Account 
             var existRole = await _unitOfWork.RoleRepository.Find(role => role.Name == nameof(EnumRole.MEMBER))
                                                             .FirstOrDefaultAsync();
+            var passwordHashed = PasswordHashing.HashPassword(pageRequest.Password);
             var account = new Account()
             {
                 RoleId = existRole.Id,
                 Username = pageRequest.Username,
                 Email = pageRequest.Email,
-                Password = pageRequest.Password,
+                Password = passwordHashed,
                 CreationDate = DateTime.Now,
                 Status = EnumAccountStatus.INACTIVE
             };
             _unitOfWork.AccountRepository.Add(account);
             await _unitOfWork.SaveChangesAsync();
-            
+
             //Create Member
             DateTime dateNow = DateTime.Now;
             DateTime expiredDate;
             switch (existedMembershipPackage.TimeUnit)
             {
-                case "Year":
+                case "Years":
                     expiredDate = dateNow.AddYears(existedMembershipPackage.EffectiveDuration);
                     break;
-                case "Month":
+                case "Months":
                     expiredDate = dateNow.AddMonths(existedMembershipPackage.EffectiveDuration);
                     break;
                 default:
@@ -165,41 +164,155 @@ namespace YBS.Services.Services.Implements
                 Amount = pageRequest.Amount,
                 MoneyUnit = pageRequest.MoneyUnit,
                 CreationDate = dateNow,
-                Status = EnumTransactionStatus.SUCCESS
+                Status = EnumTransactionStatus.SUCCESS,
+                VNPayTmnCode = pageRequest.VNPayTmnCode,
+                VNPayTxnRef = pageRequest.VNPayTxnRef,
+                VNPayResponseCode = pageRequest.VNPayResponseCode,
+                VNPAYBankCode = pageRequest.VNPAYBankCode,
+                VNPAYcardType = pageRequest.VNPAYcardType,
+                VNPAYTransactionNo = pageRequest.VNPAYTransactionNo,
+                VNPayTransactionStatus = pageRequest.VNPayTransactionStatus,
             };
             _unitOfWork.TransactionRepository.Add(transaction);
             await _unitOfWork.SaveChangesAsync();
         }
 
-        // public async Task Update(MemberRegisterInputDto pageRequest, int id)
-        // {
-        //     var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == id).FirstOrDefaultAsync();
-        //     if (existedMember == null)
-        //     {
-        //         throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
-        //     }
-        //     if (pageRequest.MembershipPackageId != null)
-        //     {
-        //         existedMember.MembershipPackageId = pageRequest.MembershipPackageId;
-        //     }
-        //     if (pageRequest.Status != null)
-        //     {
-        //         existedMember.Status = (EnumMemberStatus)pageRequest.Status;
-        //     }
-        //     existedMember.FullName = pageRequest.FullName;
-        //     existedMember.DateOfBirth = (DateTime)pageRequest.DateOfBirth;
-        //     existedMember.PhoneNumber = pageRequest.PhoneNumber;
-        //     existedMember.Nationality = pageRequest.Nationality;
-        //     existedMember.Gender = (EnumGender)pageRequest.Gender;
-        //     existedMember.AvatarURL = pageRequest.AvatarURL;
-        //     existedMember.Address = pageRequest.Address;
-        //     existedMember.IdentityNumber = pageRequest.IdentityNumber;
-        //     _unitOfWork.MemberRepository.Update(existedMember);
-        //     var result = await _unitOfWork.SaveChangesAsync();
-        //     if (result <= 0)
-        //     {
-        //         throw new APIException((int)HttpStatusCode.BadRequest,"Error while updating member");
-        //     }
-        // }
+        public async Task Update(MemberUpdateInputDto pageRequest, int id)
+        {
+            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == id)
+                                                                    .Include(member => member.Account)
+                                                                    .FirstOrDefaultAsync();
+            if (existedMember == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
+            }
+            if (pageRequest.Status != null)
+            {
+                existedMember.Status = (EnumMemberStatus)pageRequest.Status;
+            }
+            if (pageRequest.AvatarImageFile != null)
+            {
+                if (existedMember.AvatarURL != null && existedMember.AvatarURL.Contains(PrefixUrl) && existedMember.AvatarURL.Contains("?"))
+                {
+                    var resultSplit = FirebaseExtension.GetFullPath(existedMember.AvatarURL, PrefixUrl);
+                    // object type/name/fileName
+                    await _firebaseStorageService.DeleteFile(resultSplit[0], resultSplit[1], resultSplit[2]);
+                }
+                var avatarUri = await _firebaseStorageService.UploadFile(existedMember.Account.Username, pageRequest.AvatarImageFile, "Members");
+                existedMember.AvatarURL = avatarUri.ToString();
+            }
+            existedMember.FullName = pageRequest.FullName;
+            existedMember.DateOfBirth = (DateTime)pageRequest.DateOfBirth;
+            existedMember.PhoneNumber = pageRequest.PhoneNumber;
+            existedMember.Nationality = pageRequest.Nationality;
+            existedMember.Gender = (EnumGender)pageRequest.Gender;
+            existedMember.Address = pageRequest.Address;
+            existedMember.IdentityNumber = pageRequest.IdentityNumber;
+            _unitOfWork.MemberRepository.Update(existedMember);
+            var result = await _unitOfWork.SaveChangesAsync();
+            if (result <= 0)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating member");
+            }
+        }
+
+        public async Task UpdateGuest(GuestInputDto pageRequest, int id, int bookingId)
+        {
+            var existedGuest = await _unitOfWork.GuestRepository.Find(guest => guest.Id == id).FirstOrDefaultAsync();
+            if (existedGuest == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
+            }
+            var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.BookingId == bookingId).FirstOrDefaultAsync();
+            if (existedTrip == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+            }
+            if ((existedTrip.ActualStartingTime - DateTime.Now).Days <= 2)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Can not update guest list due to current time is smaller trip staring time 2 days");
+            }
+            existedGuest.FullName = pageRequest.FullName;
+            existedGuest.DateOfBirth = pageRequest.DateOfBirth;
+            existedGuest.IdentityNumber = pageRequest.IdentityNumber;
+            existedGuest.PhoneNumber = pageRequest.PhoneNumber;
+            existedGuest.Gender = pageRequest.Gender;
+            existedGuest.Gender = pageRequest.Gender;
+            existedGuest.IsLeader = pageRequest.IsLeader;
+            existedGuest.Status = pageRequest.Status;
+            _unitOfWork.GuestRepository.Update(existedGuest);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
+        public async  Task<DefaultPageResponse<GuestListingDto>> GetAllGuestList(int memberId, GuestPageRequest pageRequest)
+        {
+            var query = _unitOfWork.GuestRepository.Find(guest =>
+                guest.Booking.MemberId == memberId &&
+                (string.IsNullOrWhiteSpace(pageRequest.FullName) || guest.FullName.Trim().ToUpper()
+                                                                .Contains(pageRequest.FullName.Trim().ToUpper())) &&
+                (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || guest.PhoneNumber.Trim().ToUpper()
+                                                                .Contains(pageRequest.PhoneNumber.Trim().ToUpper())) &&
+                (!pageRequest.Gender.HasValue || guest.Gender == pageRequest.Gender) &&
+                (!pageRequest.Status.HasValue || guest.Status == pageRequest.Status)                                                                                                                
+            );
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
+            var totalCount = data.Count();
+            var pageCount = totalCount / pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<GuestListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<GuestListingDto>()
+            {
+                Data = resultList,
+                PageCount = (int)pageCount,
+                TotalItem = totalCount,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize
+            };
+            return result;
+        }
+        public async Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest)
+        {
+            var query = _unitOfWork.TripRepository.Find(trip =>
+               (!pageRequest.Status.HasValue || trip.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+            ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(trip => trip.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<TripListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<TripListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
+
+        public async Task<GuestDto> GetDetailGuest(int guestId, int bookingId)
+        {
+            var existedGuest = await _unitOfWork.GuestRepository.Find(guest => guest.Id == guestId).FirstOrDefaultAsync();
+            if (existedGuest == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
+            }
+            var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.BookingId == bookingId ).FirstOrDefaultAsync();
+            if (existedTrip == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+            }
+            var result = _mapper.Map<GuestDto>(existedGuest);
+            if ((existedTrip.ActualStartingTime - DateTime.Now).Days  <= 2)
+            {
+                result.UpdateStatus = false;
+            }
+            else 
+            {
+                result.UpdateStatus = true;
+            }
+            return result;
+        }
     }
 }

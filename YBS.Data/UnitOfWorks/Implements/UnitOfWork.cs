@@ -31,6 +31,9 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<Transaction> _transactionRepository;
         private readonly IGenericRepositoty<MembershipRegistration> _membershipRegistrationRepository;
         private readonly IGenericRepositoty<Wallet> _walletRepository;
+        private readonly IGenericRepositoty<Service> _serviceRepository;
+        private readonly IGenericRepositoty<ServicePackageItem> _servicePackageItemRepository;
+        private readonly IGenericRepositoty<UpdateRequest> _updateRequestRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -258,6 +261,42 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _walletRepository;
                 }
                 return new GenericRepository<Wallet>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Service> ServiceRepository
+        {
+            get
+            {
+                if (_serviceRepository is not null)
+                {
+                    return _serviceRepository;
+                }
+                return new GenericRepository<Service>(_context);
+            }
+        }
+
+        public IGenericRepositoty<ServicePackageItem> ServicePackageItemRepository
+        {
+            get
+            {
+                if (_servicePackageItemRepository is not null)
+                {
+                    return _servicePackageItemRepository;
+                }
+                return new GenericRepository<ServicePackageItem>(_context);
+            }
+        }
+
+        public IGenericRepositoty<UpdateRequest> UpdateRequestRepository
+        {
+            get
+            {
+                if (_updateRequestRepository is not null)
+                {
+                    return _updateRequestRepository;
+                }
+                return new GenericRepository<UpdateRequest>(_context);
             }
         }
 

@@ -9,5 +9,7 @@ namespace YBS.Service.Services
     public interface IFirebaseStorageService
     {
         public Task<Uri> UploadFile(string name, IFormFile image, string objectType, string type = null);
+        public Task<Uri> RenamedFolder(string oldName, string oldFileName, string oldObjectType, string name, IFormFile image, string objectType, string oldType = null, string type = null);
+        public Task DeleteFile(string objectType, string name, string fileName, string type = null);
     }
 }

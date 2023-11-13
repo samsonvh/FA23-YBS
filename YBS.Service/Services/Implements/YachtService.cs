@@ -79,11 +79,13 @@ namespace YBS.Service.Services.Implements
             }
         }
 
-        public async Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest)
+        public async Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest, int companyId)
         {
             var query = _unitOfWorks.YachRepository
                 .Find(yacht =>
-                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yacht.Name.Contains(pageRequest.Name)) &&
+                        yacht.YachtType.CompanyId == companyId &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yacht.Name.Trim().ToUpper()
+                                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
                        ((pageRequest.MaximumGuestLimit == null) || (yacht.MaximumGuestLimit == pageRequest.MaximumGuestLimit)) &&
                        (!pageRequest.Status.HasValue || yacht.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)

@@ -16,9 +16,9 @@ namespace YBS.Controllers
 
         [Route(APIDefine.WALLET_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllWallet([FromQuery] WalletPageRequest pageRequest)
+        public async Task<IActionResult> GetAllWallet([FromQuery] WalletPageRequest pageRequest, [FromRoute] int memberId)
         {
-            return Ok(await _walletService.GetAllWallets(pageRequest)); 
+            return Ok(await _walletService.GetAllWallets(pageRequest, memberId)); 
         }
 
         [Route(APIDefine.WALLET_GET_DETAIL)]

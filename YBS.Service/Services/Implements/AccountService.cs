@@ -36,9 +36,11 @@ namespace YBS.Service.Services.Implements
         public async Task<DefaultPageResponse<AccountListingDto>> GetAllAccounts(AccountPageRequest pageRequest)
         {
             var query = _unitOfWork.AccountRepository
-                .Find(account => (string.IsNullOrWhiteSpace(pageRequest.Username) || account.Username.Contains(pageRequest.Username)) &&
-                                (string.IsNullOrWhiteSpace(pageRequest.Email) || account.Email.Contains(pageRequest.Email)) &&
-                                (string.IsNullOrWhiteSpace(pageRequest.Role) || account.Role.Name == pageRequest.Role) &&
+                .Find(account => (string.IsNullOrWhiteSpace(pageRequest.Username) || account.Username.Trim().ToUpper()
+                                                                                    .Contains(pageRequest.Username.Trim().ToUpper())) &&
+                                (string.IsNullOrWhiteSpace(pageRequest.Email) || account.Email.Trim().ToUpper()
+                                                                                .Contains(pageRequest.Email.Trim().ToUpper())) &&
+                                (string.IsNullOrWhiteSpace(pageRequest.Role) || account.Role.Name.Trim().ToUpper() == pageRequest.Role.Trim().ToUpper()) &&
                                 (!pageRequest.Status.HasValue || account.Status == pageRequest.Status.Value))
                 .Include(account => account.Role);
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)

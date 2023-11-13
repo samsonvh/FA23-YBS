@@ -18,9 +18,9 @@ namespace YBS.Controllers
 
         [Route(APIDefine.ROUTE_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest)
+        public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
         {
-            return Ok(await _routeService.GetAllRoutes(pageRequest));   
+            return Ok(await _routeService.GetAllRoutes(pageRequest, companyId));   
         }
 
         [Route(APIDefine.ROUTE_GET_DETAIL)]
@@ -45,7 +45,20 @@ namespace YBS.Controllers
             await _routeService.Update(pageRequest, id);
             return Ok("Update Route Successfully");
         }
-
+        [Route(APIDefine.ROUTE_GET_BEGINNING_FILTER)]
+        [HttpGet]
+        public async Task<IActionResult> BeginningFilter()
+        {
+            var result = await _routeService.GetBeginningFilter();
+            return Ok(result);
+        }
+        [Route(APIDefine.ROUTE_GET_DESTINATION_FILTER)]
+        [HttpGet]
+        public async Task<IActionResult> DestinationFilter()
+        {
+            var result = await _routeService.GetDestinationFilter();
+            return Ok(result);
+        }
         [Route(APIDefine.ROUTE_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromForm] string status)

@@ -22,16 +22,27 @@ namespace YBS
         public const string MEMBER_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_GET_ALL = DEFAULT_ROUTE;
+        public const string MEMBER_UPDATE_GUEST = DEFAULT_ROUTE + "/booking" + "/{bookingId}" + "/guests" + "/{guestId}";
+        public const string MEMBER_GET_ALL_GUEST_LIST = DEFAULT_ROUTE + "/{memberId}" + "/guests";
+        public const string MEMBER_GET_DETAIL_GUEST = DEFAULT_ROUTE + "/booking" + "/{bookingId}" + "/guests" + "/{guestId}";
+        public const string MEMBER_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+
         //Company
         public const string COMPANY_GET_ALL = DEFAULT_ROUTE;
         public const string COMPANY_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string COMPANY_CREATE = DEFAULT_ROUTE;
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
+        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+        public const string COMPANY_UPDATE_REQUEST_CREATE = DEFAULT_ROUTE + "/update-requests";
+        public const string COMPANY_UPDATE_REQUEST_GET_DETAIL = DEFAULT_ROUTE + "/update-requests" + "/{id}";
+        public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
 
         //Route
-        public const string ROUTE_GET_ALL = DEFAULT_ROUTE;
+        public const string ROUTE_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
+        public const string ROUTE_GET_BEGINNING_FILTER = DEFAULT_ROUTE + "/beginning-filter";
+        public const string ROUTE_GET_DESTINATION_FILTER = DEFAULT_ROUTE + "/destination-filter";
         public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
-        public const string ROUTE_CREATE= DEFAULT_ROUTE;
+        public const string ROUTE_CREATE = DEFAULT_ROUTE;
         public const string ROUTE_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string ROUTE_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
@@ -59,16 +70,17 @@ namespace YBS
         public const string YACHT_TYPE_CHANGE_STATUS = YACHT_TYPE_DEFAULT + "/{id}";
 
         //Dock
-        public const string DOCK_GET_ALL = DEFAULT_ROUTE;
+        public const string DOCK_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string DOCK_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CREATE = DEFAULT_ROUTE;
+        public const string DOCK_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
 
         //Booking
         public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
         public const string BOOKING_MEMBER_CREATE = DEFAULT_ROUTE + "/members";
         public const string BOOKING_GUEST_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
-        public const string BOOKING_GET_ALL = DEFAULT_ROUTE;
+        public const string BOOKING_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string BOOKING_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         //Payment
         public const string PAYMENT_BOOKING_CREATE_URL = DEFAULT_ROUTE + "/booking";
@@ -77,7 +89,7 @@ namespace YBS
         public const string PAYMENT_MEMBERSHIP_CALL_BACK = DEFAULT_ROUTE + "/membership";
         //Transaction 
         public const string TRANSACTION_CREATE = DEFAULT_ROUTE;
-        public const string TRANSACTION_GET_ALL = DEFAULT_ROUTE;
+        public const string TRANSACTION_GET_ALL = DEFAULT_ROUTE + "memberId";
 
         //MembershipRegostration
         public const string MEMBERSHIP_REGISTRATION = "api/v{version:apiVersion}/membership-registrations";
@@ -85,10 +97,25 @@ namespace YBS
         public const string MEMBERSHIP_REGISTRATION_DETAIL = MEMBERSHIP_REGISTRATION + "/{id}";
 
         //bookingPayment
-        public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/booking-payments";
-
+        public const string BOOKING_PAYMENT_GET_ALL = "api/v{version:apiVersion}/company/{companyId}/booking-payments";
+        public const string BOOKING_PAYMENT_DETAIL = DEFAULT_ROUTE + "/{id}";
         //wallet
-        public const string WALLET_GET_ALL = DEFAULT_ROUTE;
+        public const string WALLET_GET_ALL = DEFAULT_ROUTE + "/{memberId}";
         public const string WALLET_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
+
+        //service
+        public const string SERVICE_GET_ALL = DEFAULT_ROUTE;
+        public const string SERVICE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string SERVICE_CREATE = DEFAULT_ROUTE;
+        public const string SERVICE_UPDATE = DEFAULT_ROUTE + "/{id}";
+        public const string SERVICE_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
+
+        //servicePackage
+        public const string SERVICE_PACKAGE_DEFAULT = "api/v{version:apiVersion}/service-packages";
+        public const string SERVICE_PACKAGE_GET_ALL = SERVICE_PACKAGE_DEFAULT;
+        public const string SERVICE_PACKAGE_GET_DETAIL = SERVICE_PACKAGE_DEFAULT + "/{id}";
+        public const string SERVICE_PACKAGE_CREATE = SERVICE_PACKAGE_DEFAULT;
+        public const string SERVICE_PACKAGE_UPDATE = SERVICE_PACKAGE_DEFAULT + "/{id}";
+        public const string SERVICE_PACKAGE_CHANGE_STATUS = SERVICE_PACKAGE_DEFAULT + "/{id}";
     }
 }

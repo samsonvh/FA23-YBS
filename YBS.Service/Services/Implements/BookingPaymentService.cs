@@ -4,12 +4,16 @@ using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using YBS.Data.Models;
 using YBS.Data.UnitOfWorks;
+using YBS.Service.Dtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
+using YBS.Service.Exceptions;
 using YBS.Service.Utils;
 
 namespace YBS.Service.Services.Implements
@@ -25,11 +29,14 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task<DefaultPageResponse<BookingPaymentListingDto>> GetAllBookingPayment(BookingPaymentPageRequest pageRequest)
+        public async Task<DefaultPageResponse<BookingPaymentListingDto>> GetAllBookingPayments(BookingPaymentPageRequest pageRequest, int companyId)
         {
+            
             var query = _unitOfWork.BookingPaymentRepository
                .Find(bookingPayment =>
-                  (string.IsNullOrWhiteSpace(pageRequest.Name) || bookingPayment.Name.Contains(pageRequest.Name)) &&
+                    bookingPayment.Booking.Route.CompanyId == companyId &&
+                  (string.IsNullOrWhiteSpace(pageRequest.Name) || bookingPayment.Name.Trim().ToUpper()
+                                                                .Contains(pageRequest.Name.Trim().ToUpper())) &&
                   (!pageRequest.Status.HasValue || bookingPayment.Status == pageRequest.Status.Value));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(bookingPayment => bookingPayment.Id);
@@ -45,6 +52,18 @@ namespace YBS.Service.Services.Implements
                 PageIndex = (int)pageRequest.PageIndex,
                 PageSize = (int)pageRequest.PageSize,
             };
+            return result;
+        }
+
+        public async Task<BookingPaymentDto> GetDetailBookingPayment(int id)
+        {
+            var existPayment = await _unitOfWork.BookingPaymentRepository.Find(bookingPayment => bookingPayment.Id == id)
+                                                                        .FirstOrDefaultAsync();
+            if (existPayment == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest,"Booking Payment Not Found");
+            }
+            var result = _mapper.Map<BookingPaymentDto>(existPayment);
             return result;
         }
     }

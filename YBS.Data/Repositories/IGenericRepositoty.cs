@@ -16,6 +16,7 @@ namespace YBS.Data.Repositories
         IQueryable<T> GetAll();
         IQueryable<T> Find(Expression<Func<T, bool>> expression);
         Task<T> GetByID(int id);
+        void RemoveRange(IEnumerable<T> entities);
         #endregion
     }
 }

@@ -4,6 +4,7 @@ using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Services.Dtos;
+using YBS.Services.Dtos.InputDtos;
 
 namespace YBS.Service.Utils.AutoMapper
 {
@@ -110,9 +111,12 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.TotalPrice, options => options.MapFrom(booking => booking.TotalPrice))
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
+           
             //trip
             CreateMap<GuestBookingInputDto, Trip>();
             CreateMap<MemberBookingInputDto, Trip>();
+            CreateMap<Trip, TripListingDto>();
+
             //transaction
             CreateMap<TransactionInputDto,Transaction>();
             CreateMap<Transaction, TransactionListingDto>();
@@ -123,10 +127,29 @@ namespace YBS.Service.Utils.AutoMapper
 
             //payment
             CreateMap<BookingPayment, BookingPaymentListingDto>();
+            CreateMap<BookingPayment, BookingPaymentDto>();
 
             //wallet
             CreateMap<Wallet, WalletDto>();
             CreateMap<Wallet, WalletListingDto>();
+
+            //service
+            CreateMap<Data.Models.Service, ServiceDto>();
+            CreateMap<ServiceInputDto, Data.Models.Service>();
+            CreateMap<Data.Models.Service, ServiceListingDto>();
+
+            //servicePackage
+            CreateMap<ServicePackage, ServicePackageDto>();
+            CreateMap<ServicePackageInputDto, ServicePackage>();
+            CreateMap<ServicePackage, ServicePackageListingDto>();
+            //guest
+            CreateMap<Guest, GuestListingDto>();
+            CreateMap<Guest, GuestDto>();
+
+            //updateRequest
+            CreateMap<UpdateRequest, UpdateRequestDto>();
+            CreateMap<UpdateRequestInputDto, UpdateRequest>();
+            CreateMap<UpdateRequestInputDto, Company>();
         }
     }
 }

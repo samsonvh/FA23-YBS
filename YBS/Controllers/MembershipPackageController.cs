@@ -23,9 +23,9 @@ namespace YBS.Controllers
         }
         [HttpGet]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_GET_ALL)]
-        public async Task<IActionResult> GetAll([FromQuery] MembershipPackagePageRequest pageRequest)
+        public async Task<IActionResult> GetAllMembershipPackages([FromQuery] MembershipPackagePageRequest pageRequest)
         {
-            var result = await _membershipPackageService.GetAll(pageRequest);
+            var result = await _membershipPackageService.GetAllMembershipPackages(pageRequest);
             return Ok(result);
         }
         [HttpGet]

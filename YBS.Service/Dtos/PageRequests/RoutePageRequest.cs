@@ -12,6 +12,8 @@ namespace YBS.Service.Dtos.PageRequests
         public string? Name { get; set; }
         public string? Beginning { get; set; }
         public string? Destination { get; set; }
+        public int MinPrice { get; set; }
+        public int MaxPrice { get; set; }
         public EnumRouteStatus? Status { get; set; }
     }
 }

@@ -1,5 +1,6 @@
 using System.Security.Claims;
 using System.Text;
+using Firebase.Storage;
 using Google.Cloud.Storage.V1;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc.Versioning;
@@ -38,6 +39,9 @@ builder.Services.AddScoped<IDockService, DockService>();
 builder.Services.AddScoped<IMembershipRegistrationService, MembershipRegistrationService>();
 builder.Services.AddScoped<IBookingPaymentService, BookingPaymentService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IServicePackageService, ServicePackageService>();
+
 
 builder.Services.AddControllers();
 builder.Services.AddRouting(options => options.LowercaseUrls = true);

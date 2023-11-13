@@ -103,7 +103,7 @@ namespace YBS.Service.Services.Implements
             trip.ActualEndingTime = actualEndingDate;
             trip.Status = EnumTripStatus.NOT_STARTED;
             _unitOfWork.TripRepository.Add(trip);
-            //save trip
+            //save all change to DB
             await _unitOfWork.SaveChangesAsync();
         }
 
@@ -203,19 +203,22 @@ namespace YBS.Service.Services.Implements
             return false;
         }
 
-        public async Task<DefaultPageResponse<BookingListingDto>> GetAll(BookingPageRequest pageRequest)
+        public async Task<DefaultPageResponse<BookingListingDto>> GetAllBookings(BookingPageRequest pageRequest, int companyId)
         {
             var query = _unitOfWork.BookingRepository.Find(booking =>
-            (string.IsNullOrWhiteSpace(pageRequest.Route) || booking.Route.Name
-                                                            .Contains(pageRequest.Route)) &&
-            (string.IsNullOrWhiteSpace(pageRequest.Yacht) || booking.Yacht != null && booking.Yacht.Name
-                                                                                        .Contains(pageRequest.Yacht)) &&
+            booking.Route.CompanyId == companyId &&
+            (!pageRequest.Status.HasValue || pageRequest.Status == booking.Status) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Route) || booking.Route.Name.Trim().ToUpper()
+                                                            .Contains(pageRequest.Route.Trim().ToUpper())) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Yacht) || booking.Yacht != null && booking.Yacht.Name.Trim().ToUpper()
+                                                                                        .Contains(pageRequest.Yacht.Trim().ToUpper())) &&
             (string.IsNullOrWhiteSpace(pageRequest.PhoneNumber) || (booking.MemberId == null
                                                                     ? booking.Guests
-                                                                    .First(guest => guest.IsLeader == true).PhoneNumber == pageRequest.PhoneNumber
-                                                                    : booking.Member.PhoneNumber == pageRequest.PhoneNumber)) &&
-            (!pageRequest.DateBook.HasValue || pageRequest.DateBook == booking.CreationDate) &&
-            (!pageRequest.DateOccurred.HasValue || (pageRequest.DateOccurred <= booking.Trip.ActualEndingTime && pageRequest.DateOccurred >= booking.Trip.ActualStartingTime)))
+                                                                    .First(guest => guest.IsLeader == true).PhoneNumber.Trim().ToUpper() == pageRequest.PhoneNumber.Trim().ToUpper()
+                                                                    : booking.Member.PhoneNumber.Trim().ToUpper() == pageRequest.PhoneNumber)) &&
+            (!pageRequest.DateBook.HasValue || DateTimeCompare.DateCompare((DateTime)pageRequest.DateBook,booking.CreationDate) == 0) &&
+            (!pageRequest.DateOccurred.HasValue || (DateTimeCompare.DateCompare((DateTime)pageRequest.DateOccurred,booking.Trip.ActualEndingTime) <= 0 && 
+                                                    DateTimeCompare.DateCompare((DateTime)pageRequest.DateOccurred,booking.Trip.ActualStartingTime) >= 0)))
             .Include(booking => booking.Guests)
             .Include(booking => booking.Trip)
             .Include(booking => booking.Route)
@@ -248,12 +251,12 @@ namespace YBS.Service.Services.Implements
                 .Include(booking => booking.Yacht)
                 .Include(booking => booking.YachtType)
                 .FirstOrDefaultAsync();
-            if (booking != null)
+            if (booking == null)
             {
-                var bookingDto = _mapper.Map<BookingDto>(booking);
-                return bookingDto;
+                throw new APIException((int)HttpStatusCode.BadRequest,"Booking Not Found");
             }
-            return null;
+            var bookingDto = _mapper.Map<BookingDto>(booking);
+                return bookingDto;
         }
 
         public async Task CreateMemberBooking(MemberBookingInputDto pageRequest)
@@ -350,7 +353,7 @@ namespace YBS.Service.Services.Implements
                 Status = EnumPaymentStatus.PENDING
             };
             _unitOfWork.BookingPaymentRepository.Add(payment);
-            //save trip
+            //save all change to DB
             await _unitOfWork.SaveChangesAsync();
         }
     }

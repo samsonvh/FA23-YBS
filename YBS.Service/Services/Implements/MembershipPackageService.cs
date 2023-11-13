@@ -48,10 +48,11 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating membership package");
             }
         }
-        public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAll(MembershipPackagePageRequest pageRequest)
+        public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAllMembershipPackages(MembershipPackagePageRequest pageRequest)
         {
             var query = _unitOfWork.MembershipPackageRepository.Find(membershipPackage =>
-                (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Contains(pageRequest.Name)) && 
+                (string.IsNullOrWhiteSpace(pageRequest.Name) || membershipPackage.Name.Trim().ToUpper()
+                                                                .Contains(pageRequest.Name.Trim().ToUpper())) && 
                 (!pageRequest.Status.HasValue || membershipPackage.Status == pageRequest.Status));
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy) ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query;
             var totalCount = data.Count();
