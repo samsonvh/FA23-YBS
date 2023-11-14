@@ -20,6 +20,7 @@ namespace YBS.Data.Models
         public string ImageURL { get; set; }
         public TimeSpan ExpectedStartingTime { get; set; }
         public TimeSpan ExpectedEndingTime { get; set; }
+        public int Priority { get; set; }
         public string Type { get; set; }
         public EnumRouteStatus Status { get; set; }
         public ICollection<RouteServicePackage>? RouteServicePackages { get; set; }

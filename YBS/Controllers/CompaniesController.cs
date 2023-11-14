@@ -109,5 +109,31 @@ namespace YBS.Controllers
             }
             return BadRequest("Failed to update request");
         }
+
+        [Route(APIDefine.COMPANY_GET_ALL_ROUTE)]
+        [HttpGet]
+        public async Task<IActionResult> CompanyGetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
+        {
+            return Ok(await _companyService.CompanyGetAllRoutes(pageRequest, companyId));   
+        }
+
+        [Route(APIDefine.COMPANY_GET_ALL_YACHT)]
+        [HttpGet]
+        public async Task<IActionResult> CompanyGetAllYacht([FromQuery] YachtPageRequest pageRequest, [FromRoute] int companyId)
+        {
+            return Ok(await _companyService.CompanyGetAllYacht(pageRequest, companyId));    
+        }
+        [Route(APIDefine.COMPANY_GET_ALL_YACHT_TYPE)]
+        [HttpGet]
+        public async Task<IActionResult> CompanyGetAllYachtType([FromQuery] YachtTypePageRequest pageRequest,[FromRoute] int companyId)
+        {
+            return Ok(await _companyService.CompanyGetAllYachtType(pageRequest,companyId));
+        }
+        [Route(APIDefine.COMPANY_GET_ALL_SERVICE_PACKAGE)]
+        [HttpGet]
+        public async Task<IActionResult> CompanyGetAllServicePackage ([FromQuery] ServicePackagePageRequest pageRequest, [FromRoute] int companyId)
+        {
+            return Ok(await _companyService.CompanyGetAllServicePackage(pageRequest, companyId));
+        }
     }
 }

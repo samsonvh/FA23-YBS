@@ -30,11 +30,10 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest)
         {
             var query = _unitOfWork.YachTypeRepository
                 .Find(yachtType =>
-                        yachtType.CompanyId == companyId &&
                        (string.IsNullOrWhiteSpace(pageRequest.Name) || yachtType.Name.Trim().ToUpper()
                                                                         .Contains(pageRequest.Name.Trim().ToUpper())) &&
                        (!pageRequest.Status.HasValue || yachtType.Status == pageRequest.Status.Value));
@@ -113,29 +112,6 @@ namespace YBS.Service.Services.Implements
                 }
             }
             return false;
-        }
-
-        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest)
-        {
-            var query = _unitOfWork.YachTypeRepository
-                .Find(yachtType =>
-                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yachtType.Name.Contains(pageRequest.Name)) &&
-                       (!pageRequest.Status.HasValue || yachtType.Status == pageRequest.Status.Value));
-            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(yachtType => yachtType.Id);
-            var totalItem = data.Count();
-            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
-            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
-            var resultList = _mapper.Map<List<YachtTypeListingDto>>(dataPaging);
-            var result = new DefaultPageResponse<YachtTypeListingDto>()
-            {
-                Data = resultList,
-                PageCount = pageCount,
-                TotalItem = totalItem,
-                PageIndex = (int)pageRequest.PageIndex,
-                PageSize = (int)pageRequest.PageSize,
-            };
-            return result;
         }
     }
 }

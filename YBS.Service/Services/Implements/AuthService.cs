@@ -293,6 +293,7 @@ namespace YBS.Service.Services.Implements
             accessToken = new JwtSecurityTokenHandler().WriteToken(tokenGenerated);
             return new AuthResponse()
             {
+                Id = existedEmail.Id,
                 AccessToken = accessToken,
                 RefreshToken = refreshToken,
                 Role = existedEmail.Role.Name,

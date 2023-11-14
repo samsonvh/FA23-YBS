@@ -17,6 +17,7 @@ namespace YBS.Service.Dtos
         public List<string>? ImageURL { get; set; }
         public TimeSpan ExpectedStartingTime { get; set; }
         public TimeSpan ExpectedEndingTime { get; set; }
+        public int Priority { get; set; }
         public string Type { get; set; }
         public string Status { get; set; }
     }
