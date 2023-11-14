@@ -16,11 +16,18 @@ namespace YBS.Controllers
             _routeService = routeService; 
         }
 
+        /* [Route(APIDefine.ROUTE_GET_ALL)]
+         [HttpGet]
+         public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
+         {
+             return Ok(await _routeService.GetAllRoutes(pageRequest, companyId));   
+         }*/
+
         [Route(APIDefine.ROUTE_GET_ALL)]
         [HttpGet]
-        public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
+        public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest)
         {
-            return Ok(await _routeService.GetAllRoutes(pageRequest, companyId));   
+            return Ok(await _routeService.GetAllRoutes(pageRequest));
         }
 
         [Route(APIDefine.ROUTE_GET_DETAIL)]
