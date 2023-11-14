@@ -92,54 +92,54 @@ namespace YBS.Service.Services.Implements
             }
         }
 
-        public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest, int companyId)
-        {
-            var query = _unitOfWork.RouteRepository
-                .Find(route =>
-                        route.CompanyId == companyId &&
-                       (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Trim().ToUpper()
-                                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
-                       (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Trim().ToUpper()
-                                                                            .Contains(pageRequest.Beginning.Trim().ToUpper())) &&
-                       (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Trim().ToUpper()
-                                                                                .Contains(pageRequest.Destination.Trim().ToUpper())) &&
-                       (!pageRequest.Status.HasValue || route.Status == pageRequest.Status.Value) &&
-                       ((pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0) ||
-                        (pageRequest.MinPrice == 0 && pageRequest.MaxPrice >= route.PriceMappers.First().Price) ||
-                        (pageRequest.MinPrice == 0 && pageRequest.MinPrice <= route.PriceMappers.First().Price) ||
-                        (pageRequest.MaxPrice >= route.PriceMappers.First().Price && pageRequest.MinPrice == 0 && pageRequest.MinPrice <= route.PriceMappers.First().Price)
-                       )
+        /* public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest, int companyId)
+         {
+             var query = _unitOfWork.RouteRepository
+                 .Find(route =>
+                         route.CompanyId == companyId &&
+                        (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Trim().ToUpper()
+                                                                         .Contains(pageRequest.Name.Trim().ToUpper())) &&
+                        (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Trim().ToUpper()
+                                                                             .Contains(pageRequest.Beginning.Trim().ToUpper())) &&
+                        (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Trim().ToUpper()
+                                                                                 .Contains(pageRequest.Destination.Trim().ToUpper())) &&
+                        (!pageRequest.Status.HasValue || route.Status == pageRequest.Status.Value) &&
+                        ((pageRequest.MinPrice == 0 && pageRequest.MaxPrice == 0) ||
+                         (pageRequest.MinPrice == 0 && pageRequest.MaxPrice >= route.PriceMappers.First().Price) ||
+                         (pageRequest.MinPrice == 0 && pageRequest.MinPrice <= route.PriceMappers.First().Price) ||
+                         (pageRequest.MaxPrice >= route.PriceMappers.First().Price && pageRequest.MinPrice == 0 && pageRequest.MinPrice <= route.PriceMappers.First().Price)
+                        )
 
-                        );
-            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(route => route.Id);
-            var totalItem = data.Count();
-            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
-            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
-            List<RouteListingDto> resultList = new List<RouteListingDto>();
-            if (dataPaging != null)
-            {
-                foreach (var route in dataPaging)
-                {
-                    var routeListingDto = _mapper.Map<RouteListingDto>(route);
-                    if (route.ImageURL != null)
-                    {
-                        var arrayImgSplit = route.ImageURL.Trim().Split(',');
-                        routeListingDto.ImageURL = arrayImgSplit[0];
-                    }
-                    resultList.Add(routeListingDto);
-                }
-            }
-            var result = new DefaultPageResponse<RouteListingDto>()
-            {
-                Data = resultList,
-                PageCount = pageCount,
-                TotalItem = totalItem,
-                PageIndex = (int)pageRequest.PageIndex,
-                PageSize = (int)pageRequest.PageSize,
-            };
-            return result;
-        }
+                         );
+             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                 ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(route => route.Id);
+             var totalItem = data.Count();
+             var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+             var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+             List<RouteListingDto> resultList = new List<RouteListingDto>();
+             if (dataPaging != null)
+             {
+                 foreach (var route in dataPaging)
+                 {
+                     var routeListingDto = _mapper.Map<RouteListingDto>(route);
+                     if (route.ImageURL != null)
+                     {
+                         var arrayImgSplit = route.ImageURL.Trim().Split(',');
+                         routeListingDto.ImageURL = arrayImgSplit[0];
+                     }
+                     resultList.Add(routeListingDto);
+                 }
+             }
+             var result = new DefaultPageResponse<RouteListingDto>()
+             {
+                 Data = resultList,
+                 PageCount = pageCount,
+                 TotalItem = totalItem,
+                 PageIndex = (int)pageRequest.PageIndex,
+                 PageSize = (int)pageRequest.PageSize,
+             };
+             return result;
+         }*/
 
         public async Task<List<string>> GetBeginningFilter()
         {
@@ -275,5 +275,42 @@ namespace YBS.Service.Services.Implements
             return false;
         }
 
+        public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest)
+        {
+            var query = _unitOfWork.RouteRepository
+                .Find(route =>
+                       (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Contains(pageRequest.Name)) &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Contains(pageRequest.Beginning)) &&
+                       (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Contains(pageRequest.Destination)) &&
+                       (!pageRequest.Status.HasValue || route.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(route => route.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            List<RouteListingDto> resultList = new List<RouteListingDto>();
+            if (dataPaging != null)
+            {
+                foreach (var route in dataPaging)
+                {
+                    var routeListingDto = _mapper.Map<RouteListingDto>(route);
+                    if (route.ImageURL != null)
+                    {
+                        var arrayImgSplit = route.ImageURL.Trim().Split(',');
+                        routeListingDto.ImageURL = arrayImgSplit[0];
+                    }
+                    resultList.Add(routeListingDto);
+                }
+            }
+            var result = new DefaultPageResponse<RouteListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
     }
 }

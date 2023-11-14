@@ -16,11 +16,18 @@ namespace YBS.Controllers
         {
             _yachtService = yachtService;
         }
-        [Route(APIDefine.YACHT_GET_ALL)]
+       /* [Route(APIDefine.YACHT_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllYacht([FromQuery] YachtPageRequest pageRequest, [FromRoute] int companyId)
         {
             return Ok(await _yachtService.GetAllYacht(pageRequest, companyId));    
+        }*/
+
+        [Route(APIDefine.YACHT_GET_ALL)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllYachtNonMember([FromQuery] YachtPageRequest pageRequest)
+        {
+            return Ok(await _yachtService.GetAllYachtNonMember(pageRequest));
         }
 
         [HttpGet]

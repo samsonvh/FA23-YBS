@@ -56,7 +56,7 @@ namespace YBS.Service.Services.Implements
                 var counter = 1;
                 foreach (var image in pageRequest.ImageFiles)
                 {
-                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image,"Yacht",yachtType.Name);
+                    var imageUri = await _firebaseStorageService.UploadFile(pageRequest.Name, image, "Yacht", yachtType.Name);
                     if (counter == pageRequest.ImageFiles.Count)
                     {
                         imageUrL += imageUri;
@@ -105,10 +105,10 @@ namespace YBS.Service.Services.Implements
                         var arrayImgSplit = yacht.ImageURL.Trim().Split(',');
                         int arrayLength = arrayImgSplit.Length;
                         if (arrayImgSplit.Length > 3)
-                        {   
+                        {
                             arrayLength = 3;
                         }
-                        for (int i = 0; i < arrayLength ; i ++)
+                        for (int i = 0; i < arrayLength; i++)
                         {
                             imgUrlList.Add(arrayImgSplit[i].Trim());
                         }
@@ -238,6 +238,54 @@ namespace YBS.Service.Services.Implements
                 }
             }
             return false;
+        }
+
+        public async Task<DefaultPageResponse<YachtListingDto>> GetAllYachtNonMember(YachtPageRequest pageRequest)
+        {
+            var query = _unitOfWorks.YachRepository
+                .Find(yacht =>
+                       (string.IsNullOrWhiteSpace(pageRequest.Name) || yacht.Name.Contains(pageRequest.Name)) &&
+                       ((pageRequest.MaximumGuestLimit == null) || (yacht.MaximumGuestLimit == pageRequest.MaximumGuestLimit)) &&
+                       (!pageRequest.Status.HasValue || yacht.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(yacht => yacht.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            List<YachtListingDto> resultList = new List<YachtListingDto>();
+            if (dataPaging != null)
+            {
+                foreach (var yacht in dataPaging)
+                {
+                    var yachtListingDto = _mapper.Map<YachtListingDto>(yacht);
+                    if (yacht.ImageURL != null)
+                    {
+                        List<string> imgUrlList = new List<string>();
+                        var arrayImgSplit = yacht.ImageURL.Trim().Split(',');
+                        int arrayLength = arrayImgSplit.Length;
+                        if (arrayImgSplit.Length > 3)
+                        {
+                            arrayLength = 3;
+                        }
+                        for (int i = 0; i < arrayLength; i++)
+                        {
+                            imgUrlList.Add(arrayImgSplit[i].Trim());
+                        }
+                        yachtListingDto.ImageURL = imgUrlList;
+                    }
+                    resultList.Add(yachtListingDto);
+                }
+            }
+
+            var result = new DefaultPageResponse<YachtListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
         }
     }
 }

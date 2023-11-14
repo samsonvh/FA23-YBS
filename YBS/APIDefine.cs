@@ -38,7 +38,8 @@ namespace YBS
         public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
 
         //Route
-        public const string ROUTE_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
+        /*public const string ROUTE_GET_ALL = DEFAULT_ROUTE + "/{companyId}";*/
+        public const string ROUTE_GET_ALL = DEFAULT_ROUTE;
         public const string ROUTE_GET_BEGINNING_FILTER = DEFAULT_ROUTE + "/beginning-filter";
         public const string ROUTE_GET_DESTINATION_FILTER = DEFAULT_ROUTE + "/destination-filter";
         public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";

@@ -13,7 +13,8 @@ namespace YBS.Service.Services
 {
     public interface IYachtService
     {
-        Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest, int companyId);
+        /*Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest, int companyId);*/
+        Task<DefaultPageResponse<YachtListingDto>> GetAllYachtNonMember(YachtPageRequest pageRequest);
         Task<YachtDto> GetDetailYacht(int id);
         Task Create (YachtInputDto pageRequest);
         Task Update (int id ,YachtInputDto pageRequest);
