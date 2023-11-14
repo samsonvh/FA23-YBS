@@ -150,6 +150,15 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<UpdateRequest, UpdateRequestDto>();
             CreateMap<UpdateRequestInputDto, UpdateRequest>();
             CreateMap<UpdateRequestInputDto, Company>();
+
+            //  Deal
+            CreateMap<Route, DealListingDto>()
+                .ForMember(deal => deal.Location, options => options.MapFrom(route => route.Beginning))
+                .ForMember(deal => deal.Departs, options => options.MapFrom(route => route.Beginning))
+                .ForMember(deal => deal.Price, options => options.MapFrom(route => route.PriceMappers.First().Price))
+                .ForMember(deal => deal.Unit, options => options.MapFrom(route => route.PriceMappers.First().MoneyUnit))
+                .ForMember(deal => deal.Rating, options => options.MapFrom(route => 0));
+
         }
     }
 }

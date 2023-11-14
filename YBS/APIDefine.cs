@@ -7,6 +7,9 @@ namespace YBS
 {
     public static class APIDefine
     {
+        //  Api Version
+        public const string API_VERSION = "api/v{version:apiVersion}";
+
         //Default Route
         public const string DEFAULT_ROUTE = "api/v{version:apiVersion}/[controller]";
         //Account
@@ -121,5 +124,8 @@ namespace YBS
         public const string SERVICE_PACKAGE_CREATE = SERVICE_PACKAGE_DEFAULT;
         public const string SERVICE_PACKAGE_UPDATE = SERVICE_PACKAGE_DEFAULT + "/{id}";
         public const string SERVICE_PACKAGE_CHANGE_STATUS = SERVICE_PACKAGE_DEFAULT + "/{id}";
+
+        //  Deals
+        public const string DEALS_DEFAULT = API_VERSION + "/deals";
     }
 }

@@ -41,6 +41,7 @@ builder.Services.AddScoped<IBookingPaymentService, BookingPaymentService>();
 builder.Services.AddScoped<IWalletService, WalletService>();
 builder.Services.AddScoped<IServiceService, ServiceService>();
 builder.Services.AddScoped<IServicePackageService, ServicePackageService>();
+builder.Services.AddScoped<IDealService, DealService>();
 
 
 builder.Services.AddControllers();
