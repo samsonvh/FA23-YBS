@@ -32,13 +32,17 @@ namespace YBS
         public const string COMPANY_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string COMPANY_CREATE = DEFAULT_ROUTE;
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
-        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/{companyId}" + "/trips";
+        public const string COMPANY_GET_ALL_ROUTE = DEFAULT_ROUTE + "/{companyId}" + "routes";
+        public const string COMPANY_GET_ALL_YACHT = DEFAULT_ROUTE + "/{companyId}" + "yachts";
+        public const string COMPANY_GET_ALL_YACHT_TYPE = DEFAULT_ROUTE + "/{companyId}" + "yacht-types";
+        public const string COMPANY_GET_ALL_SERVICE_PACKAGE = DEFAULT_ROUTE + "/{companyId}" + "service-packages";
         public const string COMPANY_UPDATE_REQUEST_CREATE = DEFAULT_ROUTE + "/update-requests";
         public const string COMPANY_UPDATE_REQUEST_GET_DETAIL = DEFAULT_ROUTE + "/update-requests" + "/{id}";
         public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
 
         //Route
-        public const string ROUTE_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
+        public const string ROUTE_GET_ALL = DEFAULT_ROUTE;
         public const string ROUTE_GET_BEGINNING_FILTER = DEFAULT_ROUTE + "/beginning-filter";
         public const string ROUTE_GET_DESTINATION_FILTER = DEFAULT_ROUTE + "/destination-filter";
         public const string ROUTE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";

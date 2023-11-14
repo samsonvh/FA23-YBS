@@ -30,11 +30,10 @@ namespace YBS.Service.Services.Implements
             _mapper = mapper;
         }
 
-        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest)
         {
             var query = _unitOfWork.YachTypeRepository
                 .Find(yachtType =>
-                        yachtType.CompanyId == companyId &&
                        (string.IsNullOrWhiteSpace(pageRequest.Name) || yachtType.Name.Trim().ToUpper()
                                                                         .Contains(pageRequest.Name.Trim().ToUpper())) &&
                        (!pageRequest.Status.HasValue || yachtType.Status == pageRequest.Status.Value));

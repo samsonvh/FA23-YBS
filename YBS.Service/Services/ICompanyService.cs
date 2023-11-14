@@ -23,5 +23,9 @@ namespace YBS.Service.Services
         Task<UpdateRequestDto> CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto);
         Task<UpdateRequestDto> GetDetailUpdateRequest(int id);
         Task<bool> Update(int id, UpdateRequestInputDto updateRequestInputDto);
+        Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest, int companyId);
+        Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYacht(YachtPageRequest pageRequest, int companyId);
+        Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtType(YachtTypePageRequest pageRequest, int companyId);
+        Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackage(ServicePackagePageRequest pageRequest, int companyId);
     }
 }

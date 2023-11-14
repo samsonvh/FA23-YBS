@@ -18,6 +18,7 @@ namespace YBS.Service.Dtos.InputDtos
         public DateTime ExpectedStartingTime { get; set; }
         public DateTime ExpectedEndingTime { get; set; }
         public string? Type { get; set; }
+        public int Priority { get; set; }
         public EnumRouteStatus? Status { get; set; }
         public string ActivityList { get; set; }
     }

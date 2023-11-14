@@ -79,6 +79,7 @@ namespace YBS.Service.Services.Implements
                 activityList.Add(activity);
             }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
+            routeAdd.Priority = 50;
             routeAdd.ImageURL = imageUrL;
             routeAdd.Status = EnumRouteStatus.AVAILABLE;
             routeAdd.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
@@ -92,11 +93,10 @@ namespace YBS.Service.Services.Implements
             }
         }
 
-        public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest)
         {
             var query = _unitOfWork.RouteRepository
                 .Find(route =>
-                        route.CompanyId == companyId &&
                        (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Trim().ToUpper()
                                                                         .Contains(pageRequest.Name.Trim().ToUpper())) &&
                        (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Trim().ToUpper()
@@ -112,7 +112,7 @@ namespace YBS.Service.Services.Implements
 
                         );
             var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(route => route.Id);
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction).OrderByDescending(route => route.Priority): query.OrderByDescending(route => route.Priority);
             var totalItem = data.Count();
             var pageCount = totalItem / (int)pageRequest.PageSize + 1;
             var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
@@ -213,6 +213,7 @@ namespace YBS.Service.Services.Implements
             existedRoute.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
             existedRoute.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
             existedRoute.Type = pageRequest.Type;
+            existedRoute.Priority= pageRequest.Priority;
             if (pageRequest.Status != null)
             {
                 existedRoute.Status = (EnumRouteStatus)pageRequest.Status;
