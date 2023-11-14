@@ -275,6 +275,5 @@ namespace YBS.Service.Services.Implements
             }
             return false;
         }
-
     }
 }
