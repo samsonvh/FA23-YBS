@@ -155,8 +155,8 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Route, DealListingDto>()
                 .ForMember(deal => deal.Location, options => options.MapFrom(route => route.Beginning))
                 .ForMember(deal => deal.Departs, options => options.MapFrom(route => route.Beginning))
-                .ForMember(deal => deal.Price, options => options.MapFrom(route => route.PriceMappers.First().Price))
-                .ForMember(deal => deal.Unit, options => options.MapFrom(route => route.PriceMappers.First().MoneyUnit))
+                .ForMember(deal => deal.Price, options => options.MapFrom(route => route.PriceMappers.FirstOrDefault().Price))
+                .ForMember(deal => deal.Unit, options => options.MapFrom(route => route.PriceMappers.FirstOrDefault().MoneyUnit))
                 .ForMember(deal => deal.Rating, options => options.MapFrom(route => 0));
 
         }

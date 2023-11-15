@@ -13,7 +13,7 @@ namespace YBS.Service.Dtos.ListingDtos
         public string ImageUrl { get; set; }
         public string Departs { get; set; }
         public float Rating { get; set; }
-        public string Price { get; set; }
+        public float Price { get; set; }
         public string Unit { get; set; }
     }
 }
