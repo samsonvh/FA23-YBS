@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Data.Enums;
+using YBS.Middlewares;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
 
@@ -14,6 +16,7 @@ namespace YBS.Controllers
             _walletService = walletService; 
         }
 
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.WALLET_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllWallet([FromQuery] WalletPageRequest pageRequest, [FromRoute] int memberId)
@@ -21,6 +24,7 @@ namespace YBS.Controllers
             return Ok(await _walletService.GetAllWallets(pageRequest, memberId)); 
         }
 
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.WALLET_GET_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetDetailWallet(int id)

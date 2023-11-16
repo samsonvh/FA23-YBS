@@ -17,7 +17,7 @@ namespace YBS.Controllers
             _membershipRegistrationService = membershipRegistrationService;
         }
 
-       /* [RoleAuthorization(nameof(EnumRole.ADMIN))]*/
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [Route(APIDefine.MEMBERSHIP_REGISTRATION_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllMembershipRegistration([FromQuery] MembershipRegistrationRequest pageRequest)
@@ -25,7 +25,7 @@ namespace YBS.Controllers
             return Ok(await _membershipRegistrationService.GetMembershipRegistrationList(pageRequest));
         }
 
-       /* [RoleAuthorization(nameof(EnumRole.ADMIN))]*/
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [Route(APIDefine.MEMBERSHIP_REGISTRATION_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetMembershipRegistrationDetail([FromRoute] int id)

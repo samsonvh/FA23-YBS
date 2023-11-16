@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Data.Enums;
+using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
@@ -37,6 +39,7 @@ namespace YBS.Controllers
             return Ok(await _routeService.GetDetailRoute(id));
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.ROUTE_CREATE)]
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]RouteInputDto pageRequest)
@@ -45,6 +48,7 @@ namespace YBS.Controllers
             return Ok("Create Route Successfully");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.ROUTE_UPDATE)]
         [HttpPut]
         public async Task<IActionResult> Update([FromForm]RouteInputDto pageRequest,[FromRoute] int id)
@@ -66,6 +70,8 @@ namespace YBS.Controllers
             var result = await _routeService.GetDestinationFilter();
             return Ok(result);
         }
+
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.ROUTE_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromForm] string status)

@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Data.Enums;
+using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
@@ -29,6 +31,8 @@ namespace YBS.Controllers
         {
             return Ok(await _yachtService.GetDetailYacht(id));
         }
+
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [HttpPost]
         [Route(APIDefine.YACHT_CREATE)]
         public async Task<IActionResult> Create([FromForm] YachtInputDto pageRequest)
@@ -36,6 +40,8 @@ namespace YBS.Controllers
             await _yachtService.Create(pageRequest);
             return Ok("Create Yacht Successfully");
         }
+
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [HttpPut]
         [Route(APIDefine.YACHT_UPDATE)]
         public async Task<IActionResult> Update([FromRoute] int id,[FromBody] YachtInputDto pageRequest,[FromForm] int testField)
@@ -44,6 +50,7 @@ namespace YBS.Controllers
             return Ok("Update Yacht Successfully");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [HttpPatch]
         [Route(APIDefine.YACHT_CHANGE_STATUS)]
         public async Task<IActionResult> ChangeStatusYaccht([FromRoute] int id, [FromForm] string status)

@@ -151,7 +151,7 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(DockInputDto pageRequest, int id)
         {
-            var existedDock = await _unitOfWork.DockRepository.Find(dock => dock.Id == id).FirstOrDefaultAsync();
+            var existedDock = await _unitOfWork.DockRepository.Find(dock => dock.Id == id).Include(dock => dock.DockYachtTypes).FirstOrDefaultAsync();
             if (existedDock == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Dock Not Found");
@@ -195,7 +195,28 @@ namespace YBS.Service.Services.Implements
                 
             }
             existedDock.LastModifiedDate = DateTime.Now;
-            _unitOfWork.DockRepository.Update(existedDock);
+
+            // Get existing and new dockIds
+            var existingYachtTypeIds = existedDock.DockYachtTypes.Select(existedDock => existedDock.YachtTypeId).ToList();
+            var newYachtTypeIds = pageRequest.YachtTypeId;
+
+            //remove dockYachtType if not choose
+            var dockYachtTypesRemove = existedDock.DockYachtTypes
+                .Where(dockYachtType => !newYachtTypeIds.Contains(dockYachtType.YachtTypeId))
+                .ToList();
+
+            _unitOfWork.DockYachtTypeRepository.RemoveRange(dockYachtTypesRemove);
+
+            // Add new service package items 
+            var itemsToAdd = newYachtTypeIds
+                .Where(yachtTypeId => !existingYachtTypeIds.Contains(yachtTypeId))
+                .Select(yachtTypeId => new DockYachtType
+                {
+                    YachtTypeId = yachtTypeId,
+                    DockId = existedDock.Id
+                });
+
+            _unitOfWork.DockYachtTypeRepository.AddRange(itemsToAdd);
             await _unitOfWork.SaveChangesAsync();
         }
     }

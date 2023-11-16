@@ -27,6 +27,7 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<Service> ServiceRepository { get; }
         IGenericRepositoty<ServicePackageItem> ServicePackageItemRepository { get; }
         IGenericRepositoty<UpdateRequest> UpdateRequestRepository { get; }
+        IGenericRepositoty<DockYachtType> DockYachtTypeRepository { get; }
         Task<int> SaveChangesAsync();
     }
 }

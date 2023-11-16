@@ -2,7 +2,9 @@ using System.Xml.Schema;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using YBS;
+using YBS.Data.Enums;
 using YBS.Data.Models;
+using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Services.Services;
@@ -27,6 +29,7 @@ namespace FA23_YBS_BACKEND.Controllers
             var result = await _memberService.GetAllMembers(pageRequest);
             return Ok(result);
         }
+
         [HttpGet]
         [Route(APIDefine.MEMBER_DETAIL)]
         public async Task<IActionResult> GetDetailMember([FromRoute] int id)
@@ -34,6 +37,8 @@ namespace FA23_YBS_BACKEND.Controllers
             var result = await _memberService.GetDetailMember(id);
             return Ok(result);
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [HttpPost]
         [Route(APIDefine.MEMBER_CREATE)]
         public async Task<IActionResult> Register([FromBody] MemberRegisterInputDto pageRequest)
@@ -41,6 +46,8 @@ namespace FA23_YBS_BACKEND.Controllers
             await _memberService.Register(pageRequest);
             return Ok("Register Member Successfully");
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [HttpPut]
         [Route(APIDefine.MEMBER_UPDATE)]
         public async Task<IActionResult> Update([FromRoute] int id, [FromForm] MemberUpdateInputDto pageRequest)
@@ -48,6 +55,8 @@ namespace FA23_YBS_BACKEND.Controllers
             await _memberService.Update(pageRequest, id);
             return Ok("Update Member Successfully");
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [HttpPut]
         [Route(APIDefine.MEMBER_UPDATE_GUEST)]
         public async Task<IActionResult> UpdateGuest([FromRoute] int guestId, [FromRoute] int bookingId, [FromForm] GuestInputDto pageRequest)
@@ -55,6 +64,8 @@ namespace FA23_YBS_BACKEND.Controllers
             await _memberService.UpdateGuest(pageRequest, guestId, bookingId);
             return Ok("Update Member Successfully");
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [HttpGet]
         [Route(APIDefine.MEMBER_GET_ALL_GUEST_LIST)]
         public async Task<IActionResult> GetAllGuestList([FromRoute] int memberId, [FromQuery] GuestPageRequest pageRequest)
@@ -62,6 +73,8 @@ namespace FA23_YBS_BACKEND.Controllers
             var result = await _memberService.GetAllGuestList(memberId, pageRequest);
             return Ok(result);
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [HttpGet]
         [Route(APIDefine.MEMBER_GET_DETAIL_GUEST)]
         public async Task<IActionResult> GetDetailGuest([FromRoute] int guestId, [FromRoute] int bookingId)
@@ -70,6 +83,7 @@ namespace FA23_YBS_BACKEND.Controllers
             return Ok(result);
         }
 
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.MEMBER_GET_ALL_TRIP)]
         [HttpGet]
         public async Task<IActionResult> GetAllTrip([FromQuery] TripPageRequest pageRequest)

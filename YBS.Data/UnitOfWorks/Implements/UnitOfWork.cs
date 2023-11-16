@@ -300,6 +300,18 @@ namespace YBS.Data.UnitOfWorks.Implements
             }
         }
 
+        public IGenericRepositoty<DockYachtType> DockYachtTypeRepository
+        {
+            get
+            {
+                if (_dockYachtTypeRepository is not null)
+                {
+                    return _dockYachtTypeRepository;
+                }
+                return new GenericRepository<DockYachtType>(_context);
+            }
+        }
+
         public Task<int> SaveChangesAsync()
         {
             return _context.SaveChangesAsync();

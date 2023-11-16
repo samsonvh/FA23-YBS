@@ -19,6 +19,8 @@ namespace YBS.Controllers
         {
             _transactionService = transactionService;
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.TRANSACTION_CREATE)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody]TransactionInputDto pageRequest)
