@@ -44,7 +44,7 @@ namespace YBS.Controllers
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [HttpPut]
         [Route(APIDefine.YACHT_UPDATE)]
-        public async Task<IActionResult> Update([FromRoute] int id,[FromBody] YachtInputDto pageRequest,[FromForm] int testField)
+        public async Task<IActionResult> Update([FromRoute] int id,[FromBody] YachtInputDto pageRequest)
         {
             await _yachtService.Update(id,pageRequest);
             return Ok("Update Yacht Successfully");

@@ -9,6 +9,7 @@ using YBS.Service.Services.Implements;
 
 namespace YBS.Controllers
 {
+    [RoleAuthorization(nameof(EnumRole.COMPANY))]
     [ApiController]
     public class ServicesController : ControllerBase
     {
@@ -37,7 +38,6 @@ namespace YBS.Controllers
             return Ok(service);
         }
 
-        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.SERVICE_CREATE)]
         [HttpPost]
         public async Task<IActionResult> CreateService([FromBody] ServiceInputDto serviceInputDto)
@@ -46,7 +46,6 @@ namespace YBS.Controllers
             return Ok("Create service successful");
         }
 
-        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.SERVICE_UPDATE)]
         [HttpPut]
         public async Task<IActionResult> UpdateService([FromRoute] int id, [FromBody] ServiceInputDto serviceInputDto) 
@@ -55,7 +54,6 @@ namespace YBS.Controllers
             return Ok("Update service successful");
         }
 
-        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.SERVICE_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)
