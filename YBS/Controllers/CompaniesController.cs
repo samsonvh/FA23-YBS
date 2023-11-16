@@ -38,7 +38,7 @@ namespace YBS.Controllers
             return NotFound("Company not found");
         }
 
-        /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPost]
         [Route(APIDefine.COMPANY_CREATE)]
         public async Task<IActionResult> Create([FromForm] CompanyInputDto companyInputDto)
@@ -51,7 +51,8 @@ namespace YBS.Controllers
             }
             return BadRequest("Failed to create company");
         }
-        /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
+
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [Route(APIDefine.COMPANY_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)
@@ -64,6 +65,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to change status");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_TRIP)]
         [HttpGet]
         public async Task<IActionResult> GetAllTrip([FromQuery] TripPageRequest pageRequest)
@@ -71,7 +73,7 @@ namespace YBS.Controllers
             return Ok(await _companyService.GetTripList(pageRequest));
         }
 
-        /*[RoleAuthorization(nameof(EnumRole.COMPANY))]*/
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_UPDATE_REQUEST_CREATE)]
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UpdateRequestInputDto updateRequestInputDto)
@@ -84,7 +86,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to create update request.");
         }
 
-        /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [Route(APIDefine.COMPANY_UPDATE_REQUEST_GET_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetUpdateRequestDetail([FromRoute] int id)
@@ -97,7 +99,7 @@ namespace YBS.Controllers
             return NotFound("Not found update request");
         }
 
-        /*[RoleAuthorization(nameof(EnumRole.ADMIN))]*/
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [Route(APIDefine.COMPANY_UPDATE_REQUEST_UPDATE)]
         [HttpPut]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateRequestInputDto updateRequestInputDto)
@@ -110,6 +112,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to update request");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_ROUTE)]
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
@@ -117,18 +120,23 @@ namespace YBS.Controllers
             return Ok(await _companyService.CompanyGetAllRoutes(pageRequest, companyId));   
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_YACHT)]
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllYacht([FromQuery] YachtPageRequest pageRequest, [FromRoute] int companyId)
         {
             return Ok(await _companyService.CompanyGetAllYacht(pageRequest, companyId));    
         }
+
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_YACHT_TYPE)]
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllYachtType([FromQuery] YachtTypePageRequest pageRequest,[FromRoute] int companyId)
         {
             return Ok(await _companyService.CompanyGetAllYachtType(pageRequest,companyId));
         }
+
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_SERVICE_PACKAGE)]
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllServicePackage ([FromQuery] ServicePackagePageRequest pageRequest, [FromRoute] int companyId)

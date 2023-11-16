@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using YBS.Data.Enums;
+using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
@@ -35,6 +37,8 @@ namespace YBS.Controllers
             var result = await _membershipPackageService.GetDetailMembershipPackage(id);
             return Ok(result);
         }
+
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPost]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_CREATE)]
         public async Task<IActionResult> Create([FromBody] MembershipPackageInputDto pageRequest)
@@ -42,6 +46,8 @@ namespace YBS.Controllers
             await _membershipPackageService.Create(pageRequest);
             return Ok("Create MembershipPackage Successfully");
         }
+
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [HttpPut]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_UPDATE)]
         public async Task<IActionResult> Update([FromBody] MembershipPackageInputDto pageRequest, [FromRoute] int id)
@@ -49,6 +55,8 @@ namespace YBS.Controllers
             await _membershipPackageService.Update(pageRequest, id);
             return Ok("Update MembershipPackage Successfully");
         }
+
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
         [Route(APIDefine.MEMBERSHIP_PACKAGE_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromBody] string status)

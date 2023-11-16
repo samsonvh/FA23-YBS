@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using YBS.Data.Enums;
+using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
-
+    [RoleAuthorization(nameof(EnumRole.COMPANY))]
     [ApiController]
     public class DocksController : ControllerBase
     {
@@ -16,6 +18,7 @@ namespace YBS.Controllers
             _dockService = dockService;
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.DOCK_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllDocks([FromQuery] DockPageRequest pageRequest, [FromRoute] int companyId)
@@ -23,6 +26,7 @@ namespace YBS.Controllers
             return Ok(await _dockService.GetAllDocks(pageRequest, companyId));
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.DOCK_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetDockDetail([FromRoute] int id)
@@ -35,6 +39,7 @@ namespace YBS.Controllers
             return NotFound("Dock not found.");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Consumes("multipart/form-data")]
         [Route(APIDefine.DOCK_CREATE)]
         [HttpPost]
@@ -49,6 +54,7 @@ namespace YBS.Controllers
             return BadRequest("Failed to create dock ");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Consumes("multipart/form-data")]
         [Route(APIDefine.DOCK_UPDATE)]
         [HttpPut]
@@ -59,6 +65,7 @@ namespace YBS.Controllers
             return Ok("Update Dock successfully");
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.DOCK_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeStatus([FromRoute] int id, [FromForm] string status)

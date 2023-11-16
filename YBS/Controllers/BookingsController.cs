@@ -24,6 +24,8 @@ namespace YBS.Controllers
             await _bookingService.CreateGuestBooking(pageRequest);
             return Ok("Guest create booking successful"); 
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.BOOKING_MEMBER_CREATE)]
         [HttpPost]
         public async Task<IActionResult> CreateMemberBooking([FromForm] MemberBookingInputDto pageRequest)
@@ -32,7 +34,7 @@ namespace YBS.Controllers
             return Ok("Member create booking successful"); 
         }
 
-       /* [RoleAuthorization(nameof(EnumRole.COMPANY))]*/
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.BOOKING_GUEST_CHANGE_STATUS)]
         [HttpPatch]
         public async Task<IActionResult> ChangeBookingStatus([FromRoute] int id, [FromBody] string status)
@@ -44,6 +46,8 @@ namespace YBS.Controllers
             }
             return Ok("Change status guest booking succesful.");
         }
+
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.BOOKING_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllBookings([FromQuery] BookingPageRequest pageRequest, [FromRoute] int companyId)
@@ -52,6 +56,8 @@ namespace YBS.Controllers
             return Ok(result);
         }
 
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.BOOKING_GET_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetDetailBooking([FromRoute] int id)
