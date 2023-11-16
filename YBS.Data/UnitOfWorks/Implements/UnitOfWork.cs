@@ -34,6 +34,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<Service> _serviceRepository;
         private readonly IGenericRepositoty<ServicePackageItem> _servicePackageItemRepository;
         private readonly IGenericRepositoty<UpdateRequest> _updateRequestRepository;
+        private readonly IGenericRepositoty<DockYachtType> _dockYachtTypeRepository;
 
         public UnitOfWork(YBSContext context)
         {
