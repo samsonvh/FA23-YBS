@@ -18,7 +18,7 @@ namespace YBS.Service.Services
         Task<RouteDto> GetDetailRoute(int id);
         Task<List<string>> GetBeginningFilter();
         Task<List<string>> GetDestinationFilter();
-        Task Create (RouteInputDto pageRequest);
+        Task<int> Create (RouteInputDto pageRequest);
         Task Update (RouteInputDto pageRequest, int id);
         Task<bool> ChangeStatusRoute(int id, string status);
     }

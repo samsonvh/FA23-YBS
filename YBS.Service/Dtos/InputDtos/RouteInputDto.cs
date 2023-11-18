@@ -10,7 +10,6 @@ namespace YBS.Service.Dtos.InputDtos
 {
     public class RouteInputDto
     {
-        public int? CompanyId { get; set; }
         public string? Name { get; set; }
         public string? Beginning { get; set; }
         public string? Destination { get; set; }
@@ -20,6 +19,5 @@ namespace YBS.Service.Dtos.InputDtos
         public string? Type { get; set; }
         public int Priority { get; set; }
         public EnumRouteStatus? Status { get; set; }
-        public string ActivityList { get; set; }
     }
 }

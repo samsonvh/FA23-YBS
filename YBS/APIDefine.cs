@@ -136,5 +136,7 @@ namespace YBS
         public const string PRICE_MAPPER_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string PRICE_MAPPER_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string PRICE_MAPPER_DELETE = DEFAULT_ROUTE + "/{id}";
+        //activity
+        public const string ACTIVITY_CREATE = DEFAULT_ROUTE;
     }
 }

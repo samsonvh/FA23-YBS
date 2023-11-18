@@ -171,6 +171,13 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<PriceMapperInputDto,PriceMapper>();
             CreateMap<PriceMapper,PriceMapperDto>();
             CreateMap<PriceMapper,PriceMapperListingDto>();
+            //activity
+            CreateMap<ActivityInputDto, Activity>()
+                .ForMember(activityInputDto => activityInputDto.OccuringTime, options => options.Ignore());
+            //activityPlace
+            CreateMap<ActivityPlaceInputDto, ActivityPlace>()
+                .ForMember(activityPlaceInputDto => activityPlaceInputDto.FromDockId, options => options.Ignore())
+                .ForMember(activityPlaceInputDto => activityPlaceInputDto.ToDockId, options => options.Ignore());
         }
     }
 }

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Enums;
@@ -28,19 +29,23 @@ namespace YBS.Service.Services.Implements
         private readonly IMapper _mapper;
         private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
         private readonly string prefixUrl;
-        public RouteService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService, IConfiguration configuration)
+        public RouteService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService, IConfiguration configuration, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
             _configuration = configuration;
             prefixUrl = _configuration["Firebase:PrefixUrl"];
+            _authService = authService;
         }
 
-        public async Task Create(RouteInputDto pageRequest)
+        public async Task<int> Create(RouteInputDto pageRequest)
         {
-            var company = _unitOfWork.CompanyRepository.Find(company => company.Id == pageRequest.CompanyId);
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var company = _unitOfWork.CompanyRepository.Find(company => company.Id == companyId);
             if (company == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
@@ -64,29 +69,30 @@ namespace YBS.Service.Services.Implements
                     counter++;
                 }
             }
-            //add activity List
-            List<ActivityInputDto> activityInputDtos = JsonConvert.DeserializeObject<List<ActivityInputDto>>(pageRequest.ActivityList);
+            // //add activity List
+            // List<ActivityInputDto> activityInputDtos = JsonConvert.DeserializeObject<List<ActivityInputDto>>(pageRequest.ActivityList);
 
-            List<Activity> activityList = new List<Activity>();
-            foreach (ActivityInputDto activityInput in activityInputDtos)
-            {
-                Activity activity = new Activity()
-                {
-                    Name = activityInput.Name,
-                    Description = activityInput.Description,
-                    OccuringTime = activityInput.OccuringTime,
-                    OrderIndex = activityInput.OrderIndex,
-                    Status = EnumActivityStatus.AVAILABLE
-                };
-                activityList.Add(activity);
-            }
+            // List<Activity> activityList = new List<Activity>();
+            // foreach (ActivityInputDto activityInput in activityInputDtos)
+            // {
+            //     Activity activity = new Activity()
+            //     {
+            //         Name = activityInput.Name,
+            //         Description = activityInput.Description,
+            //         OccuringTime = activityInput.OccuringTime,
+            //         OrderIndex = activityInput.OrderIndex,
+            //         Status = EnumActivityStatus.AVAILABLE
+            //     };
+            //     activityList.Add(activity);
+            // }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
+            routeAdd.CompanyId = companyId;
             routeAdd.Priority = 50;
             routeAdd.ImageURL = imageUrL;
             routeAdd.Status = EnumRouteStatus.AVAILABLE;
             routeAdd.ExpectedStartingTime = new TimeSpan(pageRequest.ExpectedStartingTime.Hour, pageRequest.ExpectedStartingTime.Minute, pageRequest.ExpectedStartingTime.Second);
             routeAdd.ExpectedEndingTime = new TimeSpan(pageRequest.ExpectedEndingTime.Hour, pageRequest.ExpectedEndingTime.Minute, pageRequest.ExpectedEndingTime.Second);
-            routeAdd.Activities = activityList;
+            // routeAdd.Activities = activityList;
             _unitOfWork.RouteRepository.Add(routeAdd);
             var result = await _unitOfWork.SaveChangesAsync();
 
@@ -94,6 +100,7 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
+            return routeAdd.Id;
         }
 
         public async Task<DefaultPageResponse<RouteListingDto>> GetAllRoutes(RoutePageRequest pageRequest)
@@ -197,15 +204,17 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(RouteInputDto pageRequest, int id)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
             var existedRoute = await _unitOfWork.RouteRepository.Find(route => route.Id == id)
                                                                 .FirstOrDefaultAsync();
             if (existedRoute == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Route not found");
             }
-            if (pageRequest.CompanyId > 0)
+            if (companyId > 0)
             {
-                existedRoute.CompanyId = (int)pageRequest.CompanyId;
+                existedRoute.CompanyId = (int)companyId;
             }
             if (pageRequest.ExpectedStartingTime.CompareTo(pageRequest.ExpectedEndingTime) > 0)
             {
