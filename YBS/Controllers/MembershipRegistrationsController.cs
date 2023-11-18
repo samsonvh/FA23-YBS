@@ -25,7 +25,7 @@ namespace YBS.Controllers
             return Ok(await _membershipRegistrationService.GetMembershipRegistrationList(pageRequest));
         }
 
-        [RoleAuthorization(nameof(EnumRole.ADMIN))]
+        [RoleAuthorization(nameof(EnumRole.ADMIN) + nameof(EnumRole.MEMBER))]
         [Route(APIDefine.MEMBERSHIP_REGISTRATION_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetMembershipRegistrationDetail([FromRoute] int id)

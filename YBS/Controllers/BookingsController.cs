@@ -56,8 +56,6 @@ namespace YBS.Controllers
             return Ok(result);
         }
 
-        [RoleAuthorization(nameof(EnumRole.COMPANY))]
-        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.BOOKING_GET_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetDetailBooking([FromRoute] int id)
