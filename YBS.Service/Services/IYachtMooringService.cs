@@ -13,6 +13,5 @@ namespace YBS.Service.Services
     {
         Task Create (YachtMooringInputDto yachtMooringInputDto);
         Task Update (YachtMooringInputDto yachtMooringInputDto, int id);
-        Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYachtMooring (YachtMooringPageRequest pageRequest);
     }
 }

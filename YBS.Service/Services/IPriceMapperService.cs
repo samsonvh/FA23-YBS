@@ -12,5 +12,6 @@ namespace YBS.Service.Services
         Task Create(List<PriceMapperInputDto> priceMapperInputDtos);
         Task Update(PriceMapperInputDto priceMapperInputDto, int id);
         Task<PriceMapperDto> Detail(int id);
+        Task Delete(int id);
     }
 }

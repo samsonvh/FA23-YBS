@@ -25,8 +25,8 @@ namespace YBS.Controllers
             return Ok("Create Price Mapper Successfully");
         }
         [Route(APIDefine.PRICE_MAPPER_UPDATE)]
-        [HttpPost]
-        public async Task<IActionResult> Update([FromBody] PriceMapperInputDto priceMapperInputDto, [FromRoute] int id)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] PriceMapperInputDto priceMapperInputDto, [FromRoute] int id)
         {
             await _priceMapperService.Update(priceMapperInputDto, id);
 
@@ -39,6 +39,14 @@ namespace YBS.Controllers
             var result = await _priceMapperService.Detail(id);
 
             return Ok(result);
+        }
+        [Route(APIDefine.PRICE_MAPPER_DELETE)]
+        [HttpDelete]
+        public async Task<IActionResult> Delete([FromRoute] int id)
+        {
+            await _priceMapperService.Delete(id);
+
+            return Ok("Delete Price Mapper Successfully");
         }
     }
 }

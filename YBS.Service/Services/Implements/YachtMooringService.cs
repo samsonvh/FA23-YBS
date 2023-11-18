@@ -28,65 +28,6 @@ namespace YBS.Service.Services.Implements
             _authService = authService;
             _mapper = mapper;
         }
-
-        public async Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYachtMooring(YachtMooringPageRequest pageRequest)
-        {
-            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
-            var query = _unitOfWork.YachtMooringRepository
-                                        .Find(yachtMooring => yachtMooring.Yacht.YachtType.CompanyId == companyId &&
-                                        (string.IsNullOrWhiteSpace(pageRequest.YachtName) || yachtMooring.Yacht.Name.Trim().ToUpper()
-                                                                                            .Contains(pageRequest.YachtName.Trim().ToUpper())) &&
-                                        (string.IsNullOrWhiteSpace(pageRequest.DockName) || yachtMooring.Dock.Name.Trim().ToUpper()
-                                                                                            .Contains(pageRequest.DockName.Trim().ToUpper())) &&
-                                        ((pageRequest.FromTime == null && pageRequest.ToTime == null) ||
-                                        (pageRequest.FromTime != null && !(pageRequest.FromTime > yachtMooring.LeaveTime)) ||
-                                        (pageRequest.ToTime != null && !(pageRequest.ToTime < yachtMooring.ArrivalTime)) ||
-                                        !(pageRequest.FromTime >= yachtMooring.LeaveTime && pageRequest.ToTime <= yachtMooring.ArrivalTime)
-                                        ));
-            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(yachtMooring => yachtMooring.Id);
-            var totalItem = data.Count();
-            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
-            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize)
-                                                                                                        .Include(yachtMooring => yachtMooring.Yacht)
-                                                                                                        .ToListAsync();
-            
-            List<YachtListingDto> resultList = new List<YachtListingDto>();
-            if (dataPaging != null)
-            {
-                foreach (var yachtMooring in dataPaging)
-                {
-                    var yachtListingDto = _mapper.Map<YachtListingDto>(yachtMooring);
-                    if (yachtMooring.Yacht.ImageURL != null)
-                    {
-                        List<string> imgUrlList = new List<string>();
-                        var arrayImgSplit = yachtMooring.Yacht.ImageURL.Trim().Split(',');
-                        int arrayLength = arrayImgSplit.Length;
-                        if (arrayImgSplit.Length > 3)
-                        {
-                            arrayLength = 3;
-                        }
-                        for (int i = 0; i < arrayLength; i++)
-                        {
-                            imgUrlList.Add(arrayImgSplit[i].Trim());
-                        }
-                        yachtListingDto.ImageURL = imgUrlList;
-                    }
-                    resultList.Add(yachtListingDto);
-                }
-            }
-            var result = new DefaultPageResponse<YachtListingDto>()
-            {
-                Data = resultList,
-                PageCount = pageCount,
-                TotalItem = totalItem,
-                PageIndex = (int)pageRequest.PageIndex,
-                PageSize = (int)pageRequest.PageSize,
-            };
-            return result;
-        }
-
         public async Task Create(YachtMooringInputDto yachtMooringInputDto)
         {
             if (yachtMooringInputDto.LeaveTime.CompareTo(yachtMooringInputDto.ArrivalTime) <= 0)

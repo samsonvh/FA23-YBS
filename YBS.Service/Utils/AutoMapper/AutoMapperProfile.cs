@@ -152,14 +152,14 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<UpdateRequestInputDto, Company>();
             //yacht mooring 
             CreateMap<YachtMooringInputDto, YachtMooring>();
-            CreateMap<YachtMooring, YachtListingDto>()
-                .ForMember(yachtListingDto => yachtListingDto.Id, options => options.MapFrom(yachtMooring => yachtMooring.YachtId))
-                .ForMember(yachtListingDto => yachtListingDto.Name, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Name))
-                .ForMember(yachtListingDto => yachtListingDto.ImageURL, options => options.Ignore())
-                .ForMember(yachtListingDto => yachtListingDto.MaximumGuestLimit, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.MaximumGuestLimit))
-                .ForMember(yachtListingDto => yachtListingDto.TotalCrew, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.TotalCrew))
-                .ForMember(yachtListingDto => yachtListingDto.Cabin, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Cabin))
-                .ForMember(yachtListingDto => yachtListingDto.Status, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Status));
+            CreateMap<YachtMooring, YachtMooringListingDto>()
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Id, options => options.MapFrom(yachtMooring => yachtMooring.YachtId))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Name, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Name))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.ImageURL, options => options.Ignore())
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.MaximumGuestLimit, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.MaximumGuestLimit))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.TotalCrew, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.TotalCrew))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Cabin, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Cabin))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Status, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Status));
             //  Deal
             CreateMap<Route, DealListingDto>()
                 .ForMember(deal => deal.Location, options => options.MapFrom(route => route.Beginning))
@@ -170,6 +170,7 @@ namespace YBS.Service.Utils.AutoMapper
             // price mapper 
             CreateMap<PriceMapperInputDto,PriceMapper>();
             CreateMap<PriceMapper,PriceMapperDto>();
+            CreateMap<PriceMapper,PriceMapperListingDto>();
         }
     }
 }

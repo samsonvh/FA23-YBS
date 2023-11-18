@@ -35,12 +35,13 @@ namespace YBS
         public const string COMPANY_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string COMPANY_CREATE = DEFAULT_ROUTE;
         public const string COMPANY_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
-        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/{companyId}" + "/trips";
-        public const string COMPANY_GET_ALL_ROUTE = DEFAULT_ROUTE + "/{companyId}" + "routes";
-        public const string COMPANY_GET_ALL_YACHT = DEFAULT_ROUTE + "/{companyId}" + "yachts";
-        public const string COMPANY_GET_ALL_YACHT_TYPE = DEFAULT_ROUTE + "/{companyId}" + "yacht-types";
-        public const string COMPANY_GET_ALL_SERVICE_PACKAGE = DEFAULT_ROUTE + "/{companyId}" + "service-packages";
-        public const string COMPANY_GET_ALL_PRICE_MAPPER = DEFAULT_ROUTE  + "price-mappers" + "/{routeId}";
+        public const string COMPANY_GET_ALL_TRIP = DEFAULT_ROUTE + "/trips";
+        public const string COMPANY_GET_ALL_ROUTE = DEFAULT_ROUTE + "/routes";
+        public const string COMPANY_GET_ALL_YACHT = DEFAULT_ROUTE + "/yachts";
+        public const string COMPANY_GET_ALL_YACHT_TYPE = DEFAULT_ROUTE + "/yacht-types";
+        public const string COMPANY_GET_ALL_SERVICE_PACKAGE = DEFAULT_ROUTE + "/service-packages";
+        public const string COMPANY_GET_ALL_PRICE_MAPPER = DEFAULT_ROUTE + "/price-mappers" + "/{routeId}";
+        public const string COMPANY_GET_ALL_YACHT_MOORING = DEFAULT_ROUTE + "/docks" + "/{dockId}" + "/yacht-moorings";
         public const string COMPANY_UPDATE_REQUEST_CREATE = DEFAULT_ROUTE + "/update-requests";
         public const string COMPANY_UPDATE_REQUEST_GET_DETAIL = DEFAULT_ROUTE + "/update-requests" + "/{id}";
         public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
@@ -134,5 +135,6 @@ namespace YBS
         public const string PRICE_MAPPER_CREATE = DEFAULT_ROUTE;
         public const string PRICE_MAPPER_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string PRICE_MAPPER_DETAIL = DEFAULT_ROUTE + "/{id}";
+        public const string PRICE_MAPPER_DELETE = DEFAULT_ROUTE + "/{id}";
     }
 }

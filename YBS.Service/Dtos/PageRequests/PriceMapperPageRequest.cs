@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace YBS.Service.Dtos.PageRequests
 {
-    public class PriceMapperPageRequest
+    public class PriceMapperPageRequest : DefaultPageRequest
     {
         public string? YachtTypeName { get; set; }
         public float? MinPrice { get; set; }

@@ -44,6 +44,18 @@ namespace YBS.Service.Services.Implements
             await _unitOfWork.SaveChangesAsync();
         }
 
+        public async Task Delete(int id)
+        {
+            var existedPriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.Id == id)
+                                                                            .FirstOrDefaultAsync();
+            if (existedPriceMapper == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
+            }
+            _unitOfWork.PriceMapperRepository.Remove(existedPriceMapper);
+            await _unitOfWork.SaveChangesAsync();
+        }
+
         public async Task<PriceMapperDto> Detail(int id)
         {
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.Id == id)
@@ -53,11 +65,19 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
             }
             var result = _mapper.Map<PriceMapperDto>(existedPriceMapper);
-            return result;                                                                            
+            return result;
         }
 
         public async Task Update(PriceMapperInputDto priceMapperInputDto, int id)
         {
+            var dupplicatePriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.YachtTypeId == priceMapperInputDto.YachtTypeId && 
+                                                                                    priceMapper.RouteId == priceMapperInputDto.RouteId)
+                                                                                .FirstOrDefaultAsync();
+            if (dupplicatePriceMapper != null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper with that yacht type name: " + dupplicatePriceMapper.YachtType.Name
+                                                                        + "and route name: " + dupplicatePriceMapper.Route.Name + "already exist");
+            }
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.Id == id)
                                                                             .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
