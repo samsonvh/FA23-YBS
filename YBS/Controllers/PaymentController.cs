@@ -5,6 +5,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using YBS.Data.Enums;
+using YBS.Middlewares;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Services;
 
@@ -20,6 +22,8 @@ namespace YBS.Controllers
             _logger = logger;
             _paymentService = paymentService;
         }
+
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
         [Route(APIDefine.PAYMENT_BOOKING_CREATE_URL)]
         [HttpPost]
         public async Task<IActionResult> CreateBookingPaymentUrl([FromBody] PaymentInformationInputDto pageRequest)
@@ -28,6 +32,7 @@ namespace YBS.Controllers
 
             return Ok(url);
         }
+
         [Route(APIDefine.PAYMENT_BOOKING_CALL_BACK)]
         [HttpGet]
         public IActionResult CallBackBookingPayment()

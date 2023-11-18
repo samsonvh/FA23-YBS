@@ -30,6 +30,7 @@ namespace FA23_YBS_BACKEND.Controllers
             return Ok(result);
         }
 
+        [RoleAuthorization(nameof(EnumRole.MEMBER) + nameof(EnumRole.ADMIN))]
         [HttpGet]
         [Route(APIDefine.MEMBER_DETAIL)]
         public async Task<IActionResult> GetDetailMember([FromRoute] int id)
@@ -38,7 +39,7 @@ namespace FA23_YBS_BACKEND.Controllers
             return Ok(result);
         }
 
-        [RoleAuthorization(nameof(EnumRole.MEMBER))]
+
         [HttpPost]
         [Route(APIDefine.MEMBER_CREATE)]
         public async Task<IActionResult> Register([FromBody] MemberRegisterInputDto pageRequest)
