@@ -19,5 +19,6 @@ namespace YBS.Service.Dtos.InputDtos
         public string? IdentityNumber { get; set; }
         public string? PhoneNumber { get; set; }
         public DateTime OccurDate { get; set; }
+        public List<int> ListServicePackageId { get; set; }
     }
 }

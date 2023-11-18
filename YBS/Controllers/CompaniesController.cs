@@ -143,5 +143,12 @@ namespace YBS.Controllers
         {
             return Ok(await _companyService.CompanyGetAllServicePackage(pageRequest, companyId));
         }
+        // [RoleAuthorization(nameof(EnumRole.COMPANY))]
+        // [Route(APIDefine.COMPANY_GET_ALL_PRICE_MAPPER)]
+        // [HttpGet]
+        // public async Task<IActionResult> CompanyGetAllPriceMapperByRouteId ([FromQuery] PriceMapperPageRequest pageRequest, [FromRoute] int routeId)
+        // {
+        //     return Ok(await _companyService.CompanyGetAllPriceMapperByRouteId(pageRequest, routeId));
+        // }
     }
 }

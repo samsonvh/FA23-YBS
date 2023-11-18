@@ -256,7 +256,7 @@ namespace YBS.Service.Services.Implements
             }
             return false;
         }
-         public async Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest, int companyId)
         {
             var query = _unitOfWork.RouteRepository
                 .Find(route =>
@@ -330,10 +330,10 @@ namespace YBS.Service.Services.Implements
                         var arrayImgSplit = yacht.ImageURL.Trim().Split(',');
                         int arrayLength = arrayImgSplit.Length;
                         if (arrayImgSplit.Length > 3)
-                        {   
+                        {
                             arrayLength = 3;
                         }
-                        for (int i = 0; i < arrayLength ; i ++)
+                        for (int i = 0; i < arrayLength; i++)
                         {
                             imgUrlList.Add(arrayImgSplit[i].Trim());
                         }
@@ -400,5 +400,35 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
+
+        // public Task<DefaultPageResponse<PriceMapperListingDto>> CompanyGetAllPriceMapperByRouteId(PriceMapperPageRequest pageRequest, int routeId)
+        // {
+        //     var query = _unitOfWork.PriceMapperRepository.Find(priceMapper =>
+        //        priceMapper.RouteId == routeId &&
+        //        (string.IsNullOrWhiteSpace(pageRequest.YachtTypeName) || priceMapper.YachtType.Name.Trim().ToUpper()
+        //                                                                         .Contains(pageRequest.YachtTypeName.Trim().ToUpper())) &&
+        //         (string.IsNullOrWhiteSpace(pageRequest.MoneyUnit) || priceMapper.MoneyUnit.Trim().ToUpper()
+        //                                                                         .Contains(pageRequest.MoneyUnit.Trim().ToUpper())) &&
+        //       (!pageRequest.MaxPrice.HasValue && !pageRequest.MinPrice.HasValue) || 
+        //       (!pageRequest.MaxPrice.HasValue || priceMapper.Price <= pageRequest.MaxPrice) ||
+        //       (!pageRequest.MinPrice.HasValue || priceMapper.Price >= pageRequest.MinPrice) ||
+        //       (pageRequest.MinPrice <= priceMapper.Price && pageRequest.MaxPrice >= priceMapper.Price)
+        //       );
+        //     var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+        //         ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(servicePackage => servicePackage.Id);
+        //     var totalItem = data.Count();
+        //     var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+        //     var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+        //     var resultList = _mapper.Map<List<ServicePackageListingDto>>(dataPaging);
+        //     var result = new DefaultPageResponse<ServicePackageListingDto>()
+        //     {
+        //         Data = resultList,
+        //         PageCount = pageCount,
+        //         TotalItem = totalItem,
+        //         PageIndex = (int)pageRequest.PageIndex,
+        //         PageSize = (int)pageRequest.PageSize,
+        //     };
+        //     return result;
+        // }
     }
 }

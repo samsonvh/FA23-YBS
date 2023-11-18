@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -25,10 +26,12 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public BookingService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IAuthService _authService;
+        public BookingService(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _authService = authService;
         }
 
         public async Task CreateGuestBooking(GuestBookingInputDto pageRequest)
@@ -83,9 +86,33 @@ namespace YBS.Service.Services.Implements
             }
             var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
             var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
-
+            //check existed service package and add service package
+            List<BookingServicePackage> bookingServicePackages = new List<BookingServicePackage>();
+            if (pageRequest.ListServicePackageId != null)
+            {
+                foreach (var servicePackageId in pageRequest.ListServicePackageId)
+                {
+                    var existedServicePackage = await _unitOfWork.ServicePackageRepository
+                    .Find(servicePackage => servicePackage.Id == servicePackageId)
+                    .FirstOrDefaultAsync();
+                    if (existedServicePackage == null)
+                    {
+                        throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
+                    }
+                    totalPrice += existedServicePackage.Price;
+                    bookingServicePackages.Add(new BookingServicePackage()
+                        {
+                            ServicePackageId = existedServicePackage.Id
+                        }
+                    );
+                }
+            }
             //add booking
             var booking = _mapper.Map<Booking>(pageRequest);
+            if (bookingServicePackages != null)
+            {
+                booking.BookingServicePackages = bookingServicePackages;
+            }
             booking.Status = EnumBookingStatus.PENDING;
             booking.TotalPrice = totalPrice;
             booking.MoneyUnit = existedPriceMapper.MoneyUnit;
@@ -216,9 +243,9 @@ namespace YBS.Service.Services.Implements
                                                                     ? booking.Guests
                                                                     .First(guest => guest.IsLeader == true).PhoneNumber.Trim().ToUpper() == pageRequest.PhoneNumber.Trim().ToUpper()
                                                                     : booking.Member.PhoneNumber.Trim().ToUpper() == pageRequest.PhoneNumber)) &&
-            (!pageRequest.DateBook.HasValue || DateTimeCompare.DateCompare((DateTime)pageRequest.DateBook,booking.CreationDate) == 0) &&
-            (!pageRequest.DateOccurred.HasValue || (DateTimeCompare.DateCompare((DateTime)pageRequest.DateOccurred,booking.Trip.ActualEndingTime) <= 0 && 
-                                                    DateTimeCompare.DateCompare((DateTime)pageRequest.DateOccurred,booking.Trip.ActualStartingTime) >= 0)))
+            (!pageRequest.DateBook.HasValue || DateTimeCompare.DateCompare((DateTime)pageRequest.DateBook, booking.CreationDate) == 0) &&
+            (!pageRequest.DateOccurred.HasValue || (DateTimeCompare.DateCompare((DateTime)pageRequest.DateOccurred, booking.Trip.ActualEndingTime) <= 0 &&
+                                                    DateTimeCompare.DateCompare((DateTime)pageRequest.DateOccurred, booking.Trip.ActualStartingTime) >= 0)))
             .Include(booking => booking.Guests)
             .Include(booking => booking.Trip)
             .Include(booking => booking.Route)
@@ -253,14 +280,17 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (booking == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Booking Not Found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Booking Not Found");
             }
             var bookingDto = _mapper.Map<BookingDto>(booking);
-                return bookingDto;
+            return bookingDto;
         }
 
-        public async Task CreateMemberBooking(MemberBookingInputDto pageRequest)
+        public async Task<int> CreateMemberBooking(MemberBookingInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var memberId = int.Parse(claimsPrincipal.FindFirstValue("MemberId"));
+            var MembershipPackageId = int.Parse(claimsPrincipal.FindFirstValue("MembershipPackageId"));
             //check existed route
             var existedRoute = await _unitOfWork.RouteRepository
                 .Find(trip => trip.Id == pageRequest.RouteId)
@@ -286,25 +316,31 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Route Not Found");
             }
             //check existed member
-            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == pageRequest.MemberId).FirstOrDefaultAsync();
+            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == memberId).FirstOrDefaultAsync();
             if (existedMember == null)
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
             }
             float totalPrice = existedPriceMapper.Price;
-            //check existed service package
-            if (pageRequest.ListServicePackageId.Count > 1)
+            //check existed service package and add service package
+            List<BookingServicePackage> bookingServicePackages = new List<BookingServicePackage>();
+            if (pageRequest.ListServicePackageId != null)
             {
-                foreach (var existedServicePackageId in pageRequest.ListServicePackageId)
+                foreach (var servicePackageId in pageRequest.ListServicePackageId)
                 {
                     var existedServicePackage = await _unitOfWork.ServicePackageRepository
-                    .Find(servicePackage => servicePackage.Id == existedServicePackageId)
+                    .Find(servicePackage => servicePackage.Id == servicePackageId)
                     .FirstOrDefaultAsync();
                     if (existedServicePackage == null)
                     {
                         throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
                     }
                     totalPrice += existedServicePackage.Price;
+                    bookingServicePackages.Add(new BookingServicePackage()
+                        {
+                            ServicePackageId = existedServicePackage.Id
+                        }
+                    );
                 }
             }
 
@@ -324,6 +360,10 @@ namespace YBS.Service.Services.Implements
 
             //add booking
             var booking = _mapper.Map<Booking>(pageRequest);
+            if (bookingServicePackages != null)
+            {
+                booking.BookingServicePackages = bookingServicePackages;
+            }
             booking.Status = EnumBookingStatus.PENDING;
             booking.TotalPrice = totalPrice;
             booking.MoneyUnit = existedPriceMapper.MoneyUnit;
@@ -343,7 +383,7 @@ namespace YBS.Service.Services.Implements
             trip.Status = EnumTripStatus.NOT_STARTED;
             _unitOfWork.TripRepository.Add(trip);
             //add payment
-            var payment = new BookingPayment()
+            var bookingPayment = new BookingPayment()
             {
                 BookingId = booking.Id,
                 Name = "Thanh toan cho " + existedRoute.Name,
@@ -352,9 +392,10 @@ namespace YBS.Service.Services.Implements
                 PaymentDate = DateTime.Now,
                 Status = EnumPaymentStatus.PENDING
             };
-            _unitOfWork.BookingPaymentRepository.Add(payment);
+            _unitOfWork.BookingPaymentRepository.Add(bookingPayment);
             //save all change to DB
             await _unitOfWork.SaveChangesAsync();
+            return bookingPayment.Id;
         }
     }
 }

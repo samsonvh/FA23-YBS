@@ -30,8 +30,8 @@ namespace YBS.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateMemberBooking([FromForm] MemberBookingInputDto pageRequest)
         {
-            await _bookingService.CreateMemberBooking(pageRequest);
-            return Ok("Member create booking successful"); 
+            var result = await _bookingService.CreateMemberBooking(pageRequest);
+            return Ok(result); 
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]

@@ -10,14 +10,12 @@ namespace YBS.Service.Dtos.InputDtos
     public class MemberBookingInputDto
     {
         public int RouteId { get; set; }
-        public int MemberId { get; set; }
         public List<int>? ListServicePackageId { get; set; }
-        public int? MembershipPackageId { get; set; }
         public int YachtTypeId { get; set; }
         public string? Note { get; set; }
         public IFormFile? GuestList { get; set; }
         public DateTime OccurDate { get; set; }
         public EnumPaymentMethod PaymentMethod { get; set; }
-        public EnumTransactionStatus Type { get; set; }
+        public EnumTransactionType Type { get; set; }
     }
 }

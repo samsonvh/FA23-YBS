@@ -40,6 +40,7 @@ namespace YBS
         public const string COMPANY_GET_ALL_YACHT = DEFAULT_ROUTE + "/{companyId}" + "yachts";
         public const string COMPANY_GET_ALL_YACHT_TYPE = DEFAULT_ROUTE + "/{companyId}" + "yacht-types";
         public const string COMPANY_GET_ALL_SERVICE_PACKAGE = DEFAULT_ROUTE + "/{companyId}" + "service-packages";
+        public const string COMPANY_GET_ALL_PRICE_MAPPER = DEFAULT_ROUTE  + "price-mappers" + "/{routeId}";
         public const string COMPANY_UPDATE_REQUEST_CREATE = DEFAULT_ROUTE + "/update-requests";
         public const string COMPANY_UPDATE_REQUEST_GET_DETAIL = DEFAULT_ROUTE + "/update-requests" + "/{id}";
         public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
@@ -124,8 +125,14 @@ namespace YBS
         public const string SERVICE_PACKAGE_CREATE = SERVICE_PACKAGE_DEFAULT;
         public const string SERVICE_PACKAGE_UPDATE = SERVICE_PACKAGE_DEFAULT + "/{id}";
         public const string SERVICE_PACKAGE_CHANGE_STATUS = SERVICE_PACKAGE_DEFAULT + "/{id}";
-
+        //Yacht Mooring 
+        public const string YACHT_MOORING_CREATE = API_VERSION + "/yacht-moorings";
+        public const string YACHT_MOORING_UPDATE = API_VERSION + "/yacht-moorings" + "/{id}";
         //  Deals
         public const string DEALS_DEFAULT = API_VERSION + "/deals";
+        // Price Mapper
+        public const string PRICE_MAPPER_CREATE = DEFAULT_ROUTE;
+        public const string PRICE_MAPPER_UPDATE = DEFAULT_ROUTE + "/{id}";
+        public const string PRICE_MAPPER_DETAIL = DEFAULT_ROUTE + "/{id}";
     }
 }

@@ -150,6 +150,15 @@ namespace YBS.Service.Services.Implements
                 new Claim("Id", account.Id.ToString()),
                 new Claim(ClaimTypes.Role, account.Role.Name),
             };
+            if (Enum.Parse<EnumRole>(account.Role.Name) == EnumRole.MEMBER)
+            {
+                claims.Add(new Claim("MemberId", account.Member.Id.ToString()));
+                claims.Add(new Claim("MembershipPackageId", account.Member.MembershipRegistrations.LastOrDefault(memberRegistration => memberRegistration.MemberId == account.Member.Id).MembershipPackageId.ToString()));
+            }
+            if (Enum.Parse<EnumRole>(account.Role.Name) == EnumRole.COMPANY)
+            {
+                claims.Add(new Claim("CompanyId", account.Company.Id.ToString()));
+            }
             var issuer = _configuration["JWT:Issuer"];
             var audience = _configuration["JWT:Audience"];
             var secretKey = _configuration["JWT:SecretKey"];
@@ -169,6 +178,8 @@ namespace YBS.Service.Services.Implements
         public ClaimsPrincipal GetClaim()
         {
             string accessToken = _httpContextAccessor.HttpContext.Request.Headers["Authorization"];
+            var accessTokenPrefix = "Bearer ";
+            accessToken = accessToken.Substring(accessTokenPrefix.Length);
             if (accessToken == null)
             {
                 throw new APIException((int)HttpStatusCode.Unauthorized, "UnAuthorized");
@@ -248,6 +259,9 @@ namespace YBS.Service.Services.Implements
         {
             var existedEmail = await _unitOfWorks.AccountRepository.Find(account => account.Email == loginInputDto.Email)
                                                                     .Include(account => account.Role)
+                                                                    .Include(account => account.Member)
+                                                                    .Include(account => account.Member.MembershipRegistrations)
+                                                                    .Include(account => account.Company)
                                                                     .Include(account => account.RefreshToken)
                                                                     .FirstOrDefaultAsync();
             if (existedEmail == null)

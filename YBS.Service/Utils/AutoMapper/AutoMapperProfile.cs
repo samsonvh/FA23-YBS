@@ -24,7 +24,7 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberListingDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));
-            CreateMap<Member,Guest>()
+            CreateMap<Member, Guest>()
                 .ForMember(guest => guest.Id, option => option.Ignore());
             //membership package
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
@@ -71,7 +71,7 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<GuestBookingInputDto, Booking>();
             CreateMap<Booking, Guest>();
             CreateMap<GuestBookingInputDto, Guest>();
-            CreateMap<MemberBookingInputDto,Booking>();
+            CreateMap<MemberBookingInputDto, Booking>();
             CreateMap<Booking, BookingListingDto>()
                 .ForMember(bookingListDto => bookingListDto.Leader,
                             option => option.MapFrom(booking => booking.MemberId == null
@@ -111,14 +111,14 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.TotalPrice, options => options.MapFrom(booking => booking.TotalPrice))
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
-           
+
             //trip
             CreateMap<GuestBookingInputDto, Trip>();
             CreateMap<MemberBookingInputDto, Trip>();
             CreateMap<Trip, TripListingDto>();
 
             //transaction
-            CreateMap<TransactionInputDto,Transaction>();
+            CreateMap<TransactionInputDto, Transaction>();
             CreateMap<Transaction, TransactionListingDto>();
 
             //membershipRegistration
@@ -150,7 +150,16 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<UpdateRequest, UpdateRequestDto>();
             CreateMap<UpdateRequestInputDto, UpdateRequest>();
             CreateMap<UpdateRequestInputDto, Company>();
-
+            //yacht mooring 
+            CreateMap<YachtMooringInputDto, YachtMooring>();
+            CreateMap<YachtMooring, YachtListingDto>()
+                .ForMember(yachtListingDto => yachtListingDto.Id, options => options.MapFrom(yachtMooring => yachtMooring.YachtId))
+                .ForMember(yachtListingDto => yachtListingDto.Name, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Name))
+                .ForMember(yachtListingDto => yachtListingDto.ImageURL, options => options.Ignore())
+                .ForMember(yachtListingDto => yachtListingDto.MaximumGuestLimit, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.MaximumGuestLimit))
+                .ForMember(yachtListingDto => yachtListingDto.TotalCrew, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.TotalCrew))
+                .ForMember(yachtListingDto => yachtListingDto.Cabin, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Cabin))
+                .ForMember(yachtListingDto => yachtListingDto.Status, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Status));
             //  Deal
             CreateMap<Route, DealListingDto>()
                 .ForMember(deal => deal.Location, options => options.MapFrom(route => route.Beginning))
@@ -158,7 +167,9 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(deal => deal.Price, options => options.MapFrom(route => route.PriceMappers.FirstOrDefault().Price))
                 .ForMember(deal => deal.Unit, options => options.MapFrom(route => route.PriceMappers.FirstOrDefault().MoneyUnit))
                 .ForMember(deal => deal.Rating, options => options.MapFrom(route => 0));
-
+            // price mapper 
+            CreateMap<PriceMapperInputDto,PriceMapper>();
+            CreateMap<PriceMapper,PriceMapperDto>();
         }
     }
 }
