@@ -65,13 +65,29 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
             }
-            var servicePackage = await _unitOfWork.ServicePackageRepository
-                .Find(servicePackage => servicePackage.Id == pageRequest.ServicePackageId)
-                .FirstOrDefaultAsync();
+            //process service package
             float totalPrice = existedPriceMapper.Price;
-            if (servicePackage != null)
+            List<BookingServicePackage> listBookingServicePackage = new List<BookingServicePackage>();
+            if (pageRequest.ListServicePackageId != null)
             {
-                totalPrice += servicePackage.Price;
+                
+                foreach (var servicePackageId in pageRequest.ListServicePackageId)
+                {
+                    var servicePackage = await _unitOfWork.ServicePackageRepository
+                                                        .Find(servicePackage => servicePackage.Id == servicePackageId)
+                                                        .FirstOrDefaultAsync();
+                    if (servicePackage == null)
+                    {
+                        throw new APIException((int)HttpStatusCode.BadRequest, "Service package with name: " + servicePackage.Name + " does not exist");
+                    }
+                    totalPrice += servicePackage.Price;
+                    var bookingServicePackage = new BookingServicePackage()
+                    {
+                        ServicePackageId = servicePackage.Id
+                    };
+                    listBookingServicePackage.Add(bookingServicePackage);
+                }
+
             }
             List<Guest> guestList = new List<Guest>();
             //doc file guest
@@ -101,9 +117,9 @@ namespace YBS.Service.Services.Implements
                     }
                     totalPrice += existedServicePackage.Price;
                     bookingServicePackages.Add(new BookingServicePackage()
-                        {
-                            ServicePackageId = existedServicePackage.Id
-                        }
+                    {
+                        ServicePackageId = existedServicePackage.Id
+                    }
                     );
                 }
             }
@@ -121,6 +137,7 @@ namespace YBS.Service.Services.Implements
             guest.Status = EnumGuestStatus.NOT_YET;
             guestList.Add(guest);
             booking.Guests = guestList;
+            booking.BookingServicePackages = listBookingServicePackage;
             _unitOfWork.BookingRepository.Add(booking);
             await _unitOfWork.SaveChangesAsync();
             //add trip
@@ -337,9 +354,9 @@ namespace YBS.Service.Services.Implements
                     }
                     totalPrice += existedServicePackage.Price;
                     bookingServicePackages.Add(new BookingServicePackage()
-                        {
-                            ServicePackageId = existedServicePackage.Id
-                        }
+                    {
+                        ServicePackageId = existedServicePackage.Id
+                    }
                     );
                 }
             }
