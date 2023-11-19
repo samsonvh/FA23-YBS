@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Enums;
@@ -27,12 +28,14 @@ namespace YBS.Service.Services.Implements
         private readonly IUnitOfWork _unitOfWork;
         private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
 
-        public CompanyService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService)
+        public CompanyService(IUnitOfWork unitOfWork, IMapper mapper, IFirebaseStorageService firebaseStorageService, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
+            _authService = authService;
         }
 
         public async Task<DefaultPageResponse<CompanyListingDto>> GetCompanyList(CompanyPageRequest pageRequest)
@@ -256,8 +259,10 @@ namespace YBS.Service.Services.Implements
             }
             return false;
         }
-         public async Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
             var query = _unitOfWork.RouteRepository
                 .Find(route =>
                         route.CompanyId == companyId &&
@@ -304,8 +309,10 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
-        public async Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYacht(YachtPageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYacht(YachtPageRequest pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
             var query = _unitOfWork.YachRepository
                 .Find(yacht =>
                         yacht.YachtType.CompanyId == companyId &&
@@ -330,10 +337,10 @@ namespace YBS.Service.Services.Implements
                         var arrayImgSplit = yacht.ImageURL.Trim().Split(',');
                         int arrayLength = arrayImgSplit.Length;
                         if (arrayImgSplit.Length > 3)
-                        {   
+                        {
                             arrayLength = 3;
                         }
-                        for (int i = 0; i < arrayLength ; i ++)
+                        for (int i = 0; i < arrayLength; i++)
                         {
                             imgUrlList.Add(arrayImgSplit[i].Trim());
                         }
@@ -353,8 +360,10 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
-        public async Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtType(YachtTypePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtType(YachtTypePageRequest pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
             var query = _unitOfWork.YachTypeRepository
                 .Find(yachtType =>
                         yachtType.CompanyId == companyId &&
@@ -377,9 +386,10 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
-        public async Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackage(ServicePackagePageRequest pageRequest, int companyId)
+        public async Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackage(ServicePackagePageRequest pageRequest)
         {
-
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
             var query = _unitOfWork.ServicePackageRepository.Find(servicePackage =>
                 servicePackage.CompanyId == companyId &&
                 (string.IsNullOrWhiteSpace(pageRequest.Name) || servicePackage.Name.Trim().Contains(pageRequest.Name.Trim())) &&
@@ -391,6 +401,104 @@ namespace YBS.Service.Services.Implements
             var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
             var resultList = _mapper.Map<List<ServicePackageListingDto>>(dataPaging);
             var result = new DefaultPageResponse<ServicePackageListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
+
+        public async Task<DefaultPageResponse<PriceMapperListingDto>> CompanyGetAllPriceMapperByRouteId(PriceMapperPageRequest pageRequest, int routeId)
+        {
+            if (pageRequest.MinPrice <= 0)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Min Price must be greater than 0");
+            }
+            if (pageRequest.MaxPrice <= 0)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Max Price must be greater than 0");
+            }
+            var query = _unitOfWork.PriceMapperRepository.Find(priceMapper =>
+               priceMapper.RouteId == routeId &&
+               (string.IsNullOrWhiteSpace(pageRequest.YachtTypeName) || priceMapper.YachtType.Name.Trim().ToUpper()
+                                                                                .Contains(pageRequest.YachtTypeName.Trim().ToUpper())) &&
+                (string.IsNullOrWhiteSpace(pageRequest.MoneyUnit) || priceMapper.MoneyUnit.Trim().ToUpper()
+                                                                                .Contains(pageRequest.MoneyUnit.Trim().ToUpper())) &&
+              ((pageRequest.MinPrice == null && pageRequest.MaxPrice == null) ||
+              (pageRequest.MinPrice == null && pageRequest.MaxPrice >= priceMapper.Price) ||
+              (pageRequest.MaxPrice == null && pageRequest.MinPrice <= priceMapper.Price) ||
+              (pageRequest.MinPrice <= priceMapper.Price && pageRequest.MaxPrice >= priceMapper.Price))
+              );
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(servicePackage => servicePackage.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<PriceMapperListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<PriceMapperListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
+        public async Task<DefaultPageResponse<YachtMooringListingDto>> CompanyGetAllYachtMooringByDockId(YachtMooringPageRequest pageRequest, int dockId)
+        {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var query = _unitOfWork.YachtMooringRepository
+                                        .Find(yachtMooring =>
+                                        yachtMooring.DockId == dockId &&
+                                        yachtMooring.Yacht.YachtType.CompanyId == companyId &&
+                                        (string.IsNullOrWhiteSpace(pageRequest.YachtName) || yachtMooring.Yacht.Name.Trim().ToUpper()
+                                                                                            .Contains(pageRequest.YachtName.Trim().ToUpper())) &&
+                                        (string.IsNullOrWhiteSpace(pageRequest.DockName) || yachtMooring.Dock.Name.Trim().ToUpper()
+                                                                                            .Contains(pageRequest.DockName.Trim().ToUpper())) &&
+                                        ((pageRequest.FromTime == null && pageRequest.ToTime == null) ||
+                                        (pageRequest.FromTime != null && !(pageRequest.FromTime >= yachtMooring.LeaveTime)) ||
+                                        (pageRequest.ToTime != null && !(pageRequest.ToTime <= yachtMooring.ArrivalTime)) ||
+                                        !(pageRequest.FromTime >= yachtMooring.LeaveTime && pageRequest.ToTime <= yachtMooring.ArrivalTime)
+                                        ));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(yachtMooring => yachtMooring.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize)
+                                                                                                        .Include(yachtMooring => yachtMooring.Yacht)
+                                                                                                        .ToListAsync();
+
+            List<YachtMooringListingDto> resultList = new List<YachtMooringListingDto>();
+            //image processing
+            if (dataPaging != null)
+            {
+                foreach (var yachtMooring in dataPaging)
+                {
+                    var yachtListingDto = _mapper.Map<YachtMooringListingDto>(yachtMooring);
+                    if (yachtMooring.Yacht.ImageURL != null)
+                    {
+                        List<string> imgUrlList = new List<string>();
+                        var arrayImgSplit = yachtMooring.Yacht.ImageURL.Trim().Split(',');
+                        int arrayLength = arrayImgSplit.Length;
+                        if (arrayImgSplit.Length > 3)
+                        {
+                            arrayLength = 3;
+                        }
+                        for (int i = 0; i < arrayLength; i++)
+                        {
+                            imgUrlList.Add(arrayImgSplit[i].Trim());
+                        }
+                        yachtListingDto.ImageURL = imgUrlList;
+                    }
+                    resultList.Add(yachtListingDto);
+                }
+            }
+            var result = new DefaultPageResponse<YachtMooringListingDto>()
             {
                 Data = resultList,
                 PageCount = pageCount,
