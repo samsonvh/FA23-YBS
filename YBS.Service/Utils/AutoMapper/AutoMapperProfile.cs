@@ -24,7 +24,7 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<Member, MemberListingDto>()
                 .ForMember(memberListingDto => memberListingDto.Username, option => option.MapFrom(member => member.Account.Username))
                 .ForMember(memberListingDto => memberListingDto.Email, option => option.MapFrom(member => member.Account.Email));
-            CreateMap<Member,Guest>()
+            CreateMap<Member, Guest>()
                 .ForMember(guest => guest.Id, option => option.Ignore());
             //membership package
             CreateMap<MembershipPackageInputDto, MembershipPackage>();
@@ -71,7 +71,7 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<GuestBookingInputDto, Booking>();
             CreateMap<Booking, Guest>();
             CreateMap<GuestBookingInputDto, Guest>();
-            CreateMap<MemberBookingInputDto,Booking>();
+            CreateMap<MemberBookingInputDto, Booking>();
             CreateMap<Booking, BookingListingDto>()
                 .ForMember(bookingListDto => bookingListDto.Leader,
                             option => option.MapFrom(booking => booking.MemberId == null
@@ -111,14 +111,14 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(bookingDto => bookingDto.TotalPrice, options => options.MapFrom(booking => booking.TotalPrice))
                 .ForMember(bookingDto => bookingDto.MoneyUnit, options => options.MapFrom(booking => booking.MoneyUnit))
                 .ForMember(bookingDto => bookingDto.Status, options => options.MapFrom(booking => booking.Status));
-           
+
             //trip
             CreateMap<GuestBookingInputDto, Trip>();
             CreateMap<MemberBookingInputDto, Trip>();
             CreateMap<Trip, TripListingDto>();
 
             //transaction
-            CreateMap<TransactionInputDto,Transaction>();
+            CreateMap<TransactionInputDto, Transaction>();
             CreateMap<Transaction, TransactionListingDto>();
 
             //membershipRegistration
@@ -150,7 +150,16 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<UpdateRequest, UpdateRequestDto>();
             CreateMap<UpdateRequestInputDto, UpdateRequest>();
             CreateMap<UpdateRequestInputDto, Company>();
-
+            //yacht mooring 
+            CreateMap<YachtMooringInputDto, YachtMooring>();
+            CreateMap<YachtMooring, YachtMooringListingDto>()
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Id, options => options.MapFrom(yachtMooring => yachtMooring.YachtId))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Name, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Name))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.ImageURL, options => options.Ignore())
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.MaximumGuestLimit, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.MaximumGuestLimit))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.TotalCrew, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.TotalCrew))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Cabin, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Cabin))
+                .ForMember(yachtMooringListingDto => yachtMooringListingDto.Status, options => options.MapFrom(yachtMooring => yachtMooring.Yacht.Status));
             //  Deal
             CreateMap<Route, DealListingDto>()
                 .ForMember(deal => deal.Location, options => options.MapFrom(route => route.Beginning))
@@ -158,7 +167,17 @@ namespace YBS.Service.Utils.AutoMapper
                 .ForMember(deal => deal.Price, options => options.MapFrom(route => route.PriceMappers.FirstOrDefault().Price))
                 .ForMember(deal => deal.Unit, options => options.MapFrom(route => route.PriceMappers.FirstOrDefault().MoneyUnit))
                 .ForMember(deal => deal.Rating, options => options.MapFrom(route => 0));
-
+            // price mapper 
+            CreateMap<PriceMapperInputDto,PriceMapper>();
+            CreateMap<PriceMapper,PriceMapperDto>();
+            CreateMap<PriceMapper,PriceMapperListingDto>();
+            //activity
+            CreateMap<ActivityInputDto, Activity>()
+                .ForMember(activityInputDto => activityInputDto.OccuringTime, options => options.Ignore());
+            //activityPlace
+            CreateMap<ActivityPlaceInputDto, ActivityPlace>()
+                .ForMember(activityPlaceInputDto => activityPlaceInputDto.FromDockId, options => options.Ignore())
+                .ForMember(activityPlaceInputDto => activityPlaceInputDto.ToDockId, options => options.Ignore());
         }
     }
 }

@@ -18,13 +18,6 @@ namespace YBS.Controllers
             _routeService = routeService; 
         }
 
-        /* [Route(APIDefine.ROUTE_GET_ALL)]
-         [HttpGet]
-         public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
-         {
-             return Ok(await _routeService.GetAllRoutes(pageRequest, companyId));   
-         }*/
-
         [Route(APIDefine.ROUTE_GET_ALL)]
         [HttpGet]
         public async Task<IActionResult> GetAllRoutes([FromQuery] RoutePageRequest pageRequest)
@@ -44,8 +37,8 @@ namespace YBS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromForm]RouteInputDto pageRequest)
         {
-            await _routeService.Create(pageRequest);
-            return Ok("Create Route Successfully");
+            var result = await _routeService.Create(pageRequest);
+            return Ok(result);
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]

@@ -115,33 +115,47 @@ namespace YBS.Controllers
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_ROUTE)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllRoutes([FromQuery] RoutePageRequest pageRequest, [FromRoute] int companyId)
+        public async Task<IActionResult> CompanyGetAllRoutes([FromQuery] RoutePageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllRoutes(pageRequest, companyId));   
+            return Ok(await _companyService.CompanyGetAllRoutes(pageRequest));   
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_YACHT)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllYacht([FromQuery] YachtPageRequest pageRequest, [FromRoute] int companyId)
+        public async Task<IActionResult> CompanyGetAllYacht([FromQuery] YachtPageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllYacht(pageRequest, companyId));    
+            return Ok(await _companyService.CompanyGetAllYacht(pageRequest));    
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_YACHT_TYPE)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllYachtType([FromQuery] YachtTypePageRequest pageRequest,[FromRoute] int companyId)
+        public async Task<IActionResult> CompanyGetAllYachtType([FromQuery] YachtTypePageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllYachtType(pageRequest,companyId));
+            return Ok(await _companyService.CompanyGetAllYachtType(pageRequest));
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_SERVICE_PACKAGE)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllServicePackage ([FromQuery] ServicePackagePageRequest pageRequest, [FromRoute] int companyId)
+        public async Task<IActionResult> CompanyGetAllServicePackage ([FromQuery] ServicePackagePageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllServicePackage(pageRequest, companyId));
+            return Ok(await _companyService.CompanyGetAllServicePackage(pageRequest));
+        }
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
+        [Route(APIDefine.COMPANY_GET_ALL_PRICE_MAPPER)]
+        [HttpGet]
+        public async Task<IActionResult> CompanyGetAllPriceMapperByRouteId ([FromQuery] PriceMapperPageRequest pageRequest, [FromRoute] int routeId)
+        {
+            return Ok(await _companyService.CompanyGetAllPriceMapperByRouteId(pageRequest, routeId));
+        }
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
+        [Route(APIDefine.COMPANY_GET_ALL_YACHT_MOORING)]
+        [HttpGet]
+        public async Task<IActionResult> CompanyGetAllYachtMooringByDockId ([FromQuery] YachtMooringPageRequest pageRequest, [FromRoute] int dockId)
+        {
+            return Ok(await _companyService.CompanyGetAllYachtMooringByDockId(pageRequest, dockId));
         }
     }
 }

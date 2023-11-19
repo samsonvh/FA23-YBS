@@ -35,6 +35,8 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<ServicePackageItem> _servicePackageItemRepository;
         private readonly IGenericRepositoty<UpdateRequest> _updateRequestRepository;
         private readonly IGenericRepositoty<DockYachtType> _dockYachtTypeRepository;
+        private readonly IGenericRepositoty<YachtMooring> _yachtMooringRepository;
+        private readonly IGenericRepositoty<Activity> _activityRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -310,6 +312,30 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _dockYachtTypeRepository;
                 }
                 return new GenericRepository<DockYachtType>(_context);
+            }
+        }
+
+        public IGenericRepositoty<YachtMooring> YachtMooringRepository
+        {
+            get
+            {
+                if (_yachtMooringRepository is not null)
+                {
+                    return _yachtMooringRepository;
+                }
+                return new GenericRepository<YachtMooring>(_context);
+            }
+        }
+
+        public IGenericRepositoty<Activity> ActivityRepository
+        {
+            get
+            {
+                if (_activityRepository is not null)
+                {
+                    return _activityRepository;
+                }
+                return new GenericRepository<Activity>(_context);
             }
         }
 

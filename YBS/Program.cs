@@ -129,6 +129,9 @@ builder.Services.AddScoped<IMembershipPackageService, MembershipPackageService>(
 builder.Services.AddScoped<IFirebaseStorageService,FirebaseStorageService>();
 builder.Services.AddScoped<IPaymentService,PaymentService>();
 builder.Services.AddScoped<ITransactionService,TransactionService>();
+builder.Services.AddScoped<IPriceMapperService,PriceMapperService>();
+builder.Services.AddScoped<IYachtMooringService,YachtMooringService>();
+builder.Services.AddScoped<IActivityService,ActivityService>();
 builder.Services.AddMemoryCache();
 builder.Services.AddHttpContextAccessor();
 

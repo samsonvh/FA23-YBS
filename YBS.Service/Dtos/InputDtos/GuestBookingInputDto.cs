@@ -10,7 +10,7 @@ namespace YBS.Service.Dtos.InputDtos
     public class GuestBookingInputDto
     {
         public int RouteId { get; set; }
-        public int? ServicePackageId { get; set; }
+        public List<int> ListServicePackageId { get; set; }
         public int YachtTypeId { get; set; }
         public string? Note { get; set; }
         public IFormFile? GuestList { get; set; }

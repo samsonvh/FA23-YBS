@@ -43,7 +43,7 @@ namespace YBS.Controllers
         public async Task<IActionResult> CreateService([FromBody] ServiceInputDto serviceInputDto)
         {
             await _serviceService.Create(serviceInputDto);
-            return Ok("Create service successful");
+            return Ok("Create service successfully");
         }
 
         [Route(APIDefine.SERVICE_UPDATE)]
@@ -51,7 +51,7 @@ namespace YBS.Controllers
         public async Task<IActionResult> UpdateService([FromRoute] int id, [FromBody] ServiceInputDto serviceInputDto) 
         {
             await _serviceService.Update(id, serviceInputDto);
-            return Ok("Update service successful");
+            return Ok("Update service successfully");
         }
 
         [Route(APIDefine.SERVICE_CHANGE_STATUS)]
@@ -61,7 +61,7 @@ namespace YBS.Controllers
             bool statusChanged = await _serviceService.ChangeStatusService(id, status);
             if (statusChanged)
             {
-                return Ok("Change status service successful.");
+                return Ok("Change status service successfully.");
             }
             return BadRequest("Change status service fail.");
         }
