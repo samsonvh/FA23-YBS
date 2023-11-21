@@ -19,5 +19,6 @@ namespace YBS.Service.Dtos.InputDtos
         public string? Type { get; set; }
         public int Priority { get; set; }
         public EnumRouteStatus? Status { get; set; }
+        public List<int>? ServicePackageId { get; set; }
     }
 }

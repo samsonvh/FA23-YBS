@@ -91,5 +91,20 @@ namespace FA23_YBS_BACKEND.Controllers
         {
             return Ok(await _memberService.GetTripList(pageRequest));
         }
+
+        [Consumes("application/json")]
+        [RoleAuthorization(nameof(EnumRole.ADMIN))]
+        [Route(APIDefine.MEMBER_CHANGE_STATUS)]
+        [HttpPatch]
+        public async Task<IActionResult> ChangeStatusMember([FromRoute] int id, [FromBody] string status)
+        {
+            var changedStatus = await _memberService.ChangeMemberStatus(id, status);
+            if (changedStatus != null)
+            {
+                return Ok("Change member status successful");
+            }
+            return BadRequest("Change member status fail.");
+        }
+
     }
 }

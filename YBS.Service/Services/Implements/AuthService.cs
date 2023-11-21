@@ -41,6 +41,8 @@ namespace YBS.Service.Services.Implements
             {
                 Account? account = await _unitOfWorks.AccountRepository.Find(account => account.Email == payload.Email)
                 .Include(account => account.Role)
+                .Include(account => account.Company)
+                .Include(account => account.Member)
                 .Include(account => account.RefreshToken)
                 .FirstOrDefaultAsync();
                 if (account == null)

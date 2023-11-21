@@ -44,7 +44,7 @@ namespace YBS.Service.Services.Implements
         public async Task<int> Create(RouteInputDto pageRequest)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var company = _unitOfWork.CompanyRepository.Find(company => company.Id == companyId);
             if (company == null)
             {
@@ -69,22 +69,7 @@ namespace YBS.Service.Services.Implements
                     counter++;
                 }
             }
-            // //add activity List
-            // List<ActivityInputDto> activityInputDtos = JsonConvert.DeserializeObject<List<ActivityInputDto>>(pageRequest.ActivityList);
 
-            // List<Activity> activityList = new List<Activity>();
-            // foreach (ActivityInputDto activityInput in activityInputDtos)
-            // {
-            //     Activity activity = new Activity()
-            //     {
-            //         Name = activityInput.Name,
-            //         Description = activityInput.Description,
-            //         OccuringTime = activityInput.OccuringTime,
-            //         OrderIndex = activityInput.OrderIndex,
-            //         Status = EnumActivityStatus.AVAILABLE
-            //     };
-            //     activityList.Add(activity);
-            // }
             var routeAdd = _mapper.Map<Data.Models.Route>(pageRequest);
             routeAdd.CompanyId = companyId;
             routeAdd.Priority = 50;
@@ -100,6 +85,25 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
+
+            if (pageRequest.ServicePackageId != null && pageRequest.ServicePackageId.Any())
+            {
+                foreach (var servicePackageId in pageRequest.ServicePackageId)
+                {
+                    var routeServicePackage = new RouteServicePackage
+                    {
+                        RouteId = routeAdd.Id,
+                        ServicePackageId = servicePackageId,
+                    };
+                    _unitOfWork.RouteServicePackageRepository.Add(routeServicePackage);
+                }
+                var routeServicePackageSaveChanges = await _unitOfWork.SaveChangesAsync();
+                if (routeServicePackageSaveChanges <= 0)
+                {
+                    throw new APIException((int)HttpStatusCode.BadRequest, "Error saving route service packages");
+                }
+            }
+            
             return routeAdd.Id;
         }
 
@@ -207,6 +211,7 @@ namespace YBS.Service.Services.Implements
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
             var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
             var existedRoute = await _unitOfWork.RouteRepository.Find(route => route.Id == id)
+                                                                .Include(existedRoute => existedRoute.RouteServicePackages)
                                                                 .FirstOrDefaultAsync();
             if (existedRoute == null)
             {
@@ -263,12 +268,33 @@ namespace YBS.Service.Services.Implements
                 }
                 existedRoute.ImageURL = newImageUrl;
             }
-            _unitOfWork.RouteRepository.Update(existedRoute);
-            var result = await _unitOfWork.SaveChangesAsync();
-            if (result <= 0)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating route");
-            }
+
+            // Get existing and new ServicePackageIds
+            var existingServicePackageIds = existedRoute.RouteServicePackages
+                ?.Select(routeServicePackage => routeServicePackage.ServicePackageId)
+                .ToList() ?? new List<int>();
+
+            var newServicePackageIds = pageRequest.ServicePackageId;
+
+            // Remove existing RouteServicePackages that are not present in the updated list
+            var routeServicePackagesToRemove = existedRoute.RouteServicePackages
+                ?.Where(routeServicePackage => !newServicePackageIds.Contains(routeServicePackage.ServicePackageId))
+                .ToList() ?? new List<RouteServicePackage>();
+
+            _unitOfWork.RouteServicePackageRepository.RemoveRange(routeServicePackagesToRemove);
+
+            // Add new RouteServicePackages that are not present in the existing list
+            var itemsToAdd = newServicePackageIds
+                .Where(servicePackageId => !existingServicePackageIds.Contains(servicePackageId))
+                .Select(servicePackageId => new RouteServicePackage
+                {
+                    ServicePackageId = servicePackageId,
+                    RouteId = existedRoute.Id
+                });
+
+            _unitOfWork.RouteServicePackageRepository.AddRange(itemsToAdd);
+
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<bool> ChangeStatusRoute(int id, string status)
