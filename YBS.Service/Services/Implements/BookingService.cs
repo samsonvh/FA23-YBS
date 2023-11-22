@@ -414,5 +414,10 @@ namespace YBS.Service.Services.Implements
             await _unitOfWork.SaveChangesAsync();
             return bookingPayment.Id;
         }
+
+        public Task PointPayment(MemberBookingInputDto pageRequest)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

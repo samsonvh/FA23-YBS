@@ -13,7 +13,9 @@ namespace YBS.Data.Configs
         public void Configure(EntityTypeBuilder<Facility> builder)
         {
             builder.ToTable("Facility");
-            builder.HasIndex(facility => facility.Id);
+
+            builder.HasKey(facility => facility.Id);
+            builder.HasIndex(facility => facility.Id).IsUnique();
             builder.Property(facility => facility.Id).ValueGeneratedOnAdd();
             builder.Property(facility => facility.Title).HasColumnType("nvarchar(100)");
             builder.Property(facility => facility.Description).HasColumnType("nvarchar(max)");

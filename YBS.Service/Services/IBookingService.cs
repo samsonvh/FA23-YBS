@@ -19,5 +19,6 @@ namespace YBS.Service.Services
         Task<DefaultPageResponse<BookingListingDto>> GetAllBookings(BookingPageRequest pageRequest, int companyId);
         Task<BookingDto> GetDetailBooking(int id);
         Task<int> CreateMemberBooking (MemberBookingInputDto pageRequest);
+        Task PointPayment (MemberBookingInputDto pageRequest);
     }
 }
