@@ -35,11 +35,6 @@ namespace YBS.Service.Services.Implements
 
         public async Task Create(YachtInputDto pageRequest)
         {
-            var company = await _unitOfWorks.CompanyRepository.Find(company => company.Id == pageRequest.CompanyId).FirstOrDefaultAsync();
-            if (company == null)
-            {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
-            }
             var yachtType = await _unitOfWorks.YachTypeRepository.Find(yachtType => yachtType.Id == pageRequest.YachtTypeId).FirstOrDefaultAsync();
             if (yachtType == null)
             {
@@ -78,7 +73,7 @@ namespace YBS.Service.Services.Implements
                 throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating yacht");
             }
         }
-
+        
         public async Task<DefaultPageResponse<YachtListingDto>> GetAllYacht(YachtPageRequest pageRequest)
         {
             var query = _unitOfWorks.YachRepository
@@ -156,10 +151,6 @@ namespace YBS.Service.Services.Implements
             {
                 throw new APIException((int)HttpStatusCode.BadRequest, "Yacht not found");
             }
-            // if (pageRequest.CompanyId > 0)
-            // {
-            //     existedYacht.CompanyId = (int)pageRequest.CompanyId;
-            // }
             if (pageRequest.YachtTypeId > 0)
             {
                 existedYacht.YachtTypeId = (int)pageRequest.YachtTypeId;

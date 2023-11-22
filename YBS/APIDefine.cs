@@ -25,6 +25,7 @@ namespace YBS
         public const string MEMBER_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_UPDATE = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_GET_ALL = DEFAULT_ROUTE;
+        public const string MEMBER_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
         public const string MEMBER_UPDATE_GUEST = DEFAULT_ROUTE + "/booking" + "/{bookingId}" + "/guests" + "/{guestId}";
         public const string MEMBER_GET_ALL_GUEST_LIST = DEFAULT_ROUTE + "/{memberId}" + "/guests";
         public const string MEMBER_GET_DETAIL_GUEST = DEFAULT_ROUTE + "/booking" + "/{bookingId}" + "/guests" + "/{guestId}";

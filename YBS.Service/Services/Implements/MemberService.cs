@@ -314,5 +314,30 @@ namespace YBS.Services.Services.Implements
             }
             return result;
         }
+
+        public async Task<bool> ChangeMemberStatus(int id, string status)
+        {
+
+            var member = await _unitOfWork.MemberRepository
+                .Find(member => member.Id == id)
+                .Include(member => member.Account)
+                .FirstOrDefaultAsync();
+            if (member.Account != null)
+            {
+                //change string status to enum
+                if (!Enum.TryParse<EnumAccountStatus>(status, out var accountStatus))
+                {
+                    return false;
+                }
+                member.Account.Status = accountStatus;
+            }
+            if (!Enum.TryParse<EnumMemberStatus>(status, out var memberStatus))
+            {
+                return false;
+            }
+            member.Status = memberStatus;
+            await _unitOfWork.SaveChangesAsync();
+            return true;
+        }
     }
 }

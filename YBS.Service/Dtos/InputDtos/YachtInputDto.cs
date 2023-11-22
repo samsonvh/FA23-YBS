@@ -9,7 +9,6 @@ namespace YBS.Service.Dtos.InputDtos
 {
     public class YachtInputDto
     {
-        public int? CompanyId { get; set; }
         public int? YachtTypeId { get; set; }
         public string? Name { get; set; }
         public List<IFormFile>? ImageFiles { get; set; }

@@ -10,8 +10,10 @@ namespace YBS.Data.Models
     {
         public int Id { get; set; }
         public int RouteId { get; set; }
+        [ForeignKey("RouteId")]
         public Route Route { get; set; }
         public int ServicePackageId { get; set; }
+        [ForeignKey("ServicePackageId")]
         public ServicePackage ServicePackage { get; set; }    
     }
 }
