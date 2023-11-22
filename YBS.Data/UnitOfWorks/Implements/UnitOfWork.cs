@@ -37,6 +37,7 @@ namespace YBS.Data.UnitOfWorks.Implements
         private readonly IGenericRepositoty<DockYachtType> _dockYachtTypeRepository;
         private readonly IGenericRepositoty<YachtMooring> _yachtMooringRepository;
         private readonly IGenericRepositoty<Activity> _activityRepository;
+        private readonly IGenericRepositoty<RouteServicePackage> _routeServicePackageRepository;
 
         public UnitOfWork(YBSContext context)
         {
@@ -336,6 +337,18 @@ namespace YBS.Data.UnitOfWorks.Implements
                     return _activityRepository;
                 }
                 return new GenericRepository<Activity>(_context);
+            }
+        }
+
+        public IGenericRepositoty<RouteServicePackage> RouteServicePackageRepository
+        {
+            get
+            {
+                if (_routeServicePackageRepository is not null)
+                {
+                    return _routeServicePackageRepository;
+                }
+                return new GenericRepository<RouteServicePackage>(_context);
             }
         }
 

@@ -30,6 +30,8 @@ namespace YBS.Data.UnitOfWorks
         IGenericRepositoty<DockYachtType> DockYachtTypeRepository { get; }
         IGenericRepositoty<YachtMooring> YachtMooringRepository { get; }
         IGenericRepositoty<Activity> ActivityRepository { get; }
+        IGenericRepositoty<RouteServicePackage> RouteServicePackageRepository { get; }
+
         Task<int> SaveChangesAsync();
     }
 }
