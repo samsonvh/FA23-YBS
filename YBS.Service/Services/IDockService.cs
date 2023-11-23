@@ -12,7 +12,6 @@ namespace YBS.Service.Services
 {
     public interface IDockService
     {
-        Task<DefaultPageResponse<DockListingDto>> GetAllDocks(DockPageRequest pageRequest, int companyId);
         Task<DockDto> GetDockDetail(int id);
         Task<DockDto> Create(DockInputDto pageRequest);
         Task  Update(DockInputDto pageRequest, int id);

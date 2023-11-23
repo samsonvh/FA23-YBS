@@ -17,5 +17,6 @@ namespace YBS.Data.Models
         public YachtType YachtType { get; set; }
         public float Price { get; set; }
         public string MoneyUnit { get; set; }
+        public double? Point { get; set; }
     }
 }

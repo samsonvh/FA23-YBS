@@ -209,13 +209,14 @@ namespace YBS.Service.Services.Implements
         public async Task Update(RouteInputDto pageRequest, int id)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
-            var existedRoute = await _unitOfWork.RouteRepository.Find(route => route.Id == id)
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
+            //check existed route
+            var existedRoute = await _unitOfWork.RouteRepository.Find(route => route.Id == id && route.CompanyId == companyId)
                                                                 .Include(existedRoute => existedRoute.RouteServicePackages)
                                                                 .FirstOrDefaultAsync();
             if (existedRoute == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route not found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Route not found or company are not allowed to update this route");
             }
             if (companyId > 0)
             {

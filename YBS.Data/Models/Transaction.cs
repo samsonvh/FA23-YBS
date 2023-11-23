@@ -25,6 +25,7 @@ namespace YBS.Data.Models
         public float Amount { get; set; }
         public string MoneyUnit { get; set; }
         public DateTime CreationDate { get; set; }
+        //vnpayField
         public string VNPayTmnCode { get; set; }
         public string VNPayTxnRef { get; set; }
         public string VNPayResponseCode { get; set; }

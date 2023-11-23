@@ -34,6 +34,15 @@ namespace YBS.Controllers
             return Ok(result); 
         }
 
+        [RoleAuthorization(nameof(EnumRole.MEMBER))]
+        [Route(APIDefine.BOOKING_MEMBER_CREATE_POINT_PAYMENT)]
+        [HttpPost]
+        public async Task<IActionResult> CreateMemberBookingPointPayment([FromForm] PointPaymentInputDto pageRequest)
+        {
+            await _bookingService.CreateMemberBookingPointPayment(pageRequest);
+            return Ok("Payment by point successfully"); 
+        }
+
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.BOOKING_GUEST_CHANGE_STATUS)]
         [HttpPatch]

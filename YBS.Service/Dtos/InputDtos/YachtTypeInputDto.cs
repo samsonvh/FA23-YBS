@@ -9,7 +9,6 @@ namespace YBS.Service.Dtos.InputDtos
 {
     public class YachtTypeInputDto
     {
-        public int CompanyId { get; set; }
         [Required]
         [MaxLength(100)]
         public string Name { get; set; }

@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Enums;
@@ -24,11 +25,13 @@ namespace YBS.Service.Services.Implements
 
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
 
-        public ServicePackageService(IUnitOfWork unitOfWork, IMapper mapper)
+        public ServicePackageService(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _authService = authService;
         }
 
         public async Task<bool> ChangeStatusService(int id, string status)
@@ -52,16 +55,19 @@ namespace YBS.Service.Services.Implements
 
         public async Task Create(ServicePackageInputDto pageRequest)
         {
-            var companyId = await _unitOfWork.CompanyRepository
-                .Find(company => company.Id == pageRequest.CompanyId)
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
+            var company = await _unitOfWork.CompanyRepository
+                .Find(company => company.Id == companyId)
                 .FirstOrDefaultAsync();
 
-            if (companyId == null)
+            if (company == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Company not found");
             }
 
             var servicePackageAdd = _mapper.Map<ServicePackage>(pageRequest);
+            servicePackageAdd.CompanyId = companyId;
             servicePackageAdd.Status = EnumServicePackageStatus.AVAILABLE;
             _unitOfWork.ServicePackageRepository.Add(servicePackageAdd);
 
@@ -120,7 +126,7 @@ namespace YBS.Service.Services.Implements
             var servicePackage = await _unitOfWork.ServicePackageRepository
                 .Find(servicePackage => servicePackage.Id == id)
                 .FirstOrDefaultAsync();
-            if(servicePackage != null)
+            if (servicePackage != null)
             {
                 return _mapper.Map<ServicePackageDto>(servicePackage);
             }
@@ -129,21 +135,23 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(int id, ServicePackageInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var existingServicePackage = await _unitOfWork.ServicePackageRepository
-                .Find(existingServicePackage => existingServicePackage.Id == id)
+                .Find(existingServicePackage => existingServicePackage.Id == id && existingServicePackage.CompanyId == companyId)
                 .Include(existingServicePackage => existingServicePackage.ServicePackageItems)
                 .FirstOrDefaultAsync();
 
             if (existingServicePackage == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Service package not found");
+                throw new APIException((int)HttpStatusCode.NotFound, "Service package not found or company are not allowed to update this service package");
             }
 
-            var companyId = await _unitOfWork.CompanyRepository
-                .Find(company => company.Id == pageRequest.CompanyId)
+            var company = await _unitOfWork.CompanyRepository
+                .Find(company => company.Id == companyId)
                 .FirstOrDefaultAsync();
 
-            if (companyId == null)
+            if (company == null)
             {
                 throw new APIException((int)HttpStatusCode.NotFound, "Company not found");
             }
@@ -172,7 +180,11 @@ namespace YBS.Service.Services.Implements
                 });
 
             _unitOfWork.ServicePackageItemRepository.AddRange(itemsToAdd);
-
+            existingServicePackage.Name = pageRequest.Name;
+            existingServicePackage.Description = pageRequest.Description;
+            existingServicePackage.Price = pageRequest.Price;
+            existingServicePackage.MoneyUnit = pageRequest.MoneyUnit;
+            _unitOfWork.ServicePackageRepository.Update(existingServicePackage);
             await _unitOfWork.SaveChangesAsync();
         }
     }

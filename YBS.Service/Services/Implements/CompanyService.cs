@@ -185,31 +185,31 @@ namespace YBS.Service.Services.Implements
             return result;
         }
 
-        public async Task<UpdateRequestDto> CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto)
+        public async Task CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var company = await _unitOfWork.CompanyRepository
-                .Find(company => company.Id == updateRequestInputDto.CompanyId)
+                .Find(company => company.Id == companyId)
                 .FirstOrDefaultAsync();
             if (company != null)
             {
-                var updateRequest = new UpdateRequest
-                {
-                    CompanyId = updateRequestInputDto.CompanyId,
-                    Name = updateRequestInputDto.Name,
-                    Address = updateRequestInputDto.Address,
-                    Hotline = updateRequestInputDto.Hotline,
-                    Logo = updateRequestInputDto.Logo,
-                    FacebookURL = updateRequestInputDto.FacebookURL,
-                    InstagramURL = updateRequestInputDto.InstagramURL,
-                    LinkedInURL = updateRequestInputDto.LinkedInURL,
-                    Status = EnumCompanyUpdateRequest.PENDING
-                };
-                _unitOfWork.UpdateRequestRepository.Add(updateRequest);
-                await _unitOfWork.SaveChangesAsync();
-                var updateRequestDto = _mapper.Map<UpdateRequestDto>(updateRequest);
-                return updateRequestDto;
+                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
             }
-            return null;
+            var updateRequest = new UpdateRequest
+            {
+                CompanyId = companyId,
+                Name = updateRequestInputDto.Name,
+                Address = updateRequestInputDto.Address,
+                Hotline = updateRequestInputDto.Hotline,
+
+                FacebookURL = updateRequestInputDto.FacebookURL,
+                InstagramURL = updateRequestInputDto.InstagramURL,
+                LinkedInURL = updateRequestInputDto.LinkedInURL,
+                Status = EnumCompanyUpdateRequest.PENDING
+            };
+            _unitOfWork.UpdateRequestRepository.Add(updateRequest);
+            await _unitOfWork.SaveChangesAsync();
         }
 
         public async Task<UpdateRequestDto> GetDetailUpdateRequest(int id)
@@ -219,50 +219,42 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (updateRequest != null)
             {
-                return _mapper.Map<UpdateRequestDto>(updateRequest);
+                throw new APIException((int)HttpStatusCode.BadRequest, "Update Request Not Found");
             }
-            return null;
+            return _mapper.Map<UpdateRequestDto>(updateRequest);
         }
 
-        public async Task<bool> Update(int id, UpdateRequestInputDto updateRequestInputDto)
+        public async Task Update(int id, UpdateRequestInputDto updateRequestInputDto)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
+            var companyExisted = await _unitOfWork.CompanyRepository.Find(company => company.Id == companyId).FirstOrDefaultAsync();
+            if (companyExisted == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
+            }
             var updateRequest = await _unitOfWork.UpdateRequestRepository
-                .Find(updateRequest => updateRequest.Id == id)
+                .Find(updateRequest => updateRequest.Id == id && updateRequest.CompanyId == companyId)
                 .FirstOrDefaultAsync();
 
-            if (updateRequest != null)
+            if (updateRequest == null)
             {
-                if (updateRequest.Status == EnumCompanyUpdateRequest.PENDING)
-                {
-                    if (updateRequestInputDto.Status == EnumCompanyUpdateRequest.APPROVE)
-                    {
-                        var company = await _unitOfWork.CompanyRepository
-                            .Find(company => company.Id == updateRequestInputDto.CompanyId)
-                            .FirstOrDefaultAsync();
-                        if (company != null)
-                        {
-                            _mapper.Map(updateRequestInputDto, company);
-                            updateRequest.Status = EnumCompanyUpdateRequest.COMPLETED;
-                            _unitOfWork.CompanyRepository.Update(company);
-                            await _unitOfWork.SaveChangesAsync();
-                            return true;
-                        }
-                    }
-                    else if (updateRequestInputDto.Status == EnumCompanyUpdateRequest.DECLINE)
-                    {
-                        updateRequest.Status = EnumCompanyUpdateRequest.DECLINE;
-                        _unitOfWork.UpdateRequestRepository.Update(updateRequest);
-                        await _unitOfWork.SaveChangesAsync();
-                        return false;
-                    }
-                }
+                throw new APIException((int)HttpStatusCode.BadRequest, "Update Request Not Found or Company are not allowed to update this update request");
             }
-            return false;
+            updateRequest.Name = updateRequestInputDto.Name;
+            updateRequest.Address = updateRequestInputDto.Address;
+            updateRequest.Hotline = updateRequestInputDto.Hotline;
+            updateRequest.FacebookURL = updateRequestInputDto.FacebookURL;
+            updateRequest.InstagramURL = updateRequestInputDto.InstagramURL;
+            updateRequest.LinkedInURL = updateRequestInputDto.LinkedInURL;
+            _unitOfWork.UpdateRequestRepository.Update(updateRequest);
+            await _unitOfWork.SaveChangesAsync();
+
         }
         public async Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var query = _unitOfWork.RouteRepository
                 .Find(route =>
                         route.CompanyId == companyId &&
@@ -309,10 +301,10 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
-        public async Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYacht(YachtPageRequest pageRequest)
+        public async Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYachts(YachtPageRequest pageRequest)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var query = _unitOfWork.YachRepository
                 .Find(yacht =>
                         yacht.YachtType.CompanyId == companyId &&
@@ -360,10 +352,10 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
-        public async Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtType(YachtTypePageRequest pageRequest)
+        public async Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtTypes(YachtTypePageRequest pageRequest)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var query = _unitOfWork.YachTypeRepository
                 .Find(yachtType =>
                         yachtType.CompanyId == companyId &&
@@ -386,10 +378,10 @@ namespace YBS.Service.Services.Implements
             };
             return result;
         }
-        public async Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackage(ServicePackagePageRequest pageRequest)
+        public async Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackages(ServicePackagePageRequest pageRequest)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var query = _unitOfWork.ServicePackageRepository.Find(servicePackage =>
                 servicePackage.CompanyId == companyId &&
                 (string.IsNullOrWhiteSpace(pageRequest.Name) || servicePackage.Name.Trim().Contains(pageRequest.Name.Trim())) &&
@@ -451,7 +443,7 @@ namespace YBS.Service.Services.Implements
         public async Task<DefaultPageResponse<YachtMooringListingDto>> CompanyGetAllYachtMooringByDockId(YachtMooringPageRequest pageRequest, int dockId)
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
-            var companyId = int.Parse(claimsPrincipal.FindFirstValue("companyId"));
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var query = _unitOfWork.YachtMooringRepository
                                         .Find(yachtMooring =>
                                         yachtMooring.DockId == dockId &&
@@ -499,6 +491,58 @@ namespace YBS.Service.Services.Implements
                 }
             }
             var result = new DefaultPageResponse<YachtMooringListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
+        public async Task<DefaultPageResponse<DockListingDto>> CompanyGetAllDocks(DockPageRequest pageRequest)
+        {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
+            var query = _unitOfWork.DockRepository.Find(dock =>
+            dock.CompanyId == companyId &&
+            (string.IsNullOrWhiteSpace(pageRequest.Name) || dock.Name.Trim().ToUpper()
+                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Address) || dock.Address.Trim().ToUpper()
+                                                            .Contains(pageRequest.Address.Trim().ToUpper())) &&
+            (!pageRequest.Status.HasValue || dock.Status == pageRequest.Status.Value));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<DockListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<DockListingDto>()
+            {
+                Data = resultList,
+                PageCount = pageCount,
+                TotalItem = totalItem,
+                PageIndex = (int)pageRequest.PageIndex,
+                PageSize = (int)pageRequest.PageSize,
+            };
+            return result;
+        }
+        public async Task<DefaultPageResponse<ServiceListingDto>> CompanyGetAllServices(ServicePageRequest pageRequest)
+        {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
+            var query = _unitOfWork.ServiceRepository.Find(service =>
+                service.CompanyId == companyId &&
+                (string.IsNullOrWhiteSpace(pageRequest.Name) || service.Name.Trim().ToUpper().Contains(pageRequest.Name.Trim().ToUpper()) &&
+               (!pageRequest.Type.HasValue || service.Type == pageRequest.Type.Value) &&
+               (!pageRequest.Status.HasValue || service.Status == pageRequest.Status.Value)));
+            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
+                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
+            var totalItem = data.Count();
+            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
+            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
+            var resultList = _mapper.Map<List<ServiceListingDto>>(dataPaging);
+            var result = new DefaultPageResponse<ServiceListingDto>()
             {
                 Data = resultList,
                 PageCount = pageCount,

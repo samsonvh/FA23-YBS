@@ -11,5 +11,6 @@ namespace YBS.Service.Dtos.InputDtos
         public int RouteId { get; set; }
         public float Price { get; set; }
         public string MoneyUnit { get; set; }
+        public double? Point { get; set; }
     }
 }

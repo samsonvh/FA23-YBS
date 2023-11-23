@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Enums;
@@ -24,33 +25,12 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ServiceService(IUnitOfWork unitOfWork, IMapper mapper)
+        private readonly IAuthService _authService;
+        public ServiceService(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
-        }
-
-        public async Task<DefaultPageResponse<ServiceListingDto>> GetAllService(ServicePageRequest pageRequest)
-        {
-            var query = _unitOfWork.ServiceRepository.Find(service =>
-                (string.IsNullOrWhiteSpace(pageRequest.Name) || service.Name.Trim().ToUpper().Contains(pageRequest.Name.Trim().ToUpper()) &&
-               (!pageRequest.Type.HasValue || service.Type == pageRequest.Type.Value) &&
-               (!pageRequest.Status.HasValue || service.Status == pageRequest.Status.Value)));
-            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
-            var totalItem = data.Count();
-            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
-            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
-            var resultList = _mapper.Map<List<ServiceListingDto>>(dataPaging);
-            var result = new DefaultPageResponse<ServiceListingDto>()
-            {
-                Data = resultList,
-                PageCount = pageCount,
-                TotalItem = totalItem,
-                PageIndex = (int)pageRequest.PageIndex,
-                PageSize = (int)pageRequest.PageSize,
-            };
-            return result;
+            _authService = authService;
         }
 
         public async Task<ServiceDto> GetDetailService(int id)
@@ -67,8 +47,10 @@ namespace YBS.Service.Services.Implements
 
         public async Task Create(ServiceInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var company = await _unitOfWork.CompanyRepository
-                .Find(company => company.Id == pageRequest.CompanyId)
+                .Find(company => company.Id == companyId)
                 .FirstOrDefaultAsync();
             if (company == null)
             {
@@ -76,6 +58,7 @@ namespace YBS.Service.Services.Implements
             }
             var service = _mapper.Map<Data.Models.Service>(pageRequest);
             service.Status = EnumServiceStatus.AVAILABLE;
+            service.CompanyId = companyId;
             _unitOfWork.ServiceRepository.Add(service);
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
@@ -86,13 +69,15 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(int id, ServiceInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var service = await _unitOfWork.ServiceRepository
-                   .Find(service => service.Id == id)
+                   .Find(service => service.Id == id && service.CompanyId == companyId)
                    .FirstOrDefaultAsync();
 
             if (service == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Service not found");
+                throw new APIException((int)HttpStatusCode.NotFound, "Service not found or company are not allowed to update this service");
             }
 
             _mapper.Map(pageRequest, service);

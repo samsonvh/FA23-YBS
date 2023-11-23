@@ -9,7 +9,6 @@ namespace YBS.Service.Dtos.InputDtos
 {
     public class ServiceInputDto
     {
-        public int CompanyId { get; set; }
         public EnumServiceType Type { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }

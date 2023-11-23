@@ -20,14 +20,16 @@ namespace YBS.Service.Services
         Task<CompanyDto> Create(CompanyInputDto companyInputDto);
         Task<bool> ChangeStatus(int id, string status);
         Task<DefaultPageResponse<TripListingDto>> GetTripList(TripPageRequest pageRequest);
-        Task<UpdateRequestDto> CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto);
+        Task CreateUpdateRequest(UpdateRequestInputDto updateRequestInputDto);
         Task<UpdateRequestDto> GetDetailUpdateRequest(int id);
-        Task<bool> Update(int id, UpdateRequestInputDto updateRequestInputDto);
+        Task Update(int id, UpdateRequestInputDto updateRequestInputDto);
         Task<DefaultPageResponse<RouteListingDto>> CompanyGetAllRoutes(RoutePageRequest pageRequest);
-        Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYacht(YachtPageRequest pageRequest);
-        Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtType(YachtTypePageRequest pageRequest);
-        Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackage(ServicePackagePageRequest pageRequest);
+        Task<DefaultPageResponse<YachtListingDto>> CompanyGetAllYachts(YachtPageRequest pageRequest);
+        Task<DefaultPageResponse<YachtTypeListingDto>> CompanyGetAllYachtTypes(YachtTypePageRequest pageRequest);
+        Task<DefaultPageResponse<ServicePackageListingDto>> CompanyGetAllServicePackages(ServicePackagePageRequest pageRequest);
         Task<DefaultPageResponse<PriceMapperListingDto>> CompanyGetAllPriceMapperByRouteId(PriceMapperPageRequest pageRequest, int routeId);
         Task<DefaultPageResponse<YachtMooringListingDto>> CompanyGetAllYachtMooringByDockId(YachtMooringPageRequest pageRequest, int dockId);
+        Task<DefaultPageResponse<DockListingDto>> CompanyGetAllDocks(DockPageRequest pageRequest);
+        Task<DefaultPageResponse<ServiceListingDto>> CompanyGetAllServices(ServicePageRequest pageRequest);
     }
 }
