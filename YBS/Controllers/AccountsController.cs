@@ -8,7 +8,7 @@ using YBS.Services.Dtos.PageRequests;
 namespace YBS.Controllers
 {
     [ApiController]
-    [RoleAuthorization(nameof(EnumRole.ADMIN))]
+    // [RoleAuthorization(nameof(EnumRole.ADMIN))]
     public class AccountsController : ControllerBase
     {
         private readonly IAccountService _accountService;

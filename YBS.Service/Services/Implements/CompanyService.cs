@@ -17,6 +17,7 @@ using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
 using YBS.Service.Exceptions;
+using YBS.Service.Util.Hash;
 using YBS.Service.Utils;
 using YBS.Services.Dtos;
 using YBS.Services.Dtos.InputDtos;
@@ -119,7 +120,7 @@ namespace YBS.Service.Services.Implements
             {
                 RoleId = companyRole.Id,
                 Email = companyInputDto.Email,
-                Password = companyInputDto.Password,
+                Password = PasswordHashing.HashPassword(companyInputDto.Password),
                 Username = companyInputDto.Username,
                 Status = EnumAccountStatus.ACTIVE
             };
