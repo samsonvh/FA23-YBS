@@ -23,7 +23,7 @@ namespace YBS.Controllers
         }
 
         [Route(APIDefine.DEALS_UPDATE_PRIORITY)]
-        [HttpPut]
+        [HttpPatch]
         public async Task<IActionResult> UpdateRoutePriority([FromRoute] int routeId, [FromBody] int priority)
         {
             await _dealService.UpdateRoutePriority(routeId, priority);
