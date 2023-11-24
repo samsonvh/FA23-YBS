@@ -5,7 +5,6 @@ using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
-    [Route(APIDefine.DEALS_DEFAULT)]
     [ApiController]
     public class DealsController : ControllerBase
     {
@@ -16,10 +15,19 @@ namespace YBS.Controllers
             _dealService = dealService;
         }
 
+        [Route(APIDefine.DEALS_DEFAULT)]
         [HttpGet]
         public async Task<IActionResult> GetAllDeals([FromQuery] DealPageRequest pageRequest)
         {
             return Ok(await _dealService.getAll(pageRequest));
+        }
+
+        [Route(APIDefine.DEALS_UPDATE_PRIORITY)]
+        [HttpPut]
+        public async Task<IActionResult> UpdateRoutePriority([FromRoute] int routeId, [FromBody] int priority)
+        {
+            await _dealService.UpdateRoutePriority(routeId, priority);
+            return Ok("Update priority successfullly.");
         }
     }
 }
