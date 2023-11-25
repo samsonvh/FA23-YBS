@@ -173,8 +173,16 @@ namespace YBS.Service.Services.Implements
                     var rowCount = worksheet.Dimension.Rows;
                     for (int row = 2; row <= rowCount; row++)
                     {
+                        if (worksheet.Cells[row, 3].Value == null ||
+                            worksheet.Cells[row, 4].Value == null)
+                        {
+                            break;
+                        }
+
                         string identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
+
                         string phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
+
                         if (!identityNumber.Substring(0, 1).Equals("0"))
                         {
                             identityNumber = "0" + identityNumber;
