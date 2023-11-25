@@ -31,7 +31,19 @@ namespace YBS.Service.Services.Implements
             {
                 pageRequest.PageSize = 10;
             }
-            var query = _unitOfWork.RouteRepository.GetAll();
+            var query = _unitOfWork.RouteRepository.Find(route => 
+            (string.IsNullOrWhiteSpace(pageRequest.Name) || route.Name.Trim().ToUpper()
+                                                            .Contains(pageRequest.Name.Trim().ToUpper())) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Beginning) || route.Beginning.Trim().ToUpper()
+                                                                .Contains(pageRequest.Beginning.Trim().ToUpper())) &&
+            (string.IsNullOrWhiteSpace(pageRequest.Destination) || route.Destination.Trim().ToUpper()
+                                                                .Contains(pageRequest.Destination.Trim().ToUpper()))                                                               
+            );
+            if (pageRequest.MaxPrice > pageRequest.MinPrice && pageRequest.MinPrice >= 0)
+            {
+                query = query.Where(route => pageRequest.MinPrice <= route.PriceMappers.MaxBy(priceMapper => priceMapper.Price).Price &&
+                                    pageRequest.MaxPrice >= route.PriceMappers.MinBy(priceMapper => priceMapper.Price).Price);
+            }
             var data = query.OrderByDescending(route => route.Priority);
             var totalItem = data.Count();
             var pageCount = totalItem / (int)pageRequest.PageSize + 1;
@@ -49,8 +61,12 @@ namespace YBS.Service.Services.Implements
                     var dealListingDto = _mapper.Map<DealListingDto>(route);
                     if (route.ImageURL != null)
                     {
+                        dealListingDto.ImageUrls = new List<string>();
                         var arrayImgSplit = route.ImageURL.Trim().Split(',');
-                        dealListingDto.ImageUrl = arrayImgSplit[0];
+                        for (int i = 0; i < arrayImgSplit.Length; i++)
+                        {
+                            dealListingDto.ImageUrls.Add(arrayImgSplit[i]);
+                        }
                     }
                     list.Add(dealListingDto);
                 }
