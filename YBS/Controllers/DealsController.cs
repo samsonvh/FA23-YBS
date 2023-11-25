@@ -21,5 +21,13 @@ namespace YBS.Controllers
         {
             return Ok(await _dealService.getAll(pageRequest));
         }
+
+        [Route(APIDefine.DEALS_UPDATE_PRIORITY)]
+        [HttpPatch]
+        public async Task<IActionResult> UpdateRoutePriority([FromRoute] int routeId, [FromBody] int priority)
+        {
+            await _dealService.UpdateRoutePriority(routeId, priority);
+            return Ok("Update priority successfullly.");
+        }
     }
 }

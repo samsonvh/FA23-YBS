@@ -3,12 +3,15 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.UnitOfWorks;
+using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
 using YBS.Service.Dtos.PageRequests;
 using YBS.Service.Dtos.PageResponses;
+using YBS.Service.Exceptions;
 using YBS.Service.Utils;
 
 namespace YBS.Service.Services.Implements
@@ -77,6 +80,19 @@ namespace YBS.Service.Services.Implements
             pageResponse.PageIndex = (int)pageRequest.PageIndex;
             pageResponse.PageSize = (int)pageRequest.PageSize;
             return pageResponse;
+        }
+
+        public async Task UpdateRoutePriority(int routeId, int priority)
+        {
+            var route = await _unitOfWork.RouteRepository
+                .Find(route => route.Id == routeId)
+                .FirstOrDefaultAsync();
+            if(route == null)
+            {
+                throw new APIException((int)HttpStatusCode.NotFound, "Route not found");
+            }
+            route.Priority = priority;
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

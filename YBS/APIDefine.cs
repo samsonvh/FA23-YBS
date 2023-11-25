@@ -133,6 +133,7 @@ namespace YBS
         public const string YACHT_MOORING_UPDATE = API_VERSION + "/yacht-moorings" + "/{id}";
         //  Deals
         public const string DEALS_DEFAULT = API_VERSION + "/deals";
+        public const string DEALS_UPDATE_PRIORITY = API_VERSION + "/deals" + "/{routeId}";
         // Price Mapper
         public const string PRICE_MAPPER_CREATE = "api/v{version:apiVersion}" + "/price-mappers";
         public const string PRICE_MAPPER_UPDATE = PRICE_MAPPER_CREATE + "/{id}";
