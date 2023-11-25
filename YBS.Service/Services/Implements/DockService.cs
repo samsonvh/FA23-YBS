@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Enums;
@@ -27,40 +28,16 @@ namespace YBS.Service.Services.Implements
         private readonly IFirebaseStorageService _firebaseStorageService;
         private readonly string prefixUrl;
         private readonly IConfiguration _configuration;
+        private readonly IAuthService _authService;
 
-        public DockService(IUnitOfWork unitOfWorks, IMapper mapper, IFirebaseStorageService firebaseStorageService, IConfiguration configuration)
+        public DockService(IUnitOfWork unitOfWorks, IMapper mapper, IFirebaseStorageService firebaseStorageService, IConfiguration configuration, IAuthService authService)
         {
             _unitOfWork = unitOfWorks;
             _mapper = mapper;
             _firebaseStorageService = firebaseStorageService;
             _configuration = configuration;
             prefixUrl = _configuration["Firebase:PrefixUrl"];
-        }
-
-        public async Task<DefaultPageResponse<DockListingDto>> GetAllDocks(DockPageRequest pageRequest, int companyId)
-        {
-            var query = _unitOfWork.DockRepository.Find(dock =>
-            dock.CompanyId == companyId &&
-            (string.IsNullOrWhiteSpace(pageRequest.Name) || dock.Name.Trim().ToUpper()
-                                                        .Contains(pageRequest.Name.Trim().ToUpper())) &&
-            (string.IsNullOrWhiteSpace(pageRequest.Address) || dock.Address.Trim().ToUpper()
-                                                            .Contains(pageRequest.Address.Trim().ToUpper())) &&
-            (!pageRequest.Status.HasValue || dock.Status == pageRequest.Status.Value));
-            var data = !string.IsNullOrWhiteSpace(pageRequest.OrderBy)
-                ? query.SortDesc(pageRequest.OrderBy, pageRequest.Direction) : query.OrderBy(dock => dock.Id);
-            var totalItem = data.Count();
-            var pageCount = totalItem / (int)pageRequest.PageSize + 1;
-            var dataPaging = await data.Skip((int)(pageRequest.PageIndex - 1) * (int)pageRequest.PageSize).Take((int)pageRequest.PageSize).ToListAsync();
-            var resultList = _mapper.Map<List<DockListingDto>>(dataPaging);
-            var result = new DefaultPageResponse<DockListingDto>()
-            {
-                Data = resultList,
-                PageCount = pageCount,
-                TotalItem = totalItem,
-                PageIndex = (int)pageRequest.PageIndex,
-                PageSize = (int)pageRequest.PageSize,
-            };
-            return result;
+            _authService = authService;
         }
         public async Task<DockDto> GetDockDetail(int id)
         {
@@ -86,8 +63,10 @@ namespace YBS.Service.Services.Implements
 
         public async Task<DockDto> Create(DockInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var company = await _unitOfWork.CompanyRepository
-              .Find(company => company.Id == pageRequest.CompanyId)
+              .Find(company => company.Id == companyId)
               .FirstOrDefaultAsync();
 
             if (company == null)
@@ -115,6 +94,7 @@ namespace YBS.Service.Services.Implements
 
             var dock = _mapper.Map<Dock>(pageRequest);
             dock.Status = EnumDockStatus.AVAILABLE;
+            dock.CompanyId = companyId;
             dock.ImageUrl = imageUrL;
 
             if (pageRequest.YachtTypeId.Count > 0)
@@ -151,12 +131,15 @@ namespace YBS.Service.Services.Implements
 
         public async Task Update(DockInputDto pageRequest, int id)
         {
-            var existedDock = await _unitOfWork.DockRepository.Find(dock => dock.Id == id).Include(dock => dock.DockYachtTypes).FirstOrDefaultAsync();
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
+            var existedDock = await _unitOfWork.DockRepository.Find(dock => dock.Id == id && dock.CompanyId == companyId)
+                                                            .Include(dock => dock.DockYachtTypes).FirstOrDefaultAsync();
             if (existedDock == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Dock Not Found");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Dock Not Found Or Company are not allowed to update this dock");
             }
-            existedDock.CompanyId = pageRequest.CompanyId;
+            existedDock.CompanyId = companyId;
             existedDock.Name = pageRequest.Name;
             existedDock.Address = pageRequest.Address;
             existedDock.Longtitude = pageRequest.Longtitude;
@@ -192,7 +175,7 @@ namespace YBS.Service.Services.Implements
                     counter++;
                 }
                 existedDock.ImageUrl = newImageUrl;
-                
+
             }
             existedDock.LastModifiedDate = DateTime.Now;
 

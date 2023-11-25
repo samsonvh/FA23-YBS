@@ -5,6 +5,7 @@ using YBS.Service.Services;
 
 namespace YBS.Controllers
 {
+    
     [ApiController]
     public class DealsController : ControllerBase
     {
@@ -14,7 +15,6 @@ namespace YBS.Controllers
         {
             _dealService = dealService;
         }
-
         [Route(APIDefine.DEALS_DEFAULT)]
         [HttpGet]
         public async Task<IActionResult> GetAllDeals([FromQuery] DealPageRequest pageRequest)

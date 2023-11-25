@@ -11,7 +11,7 @@ namespace YBS.Service.Dtos.ListingDtos
         public int Id { get; set; }
         public string Name { get; set; }
         public string Location { get; set; }
-        public string ImageUrl { get; set; }
+        public List<string> ImageUrls { get; set; }
         public string Departs { get; set; }
         public float Rating { get; set; }
         public float Price { get; set; }

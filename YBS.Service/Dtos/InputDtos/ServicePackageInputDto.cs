@@ -8,7 +8,6 @@ namespace YBS.Service.Dtos.InputDtos
 {
     public class ServicePackageInputDto
     {
-        public int CompanyId { get; set; }
         public string Name { get; set; }
         public string? Description { get; set; }
         public float Price { get; set; }

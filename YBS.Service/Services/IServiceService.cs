@@ -13,7 +13,7 @@ namespace YBS.Service.Services
 {
     public interface IServiceService
     {
-        Task<DefaultPageResponse<ServiceListingDto>> GetAllService(ServicePageRequest pageRequest);
+        
         Task<ServiceDto> GetDetailService(int id);
         Task Create(ServiceInputDto pageRequest);
         Task Update(int id, ServiceInputDto pageRequest);

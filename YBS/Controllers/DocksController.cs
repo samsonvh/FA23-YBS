@@ -17,15 +17,6 @@ namespace YBS.Controllers
         {
             _dockService = dockService;
         }
-
-        [RoleAuthorization(nameof(EnumRole.COMPANY))]
-        [Route(APIDefine.DOCK_GET_ALL)]
-        [HttpGet]
-        public async Task<IActionResult> GetAllDocks([FromQuery] DockPageRequest pageRequest, [FromRoute] int companyId)
-        {
-            return Ok(await _dockService.GetAllDocks(pageRequest, companyId));
-        }
-
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.DOCK_DETAIL)]
         [HttpGet]

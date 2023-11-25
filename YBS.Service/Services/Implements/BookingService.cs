@@ -70,7 +70,7 @@ namespace YBS.Service.Services.Implements
             List<BookingServicePackage> listBookingServicePackage = new List<BookingServicePackage>();
             if (pageRequest.ListServicePackageId != null)
             {
-                
+
                 foreach (var servicePackageId in pageRequest.ListServicePackageId)
                 {
                     var servicePackage = await _unitOfWork.ServicePackageRepository
@@ -173,8 +173,16 @@ namespace YBS.Service.Services.Implements
                     var rowCount = worksheet.Dimension.Rows;
                     for (int row = 2; row <= rowCount; row++)
                     {
+                        if (worksheet.Cells[row, 3].Value == null ||
+                            worksheet.Cells[row, 4].Value == null)
+                        {
+                            break;
+                        }
+
                         string identityNumber = worksheet.Cells[row, 3].Value.ToString().Trim();
+
                         string phoneNumber = worksheet.Cells[row, 4].Value.ToString().Trim();
+
                         if (!identityNumber.Substring(0, 1).Equals("0"))
                         {
                             identityNumber = "0" + identityNumber;
@@ -307,7 +315,7 @@ namespace YBS.Service.Services.Implements
         {
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
             var memberId = int.Parse(claimsPrincipal.FindFirstValue("MemberId"));
-            var MembershipPackageId = int.Parse(claimsPrincipal.FindFirstValue("MembershipPackageId"));
+            var membershipPackageId = int.Parse(claimsPrincipal.FindFirstValue("MembershipPackageId"));
             //check existed route
             var existedRoute = await _unitOfWork.RouteRepository
                 .Find(trip => trip.Id == pageRequest.RouteId)
@@ -382,6 +390,7 @@ namespace YBS.Service.Services.Implements
                 booking.BookingServicePackages = bookingServicePackages;
             }
             booking.Status = EnumBookingStatus.PENDING;
+            booking.MembershipPackageId = membershipPackageId;
             booking.TotalPrice = totalPrice;
             booking.MoneyUnit = existedPriceMapper.MoneyUnit;
             //add guest list
@@ -403,7 +412,7 @@ namespace YBS.Service.Services.Implements
             var bookingPayment = new BookingPayment()
             {
                 BookingId = booking.Id,
-                Name = "Thanh toan cho " + existedRoute.Name,
+                Name = "Payment for " + existedRoute.Name,
                 TotalPrice = booking.TotalPrice,
                 MoneyUnit = existedPriceMapper.MoneyUnit,
                 PaymentDate = DateTime.Now,
@@ -413,6 +422,132 @@ namespace YBS.Service.Services.Implements
             //save all change to DB
             await _unitOfWork.SaveChangesAsync();
             return bookingPayment.Id;
+        }
+
+        public async Task CreateMemberBookingPointPayment(PointPaymentInputDto pageRequest)
+        {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var memberId = int.Parse(claimsPrincipal.FindFirstValue("MemberId"));
+            var membershipPackageId = int.Parse(claimsPrincipal.FindFirstValue("MembershipPackageId"));
+            //check existed route
+            var existedRoute = await _unitOfWork.RouteRepository
+                .Find(trip => trip.Id == pageRequest.RouteId)
+                .FirstOrDefaultAsync();
+            if (existedRoute == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
+            }
+            //check existed yacht type
+            var existedYachtType = await _unitOfWork.YachTypeRepository
+                .Find(yachtType => yachtType.Id == pageRequest.YachtTypeId)
+                .FirstOrDefaultAsync();
+            if (existedYachtType == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
+            }
+            //check existed price mapper
+            var existedPriceMapper = await _unitOfWork.PriceMapperRepository
+                .Find(priceMapper => priceMapper.YachtTypeId == existedYachtType.Id && priceMapper.RouteId == existedRoute.Id)
+                .FirstOrDefaultAsync();
+            if (existedPriceMapper == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Route Not Found");
+            }
+            //check existed member
+            var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == memberId).FirstOrDefaultAsync();
+            if (existedMember == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
+            }
+            //check existed wallet 
+            var existedWallet = await _unitOfWork.WalletRepository.Find(wallet => wallet.Id == pageRequest.WalletId && wallet.Status == EnumWalletStatus.ACTIVE).FirstOrDefaultAsync();
+            if (existedWallet == null)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Wallet Not Found Or Inactive");
+            }
+            if (existedWallet.Balance < existedPriceMapper.Price)
+            {
+                throw new APIException((int)HttpStatusCode.BadRequest, "Balance in wallet is not enough for payment. Please choose another payment type");
+            }
+            //minus point 
+            existedWallet.Balance -= existedPriceMapper.Price;
+            _unitOfWork.WalletRepository.Update(existedWallet);
+            float totalPrice = existedPriceMapper.Price;
+            //check existed service package and add service package
+            List<BookingServicePackage> bookingServicePackages = new List<BookingServicePackage>();
+            if (pageRequest.ListServicePackageId != null)
+            {
+                foreach (var servicePackageId in pageRequest.ListServicePackageId)
+                {
+                    var existedServicePackage = await _unitOfWork.ServicePackageRepository
+                    .Find(servicePackage => servicePackage.Id == servicePackageId)
+                    .FirstOrDefaultAsync();
+                    if (existedServicePackage == null)
+                    {
+                        throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
+                    }
+                    totalPrice += existedServicePackage.Price;
+                    bookingServicePackages.Add(new BookingServicePackage()
+                    {
+                        ServicePackageId = existedServicePackage.Id
+                    }
+                    );
+                }
+            }
+
+            List<Guest> guestList = new List<Guest>();
+            //doc file guest
+            if (pageRequest.GuestList != null)
+            {
+                var leader = new CheckGuestInputDto()
+                {
+                    IdentityNumber = existedMember.IdentityNumber,
+                    PhoneNumber = existedMember.PhoneNumber,
+                };
+                guestList = await ImportGuestExcel(pageRequest.GuestList, leader);
+            }
+            var actualStartingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedStartingTime.Hours).AddMinutes(existedRoute.ExpectedStartingTime.Minutes);
+            var actualEndingDate = pageRequest.OccurDate.AddHours(existedRoute.ExpectedEndingTime.Hours).AddMinutes(existedRoute.ExpectedEndingTime.Minutes);
+            var booking = _mapper.Map<Booking>(pageRequest);
+            //add service package
+            if (bookingServicePackages != null)
+            {
+                booking.BookingServicePackages = bookingServicePackages;
+            }
+            //add booking
+            booking.Status = EnumBookingStatus.PENDING;
+            booking.TotalPrice = totalPrice;
+            booking.MoneyUnit = existedPriceMapper.MoneyUnit;
+            booking.MembershipPackageId = membershipPackageId;
+            //add guest list
+            var guest = _mapper.Map<Guest>(existedMember);
+            guest.IsLeader = true;
+            guest.Status = EnumGuestStatus.NOT_YET;
+            guestList.Add(guest);
+            booking.Guests = guestList;
+            _unitOfWork.BookingRepository.Add(booking);
+            await _unitOfWork.SaveChangesAsync();
+            //add trip
+            var trip = _mapper.Map<Trip>(pageRequest);
+            trip.BookingId = booking.Id;
+            trip.ActualStartingTime = actualStartingDate;
+            trip.ActualEndingTime = actualEndingDate;
+            trip.Status = EnumTripStatus.NOT_STARTED;
+            _unitOfWork.TripRepository.Add(trip);
+            //add transaction
+            var transaction = new Transaction()
+            {
+                WalletId = existedWallet.Id,
+                Name = "Payment by point for " + existedRoute.Name,
+                Type = EnumTransactionType.Booking,
+                PaymentMethod = EnumPaymentMethod.MEMBERSHIP_POINT,
+                Amount = (float)existedPriceMapper.Point,
+                MoneyUnit = "Point",
+                CreationDate = DateTime.Now
+            };
+            _unitOfWork.TransactionRepository.Add(transaction);
+            //save all change to DB
+            await _unitOfWork.SaveChangesAsync();
         }
     }
 }

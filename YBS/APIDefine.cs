@@ -43,7 +43,9 @@ namespace YBS
         public const string COMPANY_GET_ALL_SERVICE_PACKAGE = DEFAULT_ROUTE + "/service-packages";
         public const string COMPANY_GET_ALL_PRICE_MAPPER = DEFAULT_ROUTE + "/price-mappers" + "/{routeId}";
         public const string COMPANY_GET_ALL_YACHT_MOORING = DEFAULT_ROUTE + "/docks" + "/{dockId}" + "/yacht-moorings";
+        public const string COMPANY_GET_ALL_SERVICE = DEFAULT_ROUTE + "/services";
         public const string COMPANY_UPDATE_REQUEST_CREATE = DEFAULT_ROUTE + "/update-requests";
+        public const string COMPANY_GET_ALL_DOCKS = DEFAULT_ROUTE + "/docks";
         public const string COMPANY_UPDATE_REQUEST_GET_DETAIL = DEFAULT_ROUTE + "/update-requests" + "/{id}";
         public const string COMPANY_UPDATE_REQUEST_UPDATE = DEFAULT_ROUTE + "/update-requests" + "/{id}";
 
@@ -80,7 +82,6 @@ namespace YBS
         public const string YACHT_TYPE_CHANGE_STATUS = YACHT_TYPE_DEFAULT + "/{id}";
 
         //Dock
-        public const string DOCK_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string DOCK_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string DOCK_CREATE = DEFAULT_ROUTE;
         public const string DOCK_UPDATE = DEFAULT_ROUTE + "/{id}";
@@ -89,6 +90,7 @@ namespace YBS
         //Booking
         public const string BOOKING_GUEST_CREATE = DEFAULT_ROUTE + "/guests";
         public const string BOOKING_MEMBER_CREATE = DEFAULT_ROUTE + "/members";
+        public const string BOOKING_MEMBER_CREATE_POINT_PAYMENT = DEFAULT_ROUTE + "/members" + "/points";
         public const string BOOKING_GUEST_CHANGE_STATUS = DEFAULT_ROUTE + "/{id}";
         public const string BOOKING_GET_ALL = DEFAULT_ROUTE + "/{companyId}";
         public const string BOOKING_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
@@ -114,7 +116,6 @@ namespace YBS
         public const string WALLET_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
 
         //service
-        public const string SERVICE_GET_ALL = DEFAULT_ROUTE;
         public const string SERVICE_GET_DETAIL = DEFAULT_ROUTE + "/{id}";
         public const string SERVICE_CREATE = DEFAULT_ROUTE;
         public const string SERVICE_UPDATE = DEFAULT_ROUTE + "/{id}";
@@ -134,10 +135,10 @@ namespace YBS
         public const string DEALS_DEFAULT = API_VERSION + "/deals";
         public const string DEALS_UPDATE_PRIORITY = API_VERSION + "/deals" + "/{routeId}";
         // Price Mapper
-        public const string PRICE_MAPPER_CREATE = DEFAULT_ROUTE;
-        public const string PRICE_MAPPER_UPDATE = DEFAULT_ROUTE + "/{id}";
-        public const string PRICE_MAPPER_DETAIL = DEFAULT_ROUTE + "/{id}";
-        public const string PRICE_MAPPER_DELETE = DEFAULT_ROUTE + "/{id}";
+        public const string PRICE_MAPPER_CREATE = "api/v{version:apiVersion}" + "/price-mappers";
+        public const string PRICE_MAPPER_UPDATE = PRICE_MAPPER_CREATE + "/{id}";
+        public const string PRICE_MAPPER_DETAIL = PRICE_MAPPER_CREATE + "/{id}";
+        public const string PRICE_MAPPER_DELETE = PRICE_MAPPER_CREATE + "/{id}";
         //activity
         public const string ACTIVITY_CREATE = DEFAULT_ROUTE;
     }

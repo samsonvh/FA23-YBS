@@ -88,6 +88,7 @@ namespace YBS.Service.Services.Implements
             existedPriceMapper.YachtTypeId = priceMapperInputDto.YachtTypeId;
             existedPriceMapper.Price = priceMapperInputDto.Price;
             existedPriceMapper.MoneyUnit = priceMapperInputDto.MoneyUnit;
+            existedPriceMapper.Point = priceMapperInputDto.Point;
             _unitOfWork.PriceMapperRepository.Update(existedPriceMapper);
             await _unitOfWork.SaveChangesAsync();
         }

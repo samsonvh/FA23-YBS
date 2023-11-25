@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using YBS.Data.Models;
@@ -19,5 +20,6 @@ namespace YBS.Service.Services
         Task<DefaultPageResponse<BookingListingDto>> GetAllBookings(BookingPageRequest pageRequest, int companyId);
         Task<BookingDto> GetDetailBooking(int id);
         Task<int> CreateMemberBooking (MemberBookingInputDto pageRequest);
+        Task CreateMemberBookingPointPayment (PointPaymentInputDto pageRequest);
     }
 }

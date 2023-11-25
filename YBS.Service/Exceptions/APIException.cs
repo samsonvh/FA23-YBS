@@ -9,7 +9,6 @@ namespace YBS.Service.Exceptions
 {
     public class APIException : Exception
     {
-
         public int StatusCode { get; set; }
         public string Message { get; set; }
         public string ToJson()

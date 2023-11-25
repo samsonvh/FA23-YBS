@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using YBS.Data.Enums;
@@ -23,11 +24,13 @@ namespace YBS.Service.Services.Implements
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
+        private readonly IAuthService _authService;
 
-        public YachtTypeService(IUnitOfWork unitOfWork, IMapper mapper)
+        public YachtTypeService(IUnitOfWork unitOfWork, IMapper mapper, IAuthService authService)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
+            _authService = authService;
         }
 
         public async Task<DefaultPageResponse<YachtTypeListingDto>> GetAllYachtType(YachtTypePageRequest pageRequest)
@@ -68,12 +71,15 @@ namespace YBS.Service.Services.Implements
 
         public async Task Create(YachtTypeInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var company = await _unitOfWork.CompanyRepository
-                 .Find(company => company.Id == pageRequest.CompanyId)
+                 .Find(company => company.Id == companyId)
                  .FirstOrDefaultAsync();
             if (company != null)
             {
                 var yachtType = _mapper.Map<YachtType>(pageRequest);
+                yachtType.CompanyId = companyId;
                 yachtType.Status = EnumYachtTypeStatus.AVAILABLE;
                 _unitOfWork.YachTypeRepository.Add(yachtType);
                 await _unitOfWork.SaveChangesAsync();
@@ -81,13 +87,15 @@ namespace YBS.Service.Services.Implements
         }
         public async Task Update(int id, YachtTypeInputDto pageRequest)
         {
+            ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
+            var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var yachtType = await _unitOfWork.YachTypeRepository
-                .Find(yachtType => yachtType.Id == id)
+                .Find(yachtType => yachtType.Id == id && yachtType.CompanyId == companyId)
                 .FirstOrDefaultAsync();
 
             if (yachtType == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type not found.");
+                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found Or Company Are Not Allowed To Update this Yacht Type");
             }
 
             _mapper.Map(pageRequest, yachtType);

@@ -14,7 +14,7 @@ namespace FA23_YBS_BACKEND.Controllers
 {
 
     [ApiController]
-    [Consumes("multipart/form-data")]
+    // [Consumes("multipart/form-data")]
     public class MembersController : ControllerBase
     {
         private readonly IMemberService _memberService;

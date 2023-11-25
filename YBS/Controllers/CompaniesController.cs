@@ -78,12 +78,8 @@ namespace YBS.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] UpdateRequestInputDto updateRequestInputDto)
         {
-            var updateRequest = await _companyService.CreateUpdateRequest(updateRequestInputDto);
-            if (updateRequest != null)
-            {
-                return CreatedAtAction(nameof(GetUpdateRequestDetail), new { id = updateRequest.Id }, "Create successful");
-            }
-            return BadRequest("Failed to create update request.");
+            await _companyService.CreateUpdateRequest(updateRequestInputDto);
+            return Ok("Create update request successfully");
         }
 
         [RoleAuthorization(nameof(EnumRole.ADMIN))]
@@ -92,11 +88,7 @@ namespace YBS.Controllers
         public async Task<IActionResult> GetUpdateRequestDetail([FromRoute] int id)
         {
             var updateRequest = await _companyService.GetDetailUpdateRequest(id);
-            if (updateRequest != null)
-            {
-                return Ok(updateRequest);
-            }
-            return NotFound("Not found update request");
+            return Ok(updateRequest);
         }
 
         [RoleAuthorization(nameof(EnumRole.ADMIN))]
@@ -104,12 +96,8 @@ namespace YBS.Controllers
         [HttpPut]
         public async Task<IActionResult> Update([FromRoute] int id, UpdateRequestInputDto updateRequestInputDto)
         {
-            var updateRequest = await _companyService.Update(id, updateRequestInputDto);
-            if (updateRequest)
-            {
-                return Ok("Update succefull");
-            }
-            return BadRequest("Failed to update request");
+            await _companyService.Update(id, updateRequestInputDto);
+            return Ok("Update update request succefully");
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
@@ -117,7 +105,7 @@ namespace YBS.Controllers
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllRoutes([FromQuery] RoutePageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllRoutes(pageRequest));   
+            return Ok(await _companyService.CompanyGetAllRoutes(pageRequest));
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
@@ -125,7 +113,7 @@ namespace YBS.Controllers
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllYacht([FromQuery] YachtPageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllYacht(pageRequest));    
+            return Ok(await _companyService.CompanyGetAllYachts(pageRequest));
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
@@ -133,29 +121,43 @@ namespace YBS.Controllers
         [HttpGet]
         public async Task<IActionResult> CompanyGetAllYachtType([FromQuery] YachtTypePageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllYachtType(pageRequest));
+            return Ok(await _companyService.CompanyGetAllYachtTypes(pageRequest));
         }
 
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_SERVICE_PACKAGE)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllServicePackage ([FromQuery] ServicePackagePageRequest pageRequest)
+        public async Task<IActionResult> CompanyGetAllServicePackage([FromQuery] ServicePackagePageRequest pageRequest)
         {
-            return Ok(await _companyService.CompanyGetAllServicePackage(pageRequest));
+            return Ok(await _companyService.CompanyGetAllServicePackages(pageRequest));
         }
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_PRICE_MAPPER)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllPriceMapperByRouteId ([FromQuery] PriceMapperPageRequest pageRequest, [FromRoute] int routeId)
+        public async Task<IActionResult> CompanyGetAllPriceMapperByRouteId([FromQuery] PriceMapperPageRequest pageRequest, [FromRoute] int routeId)
         {
             return Ok(await _companyService.CompanyGetAllPriceMapperByRouteId(pageRequest, routeId));
         }
         [RoleAuthorization(nameof(EnumRole.COMPANY))]
         [Route(APIDefine.COMPANY_GET_ALL_YACHT_MOORING)]
         [HttpGet]
-        public async Task<IActionResult> CompanyGetAllYachtMooringByDockId ([FromQuery] YachtMooringPageRequest pageRequest, [FromRoute] int dockId)
+        public async Task<IActionResult> CompanyGetAllYachtMooringByDockId([FromQuery] YachtMooringPageRequest pageRequest, [FromRoute] int dockId)
         {
             return Ok(await _companyService.CompanyGetAllYachtMooringByDockId(pageRequest, dockId));
+        }
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
+        [Route(APIDefine.COMPANY_GET_ALL_DOCKS)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllDocks([FromQuery] DockPageRequest pageRequest)
+        {
+            return Ok(await _companyService.CompanyGetAllDocks(pageRequest));
+        }
+        [RoleAuthorization(nameof(EnumRole.COMPANY))]
+        [Route(APIDefine.COMPANY_GET_ALL_SERVICE)]
+        [HttpGet]
+        public async Task<IActionResult> GetAllService([FromQuery] ServicePageRequest pageRequest)
+        {
+            return Ok(await _companyService.CompanyGetAllServices(pageRequest));
         }
     }
 }

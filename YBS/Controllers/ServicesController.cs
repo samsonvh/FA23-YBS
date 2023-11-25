@@ -18,14 +18,6 @@ namespace YBS.Controllers
         {
             _serviceService = serviceService;
         }
-
-        [Route(APIDefine.SERVICE_GET_ALL)]
-        [HttpGet]
-        public async Task<IActionResult> GetAllService([FromQuery] ServicePageRequest pageRequest)
-        {
-            return Ok(await _serviceService.GetAllService(pageRequest));
-        }
-
         [Route(APIDefine.SERVICE_GET_DETAIL)]
         [HttpGet]
         public async Task<IActionResult> GetDetailService([FromRoute] int id)
