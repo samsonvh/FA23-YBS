@@ -48,7 +48,7 @@ namespace YBS.Service.Services.Implements
             var company = _unitOfWork.CompanyRepository.Find(company => company.Id == companyId);
             if (company == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Company not found");
             }
             //add Image
             string imageUrL = null;
@@ -83,7 +83,7 @@ namespace YBS.Service.Services.Implements
 
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Add route fail");
             }
 
             if (pageRequest.ServicePackageId != null && pageRequest.ServicePackageId.Any())
@@ -100,7 +100,7 @@ namespace YBS.Service.Services.Implements
                 var routeServicePackageSaveChanges = await _unitOfWork.SaveChangesAsync();
                 if (routeServicePackageSaveChanges <= 0)
                 {
-                    throw new APIException((int)HttpStatusCode.BadRequest, "Error saving route service packages");
+                    throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error saving route service packages");
                 }
             }
             
@@ -190,7 +190,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (route == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Route Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Route Not Found");
             }
             var routeDto = _mapper.Map<RouteDto>(route);
             if (route.ImageURL != null)
@@ -216,7 +216,7 @@ namespace YBS.Service.Services.Implements
                                                                 .FirstOrDefaultAsync();
             if (existedRoute == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route not found or company are not allowed to update this route");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Route not found or company are not allowed to update this route");
             }
             if (companyId > 0)
             {
@@ -224,7 +224,7 @@ namespace YBS.Service.Services.Implements
             }
             if (pageRequest.ExpectedStartingTime.CompareTo(pageRequest.ExpectedEndingTime) > 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Expected Starting Time must be beofre Expected Ending Time");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Expected Starting Time must be beofre Expected Ending Time");
             }
             existedRoute.Name = pageRequest.Name;
             existedRoute.Beginning = pageRequest.Beginning;

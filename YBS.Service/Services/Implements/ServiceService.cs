@@ -40,7 +40,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (service == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Service not found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Service not found");
             }
             return _mapper.Map<ServiceDto>(service);
         }
@@ -54,7 +54,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (company == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Company not found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Company not found");
             }
             var service = _mapper.Map<Data.Models.Service>(pageRequest);
             service.Status = EnumServiceStatus.AVAILABLE;
@@ -63,7 +63,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Service not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Service not found");
             }
         }
 
@@ -77,7 +77,7 @@ namespace YBS.Service.Services.Implements
 
             if (service == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Service not found or company are not allowed to update this service");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Service not found or company are not allowed to update this service");
             }
 
             _mapper.Map(pageRequest, service);
@@ -85,7 +85,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating route");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error while updating route");
             }
         }
 

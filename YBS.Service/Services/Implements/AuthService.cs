@@ -47,7 +47,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
                 if (account == null)
                 {
-                    throw new APIException((int)HttpStatusCode.BadRequest, "You are not registed");
+                    throw new SingleAPIException((int)HttpStatusCode.BadRequest, "You are not registed");
                 }
                 string refreshToken;
                 //add refresh token
@@ -89,7 +89,7 @@ namespace YBS.Service.Services.Implements
                         account.Status = EnumAccountStatus.ACTIVE;
                         break;
                     case EnumAccountStatus.BANNED:
-                        throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
+                        throw new SingleAPIException((int)HttpStatusCode.BadRequest,"You can not login, your account is banned");
                 }
                 await _unitOfWorks.SaveChangesAsync();
                 tokenGenerated = GenerateJWTToken(account);
@@ -107,9 +107,9 @@ namespace YBS.Service.Services.Implements
             }
             else
             {
-                throw new APIException((int)HttpStatusCode.InternalServerError, "Error Occur While Login With Google, Please Try Again");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest,"Error Occur While Login With Google, Please Try Again");
             }
-            throw new APIException((int)HttpStatusCode.InternalServerError, "Internal Server Error");
+            throw new Exception("Internal Server Error");
         }
         private async Task<GoogleJsonWebSignature.Payload?> GetPayload(string idToken)
         {
@@ -183,14 +183,14 @@ namespace YBS.Service.Services.Implements
             var accessTokenPrefix = "Bearer ";
             if (accessToken == null)
             {
-                throw new APIException((int)HttpStatusCode.Unauthorized, "Unauthorized");
+                throw new SingleAPIException((int)HttpStatusCode.Unauthorized,"Unauthorized");
             }
             if (accessToken.Contains(accessTokenPrefix))
             {
                 accessToken = accessToken.Substring(accessTokenPrefix.Length);
             }
-            
-            
+
+
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(_configuration["JWT:SecretKey"]));
             var issuer = _configuration["JWT:Issuer"];
@@ -230,12 +230,12 @@ namespace YBS.Service.Services.Implements
         {
             if (refreshToken == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid refresh token");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest,"Invalid refresh token");
             }
             var claimsPrincipal = GetClaim();
             if (claimsPrincipal == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid access token");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Invalid access token");
             }
             var accountId = claimsPrincipal.FindFirstValue("Id");
             var account = await _unitOfWorks.AccountRepository.Find(account => account.Id == int.Parse(accountId))
@@ -244,7 +244,7 @@ namespace YBS.Service.Services.Implements
                                                                 .FirstOrDefaultAsync();
             if (account == null || refreshToken != account.RefreshToken.Token)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid refresh token");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Invalid refresh token");
             }
             var refreshTokenExpireDate = DateTime.Now.AddDays(int.Parse(_configuration["JWT:RefreshToken_Expire_Dates"]));
             var newRefreshToken = GenerateRefreshToken();
@@ -273,12 +273,12 @@ namespace YBS.Service.Services.Implements
                                                                     .FirstOrDefaultAsync();
             if (existedEmail == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Email is wrong");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Email is wrong");
             }
             var comparePassword = PasswordHashing.VerifyHashedPassword(existedEmail.Password, loginInputDto.Password);
             if (comparePassword == false)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Password is wrong");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Password is wrong");
             }
             string refreshToken;
             if (existedEmail.RefreshToken == null)
@@ -307,7 +307,7 @@ namespace YBS.Service.Services.Implements
                     existedEmail.Status = EnumAccountStatus.ACTIVE;
                     break;
                 case EnumAccountStatus.BANNED:
-                    throw new APIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
+                    throw new SingleAPIException((int)HttpStatusCode.BadRequest, "You can not login, your account is banned");
             }
             await _unitOfWorks.SaveChangesAsync();
             tokenGenerated = GenerateJWTToken(existedEmail);

@@ -36,15 +36,15 @@ namespace YBS.Service.Services.Implements
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Payment not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Payment not found");
             }
             if (existedPayment.TotalPrice != pageRequest.Amount)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "invalid amount");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "invalid amount");
             }
             if (existedPayment.Status != 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Order already confirmed");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Order already confirmed");
             }
             var transaction = _mapper.Map<Data.Models.Transaction>(pageRequest);
             if (pageRequest.VNPayTransactionStatus == "00" && pageRequest.VNPayResponseCode == "00")

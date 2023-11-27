@@ -63,7 +63,7 @@ namespace YBS.Service.Services.Implements
 
             if (company == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Company not found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Company not found");
             }
 
             var servicePackageAdd = _mapper.Map<ServicePackage>(pageRequest);
@@ -91,7 +91,7 @@ namespace YBS.Service.Services.Implements
                 }
                 else
                 {
-                    throw new APIException((int)HttpStatusCode.BadRequest, $"Service with ID {serviceId} not found");
+                    throw new SingleAPIException((int)HttpStatusCode.BadRequest, $"Service with ID {serviceId} not found");
                 }
             }
 
@@ -144,7 +144,7 @@ namespace YBS.Service.Services.Implements
 
             if (existingServicePackage == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Service package not found or company are not allowed to update this service package");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Service package not found or company are not allowed to update this service package");
             }
 
             var company = await _unitOfWork.CompanyRepository
@@ -153,7 +153,7 @@ namespace YBS.Service.Services.Implements
 
             if (company == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Company not found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Company not found");
             }
 
             // Update existing service Package

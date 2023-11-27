@@ -47,13 +47,13 @@ namespace YBS.Service.Services.Implements
                                                                     .FirstOrDefaultAsync();
             if (existedPayment == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Payment Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Payment Not Found");
             }
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.RouteId == existedPayment.Booking.RouteId)
                                                                    .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Price Mapper Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Price Mapper Not Found");
             }   
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);
@@ -89,19 +89,19 @@ namespace YBS.Service.Services.Implements
                                                                                         .FirstOrDefaultAsync();
             if (existedMembershipPackage == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Membership Package Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Membership Package Not Found");
             }
             var existedEmail = await _unitOfWork.AccountRepository.Find(account => account.Email == pageRequest.Email)
                                                                     .FirstOrDefaultAsync();
             if (existedEmail != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Account with that email: " + pageRequest.Email + " already existed");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Account with that email: " + pageRequest.Email + " already existed");
             }
             var existUsername = await _unitOfWork.AccountRepository.Find(account => account.Username == pageRequest.Username)
                                                             .FirstOrDefaultAsync();
             if (existUsername != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Account with that username: " + pageRequest.Username + " already existed");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Account with that username: " + pageRequest.Username + " already existed");
             }
             var timeZoneById = TimeZoneInfo.FindSystemTimeZoneById(_configuration["TimeZoneId"]);
             var timeNow = TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZoneById);

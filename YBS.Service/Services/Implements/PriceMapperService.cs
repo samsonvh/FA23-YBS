@@ -34,7 +34,7 @@ namespace YBS.Service.Services.Implements
                                                                                 .FirstOrDefaultAsync();
                 if (existedPriceMapper != null)
                 {
-                    throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper with that yacht type name: " + existedPriceMapper.YachtType.Name
+                    throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Price Mapper with that yacht type name: " + existedPriceMapper.YachtType.Name
                                                                             + "and route name: " + existedPriceMapper.Route.Name + "already exist");
                 }
             }
@@ -50,7 +50,7 @@ namespace YBS.Service.Services.Implements
                                                                             .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
             }
             _unitOfWork.PriceMapperRepository.Remove(existedPriceMapper);
             await _unitOfWork.SaveChangesAsync();
@@ -62,7 +62,7 @@ namespace YBS.Service.Services.Implements
                                                                             .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
             }
             var result = _mapper.Map<PriceMapperDto>(existedPriceMapper);
             return result;
@@ -75,14 +75,14 @@ namespace YBS.Service.Services.Implements
                                                                                 .FirstOrDefaultAsync();
             if (dupplicatePriceMapper != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper with that yacht type name: " + dupplicatePriceMapper.YachtType.Name
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Price Mapper with that yacht type name: " + dupplicatePriceMapper.YachtType.Name
                                                                         + "and route name: " + dupplicatePriceMapper.Route.Name + "already exist");
             }
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository.Find(priceMapper => priceMapper.Id == id)
                                                                             .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Price Mapper Not Found");
             }
             existedPriceMapper.RouteId = priceMapperInputDto.RouteId;
             existedPriceMapper.YachtTypeId = priceMapperInputDto.YachtTypeId;
