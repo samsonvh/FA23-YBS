@@ -40,9 +40,11 @@ namespace YBS.Service.Services.Implements
             var existedRoute = await _unitOfWork.RouteRepository
                 .Find(trip => trip.Id == pageRequest.RouteId)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
+            List<ValidateAPIException> validateExceptionList = new List<ValidateAPIException>();
             if (existedRoute == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
+                exceptionList.Add(new APIException("Route Not Found"));
             }
             //check existing yacht type
             var existedYachtType = await _unitOfWork.YachTypeRepository
@@ -50,7 +52,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedYachtType == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
+                exceptionList.Add(new APIException("Yacht Type Not Found"));
             }
             //check exist price mapper
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository
@@ -58,12 +60,12 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Trip Not Found");
+                exceptionList.Add(new APIException("Price Of Trip Not Found"));
             }
             //valid DateOfBirth
             if (pageRequest.DateOfBirth.Year > DateTime.Now.Year || pageRequest.DateOfBirth.Year < 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
+                validateExceptionList.Add(new ValidateAPIException("Invalid DateOfBirth", nameof(pageRequest.DateOfBirth)));
             }
             //process service package
             float totalPrice = existedPriceMapper.Price;
@@ -78,7 +80,8 @@ namespace YBS.Service.Services.Implements
                                                         .FirstOrDefaultAsync();
                     if (servicePackage == null)
                     {
-                        throw new APIException((int)HttpStatusCode.BadRequest, "Service package with name: " + servicePackage.Name + " does not exist");
+                        exceptionList.Add(new APIException("Service package with name: " + servicePackage.Name + " does not exist"));
+
                     }
                     totalPrice += servicePackage.Price;
                     var bookingServicePackage = new BookingServicePackage()
@@ -113,7 +116,7 @@ namespace YBS.Service.Services.Implements
                     .FirstOrDefaultAsync();
                     if (existedServicePackage == null)
                     {
-                        throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
+                        exceptionList.Add(new APIException("Service Package with name: " + existedServicePackage.Name + "does not exist"));
                     }
                     totalPrice += existedServicePackage.Price;
                     bookingServicePackages.Add(new BookingServicePackage()
@@ -122,6 +125,14 @@ namespace YBS.Service.Services.Implements
                     }
                     );
                 }
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while creating booking for guest");
+            }
+            if (validateExceptionList.Count > 0)
+            {
+                throw new AggregateValidateAPIException(validateExceptionList, (int)HttpStatusCode.BadRequest, "Validate error while creating booking for guest");
             }
             //add booking
             var booking = _mapper.Map<Booking>(pageRequest);
@@ -154,14 +165,20 @@ namespace YBS.Service.Services.Implements
         private async Task<List<Guest>> ImportGuestExcel(IFormFile formFile, CheckGuestInputDto leader, CancellationToken cancellationToken = default)
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            List<APIException> exceptionList = new List<APIException>();
+            List<ValidateAPIException> validateExceptionList = new List<ValidateAPIException>();
             if (formFile == null || formFile.Length <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "formfile is empty");
+                exceptionList.Add(new APIException("formfile is empty"));
             }
 
             if (!Path.GetExtension(formFile.FileName).Equals(".xlsx", StringComparison.OrdinalIgnoreCase))
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Not Support file extension");
+                exceptionList.Add(new APIException("Not Support file extension"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while importing excel file");
             }
             var guestList = new List<Guest>();
             using (var stream = new MemoryStream())
@@ -224,17 +241,22 @@ namespace YBS.Service.Services.Implements
         }
         private void ValidateGuestExcelFile(CheckGuestInputDto guest)
         {
+            List<ValidateAPIException> validateAPIExceptionList = new List<ValidateAPIException>();
             if (guest.DateOfBirth.Year <= 0 || guest.DateOfBirth.Year > DateTime.Now.Year)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid DateOfBirth");
+                validateAPIExceptionList.Add(new ValidateAPIException("Invalid DateOfBirth", nameof(guest.DateOfBirth)));
             }
             if (string.IsNullOrEmpty(guest.IdentityNumber) || !Regex.IsMatch(guest.IdentityNumber, "^[0-9]+$"))
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid IdentityNumber");
+                validateAPIExceptionList.Add(new ValidateAPIException("Invalid Identity Number", nameof(guest.IdentityNumber)));
             }
             if (string.IsNullOrEmpty(guest.PhoneNumber) || !Regex.IsMatch(guest.PhoneNumber, @"^0?(3[2-9]|5[689]|7[06-9]|8[0689]|9[0-46-9])[0-9]{7}$"))
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Invalid PhoneNumber");
+                validateAPIExceptionList.Add(new ValidateAPIException("Invalid PhoneNumber", nameof(guest.PhoneNumber)));
+            }
+            if (validateAPIExceptionList.Count > 0)
+            {
+                throw new AggregateValidateAPIException(validateAPIExceptionList, (int)HttpStatusCode.BadRequest, "Error while validating guest list");
             }
         }
         public async Task<bool> ChangeStatusBookingNonMember(int id, string status)
@@ -303,9 +325,14 @@ namespace YBS.Service.Services.Implements
                 .Include(booking => booking.Yacht)
                 .Include(booking => booking.YachtType)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (booking == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Booking Not Found");
+                exceptionList.Add(new APIException("Booking Not Found"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while geting detail booking");
             }
             var bookingDto = _mapper.Map<BookingDto>(booking);
             return bookingDto;
@@ -320,9 +347,10 @@ namespace YBS.Service.Services.Implements
             var existedRoute = await _unitOfWork.RouteRepository
                 .Find(trip => trip.Id == pageRequest.RouteId)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (existedRoute == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
+                exceptionList.Add(new APIException("Route Not Found"));
             }
             //check existed yacht type
             var existedYachtType = await _unitOfWork.YachTypeRepository
@@ -330,7 +358,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedYachtType == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
+                exceptionList.Add(new APIException("Yacht Type Not Found"));
             }
             //check existed price mapper
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository
@@ -338,13 +366,13 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Route Not Found");
+                exceptionList.Add(new APIException("Price Of Route Not Found"));
             }
             //check existed member
             var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == memberId).FirstOrDefaultAsync();
             if (existedMember == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
+                exceptionList.Add(new APIException("Member Not Found"));
             }
             float totalPrice = existedPriceMapper.Price;
             //check existed service package and add service package
@@ -358,7 +386,7 @@ namespace YBS.Service.Services.Implements
                     .FirstOrDefaultAsync();
                     if (existedServicePackage == null)
                     {
-                        throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
+                        exceptionList.Add(new APIException("Service Package with name: " + existedServicePackage.Name + "does not exist"));
                     }
                     totalPrice += existedServicePackage.Price;
                     bookingServicePackages.Add(new BookingServicePackage()
@@ -367,6 +395,10 @@ namespace YBS.Service.Services.Implements
                     }
                     );
                 }
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while creating booking for member");
             }
 
             List<Guest> guestList = new List<Guest>();
@@ -433,9 +465,10 @@ namespace YBS.Service.Services.Implements
             var existedRoute = await _unitOfWork.RouteRepository
                 .Find(trip => trip.Id == pageRequest.RouteId)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (existedRoute == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Route Not Found");
+                exceptionList.Add(new APIException("Route Not Found"));
             }
             //check existed yacht type
             var existedYachtType = await _unitOfWork.YachTypeRepository
@@ -443,7 +476,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedYachtType == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found");
+                exceptionList.Add(new APIException("Yacht Type Not Found"));
             }
             //check existed price mapper
             var existedPriceMapper = await _unitOfWork.PriceMapperRepository
@@ -451,23 +484,23 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (existedPriceMapper == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Price Of Route Not Found");
+                exceptionList.Add(new APIException("Price Of Route Not Found"));
             }
             //check existed member
             var existedMember = await _unitOfWork.MemberRepository.Find(member => member.Id == memberId).FirstOrDefaultAsync();
             if (existedMember == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
+                exceptionList.Add(new APIException("Member Not Found"));
             }
             //check existed wallet 
             var existedWallet = await _unitOfWork.WalletRepository.Find(wallet => wallet.Id == pageRequest.WalletId && wallet.Status == EnumWalletStatus.ACTIVE).FirstOrDefaultAsync();
             if (existedWallet == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Wallet Not Found Or Inactive");
+                exceptionList.Add(new APIException("Wallet Not Found Or Inactive"));
             }
             if (existedWallet.Balance < existedPriceMapper.Price)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Balance in wallet is not enough for payment. Please choose another payment type");
+                exceptionList.Add(new APIException("Balance in wallet is not enough for payment. Please choose another payment type"));
             }
             //minus point 
             existedWallet.Balance -= existedPriceMapper.Price;
@@ -484,7 +517,7 @@ namespace YBS.Service.Services.Implements
                     .FirstOrDefaultAsync();
                     if (existedServicePackage == null)
                     {
-                        throw new APIException((int)HttpStatusCode.BadRequest, "Service Package with name: " + existedServicePackage.Name + "does not exist");
+                        exceptionList.Add(new APIException("Service Package with name: " + existedServicePackage.Name + "does not exist"));
                     }
                     totalPrice += existedServicePackage.Price;
                     bookingServicePackages.Add(new BookingServicePackage()
@@ -493,6 +526,10 @@ namespace YBS.Service.Services.Implements
                     }
                     );
                 }
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while create booking for member with point payment");
             }
 
             List<Guest> guestList = new List<Guest>();

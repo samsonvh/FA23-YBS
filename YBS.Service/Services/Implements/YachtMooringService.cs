@@ -32,7 +32,7 @@ namespace YBS.Service.Services.Implements
         {
             if (yachtMooringInputDto.LeaveTime.CompareTo(yachtMooringInputDto.ArrivalTime) <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Leave time must be greater than arrival time");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Leave time must be greater than arrival time");
             }
             var yachtMooring = new YachtMooring()
             {
@@ -51,7 +51,7 @@ namespace YBS.Service.Services.Implements
                                                                                 .FirstOrDefaultAsync();
             if (existedYachtMooring == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Mooring Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Yacht Mooring Not Found");
             }
             existedYachtMooring.YachtId = yachtMooringInputDto.YachtId;
             existedYachtMooring.DockId = yachtMooringInputDto.DockId;

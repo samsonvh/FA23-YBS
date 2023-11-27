@@ -56,7 +56,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if(result == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Membership Package Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest,"Membership Package Not Found");
             }
             return _mapper.Map<MembershipRegistrationDto>(result);
         }
