@@ -15,6 +15,7 @@ namespace YBS.Service.Dtos
         public string Description { get; set; }
         public float Point { get; set; }
         public int EffectiveDuration { get; set; }
+        public string TimeUnit { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime LastModifiedDate { get; set; }
         public string Status { get; set; }
