@@ -118,7 +118,7 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy(MyAllowSpecificOrigins, builder =>
     {
-        builder.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:8081", "http://192.168.4:8081").AllowAnyMethod().AllowAnyHeader();
+        builder.WithOrigins("http://localhost:3000", "http://localhost:3001", "http://localhost:8081", "http://192.168.4:8081", "https://fa-23-ybs-frontend-v2.vercel.app/").AllowAnyMethod().AllowAnyHeader();
     });
 });
 
