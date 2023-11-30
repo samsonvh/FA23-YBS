@@ -37,7 +37,7 @@ namespace YBS.Service.Services.Implements
             var existedMembership = await _unitOfWork.MembershipPackageRepository.Find(membershipPackage => membershipPackage.Name == pageRequest.Name).FirstOrDefaultAsync();
             if (existedMembership != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Membership Package with name:" + existedMembership.Name + "already exists");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Membership Package with name:" + existedMembership.Name + "already exists");
             }
             var membershipAdd = _mapper.Map<MembershipPackage>(pageRequest);
             membershipAdd.Status = EnumMembershipPackageStatus.AVAILABLE;
@@ -45,7 +45,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating membership package");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error while creating membership package");
             }
         }
         public async Task<DefaultPageResponse<MembershipPackageListingDto>> GetAllMembershipPackages(MembershipPackagePageRequest pageRequest)
@@ -75,7 +75,7 @@ namespace YBS.Service.Services.Implements
             var membershipPackage = await _unitOfWork.MembershipPackageRepository.GetByID(id);
             if (membershipPackage == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");
             }
             var result = _mapper.Map<MembershipPackageDto>(membershipPackage);
             return result;
@@ -86,7 +86,7 @@ namespace YBS.Service.Services.Implements
             var existedMembershipPackage = await _unitOfWork.MembershipPackageRepository.GetByID(id);
             if (existedMembershipPackage == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Membership Package Not Found");
             }
             existedMembershipPackage.Name = pageRequest.Name;
             existedMembershipPackage.Price = (float)pageRequest.Price;
@@ -99,7 +99,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error occur while updating membership package");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error occur while updating membership package");
             }
         }
 

@@ -75,9 +75,14 @@ namespace YBS.Service.Services.Implements
              .Include(company => company.Account)
              .Include(company => company.Account.Role)
              .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (companyDetail == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
+                exceptionList.Add(new APIException("Company Not Found"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while getting company detail");
             }
             var result = _mapper.Map<CompanyDto>(companyDetail);
             result.Role = companyDetail.Account.Role.Name;
@@ -87,21 +92,25 @@ namespace YBS.Service.Services.Implements
         public async Task<CompanyDto> Create(CompanyInputDto companyInputDto)
         {
             var existedMail = await _unitOfWork.AccountRepository.Find(account => account.Email == companyInputDto.Email).FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (existedMail != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "There is already have company with that email ");
+                exceptionList.Add(new APIException("There is already have company with that email "));
             }
             var existedUserName = await _unitOfWork.AccountRepository.Find(account => account.Username == companyInputDto.Username).FirstOrDefaultAsync();
             if (existedUserName != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "There is already have company with that username");
+                exceptionList.Add(new APIException("There is already have company with that username"));
             }
             var existedHotLine = await _unitOfWork.CompanyRepository.Find(company => company.HotLine == companyInputDto.HotLine).FirstOrDefaultAsync();
             if (existedHotLine != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "There is already a company with that phonenumber.");
+                exceptionList.Add(new APIException("There is already a company with that phonenumber."));
             }
-
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while creating company");
+            }
             var companyRole = await _unitOfWork.RoleRepository
                 .Find(role => role.Name == nameof(EnumRole.COMPANY))
                 .FirstOrDefaultAsync();
@@ -193,9 +202,14 @@ namespace YBS.Service.Services.Implements
             var company = await _unitOfWork.CompanyRepository
                 .Find(company => company.Id == companyId)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (company != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
+                exceptionList.Add(new APIException("Company Not Found"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while creating update request");
             }
             var updateRequest = new UpdateRequest
             {
@@ -218,9 +232,14 @@ namespace YBS.Service.Services.Implements
             var updateRequest = await _unitOfWork.UpdateRequestRepository
                 .Find(updateRequest => updateRequest.Id == id)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (updateRequest != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Update Request Not Found");
+                exceptionList.Add(new APIException("Update Request Not Found"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while getting detail of update request");
             }
             return _mapper.Map<UpdateRequestDto>(updateRequest);
         }
@@ -230,9 +249,10 @@ namespace YBS.Service.Services.Implements
             ClaimsPrincipal claimsPrincipal = _authService.GetClaim();
             var companyId = int.Parse(claimsPrincipal.FindFirstValue("CompanyId"));
             var companyExisted = await _unitOfWork.CompanyRepository.Find(company => company.Id == companyId).FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (companyExisted == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company Not Found");
+                exceptionList.Add(new APIException("Company Not Found"));
             }
             var updateRequest = await _unitOfWork.UpdateRequestRepository
                 .Find(updateRequest => updateRequest.Id == id && updateRequest.CompanyId == companyId)
@@ -240,7 +260,11 @@ namespace YBS.Service.Services.Implements
 
             if (updateRequest == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Update Request Not Found or Company are not allowed to update this update request");
+                exceptionList.Add(new APIException("Update Request Not Found or Company are not allowed to update this update request"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest, "Error while updating update request");
             }
             updateRequest.Name = updateRequestInputDto.Name;
             updateRequest.Address = updateRequestInputDto.Address;
@@ -406,13 +430,14 @@ namespace YBS.Service.Services.Implements
 
         public async Task<DefaultPageResponse<PriceMapperListingDto>> CompanyGetAllPriceMapperByRouteId(PriceMapperPageRequest pageRequest, int routeId)
         {
+            List<APIException> exceptionList = new List<APIException>();
             if (pageRequest.MinPrice <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Min Price must be greater than 0");
+                exceptionList.Add(new APIException("Min Price must be greater than 0"));
             }
             if (pageRequest.MaxPrice <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Max Price must be greater than 0");
+                exceptionList.Add(new APIException("Max Price must be greater than 0"));
             }
             var query = _unitOfWork.PriceMapperRepository.Find(priceMapper =>
                priceMapper.RouteId == routeId &&

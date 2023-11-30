@@ -58,10 +58,15 @@ namespace YBS.Service.Services.Implements
         public async Task<BookingPaymentDto> GetDetailBookingPayment(int id)
         {
             var existPayment = await _unitOfWork.BookingPaymentRepository.Find(bookingPayment => bookingPayment.Id == id)
-                                                                        .FirstOrDefaultAsync();
+                                                                            .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if (existPayment == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest,"Booking Payment Not Found");
+                exceptionList.Add(new APIException("Booking Payment Not Found"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList,(int)HttpStatusCode.BadRequest,"Error while get booking payment detail");
             }
             var result = _mapper.Map<BookingPaymentDto>(existPayment);
             return result;

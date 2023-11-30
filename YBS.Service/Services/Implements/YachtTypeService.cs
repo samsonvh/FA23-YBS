@@ -95,7 +95,7 @@ namespace YBS.Service.Services.Implements
 
             if (yachtType == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found Or Company Are Not Allowed To Update this Yacht Type");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Yacht Type Not Found Or Company Are Not Allowed To Update this Yacht Type");
             }
 
             _mapper.Map(pageRequest, yachtType);

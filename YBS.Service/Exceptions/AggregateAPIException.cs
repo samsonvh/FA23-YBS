@@ -5,13 +5,14 @@ using System.Threading.Tasks;
 
 namespace YBS.Service.Exceptions
 {
-    public class AggregateAPIException : Exception
+    public class AggregateAPIException : APIException
     {
         public List<APIException> Exceptions { get; }
         public int StatusCode { get; set; }
-        public AggregateAPIException(List<APIException> exceptions)
+        public AggregateAPIException(List<APIException> Exceptions , int StatusCode, string Message) : base(Message)
         {
-            Exceptions = exceptions;
+            this.Exceptions = Exceptions;
+            this.StatusCode = StatusCode;
         }
     }
 }

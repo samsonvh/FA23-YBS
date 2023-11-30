@@ -42,7 +42,7 @@ namespace YBS.Services.Services.Implements
             .FirstOrDefaultAsync();
             if (memberDetail == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Detail Member Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.NotFound, "Detail Member Not Found");
             }
             var result = _mapper.Map<MemberDto>(memberDetail);
             result.Role = memberDetail.Account.Role.Name;
@@ -82,7 +82,7 @@ namespace YBS.Services.Services.Implements
                                                                     .FirstOrDefaultAsync();
             if (existedMembershipPackage.Price != pageRequest.Amount)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "invalid amount");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "invalid amount");
             }
             //Create Account 
             var existRole = await _unitOfWork.RoleRepository.Find(role => role.Name == nameof(EnumRole.MEMBER))
@@ -184,7 +184,7 @@ namespace YBS.Services.Services.Implements
                                                                     .FirstOrDefaultAsync();
             if (existedMember == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Member Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Member Not Found");
             }
             if (pageRequest.Status != null)
             {
@@ -212,7 +212,7 @@ namespace YBS.Services.Services.Implements
             var result = await _unitOfWork.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while updating member");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error while updating member");
             }
         }
 
@@ -221,16 +221,16 @@ namespace YBS.Services.Services.Implements
             var existedGuest = await _unitOfWork.GuestRepository.Find(guest => guest.Id == id).FirstOrDefaultAsync();
             if (existedGuest == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
             }
             var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.BookingId == bookingId).FirstOrDefaultAsync();
             if (existedTrip == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
             }
             if ((existedTrip.ActualStartingTime - DateTime.Now).Days <= 2)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Can not update guest list due to current time is smaller trip staring time 2 days");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Can not update guest list due to current time is smaller trip staring time 2 days");
             }
             existedGuest.FullName = pageRequest.FullName;
             existedGuest.DateOfBirth = pageRequest.DateOfBirth;
@@ -296,12 +296,12 @@ namespace YBS.Services.Services.Implements
             var existedGuest = await _unitOfWork.GuestRepository.Find(guest => guest.Id == guestId).FirstOrDefaultAsync();
             if (existedGuest == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Guest Not Found");
             }
             var existedTrip = await _unitOfWork.TripRepository.Find(trip => trip.BookingId == bookingId ).FirstOrDefaultAsync();
             if (existedTrip == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Trip Not Found");
             }
             var result = _mapper.Map<GuestDto>(existedGuest);
             if ((existedTrip.ActualStartingTime - DateTime.Now).Days  <= 2)

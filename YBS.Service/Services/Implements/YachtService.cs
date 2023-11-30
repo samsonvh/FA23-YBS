@@ -38,12 +38,12 @@ namespace YBS.Service.Services.Implements
             var yachtType = await _unitOfWorks.YachTypeRepository.Find(yachtType => yachtType.Id == pageRequest.YachtTypeId).FirstOrDefaultAsync();
             if (yachtType == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht type not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Yacht type not found");
             }
             var existedName = await _unitOfWorks.YachRepository.Find(yacht => yacht.Name == pageRequest.Name).FirstOrDefaultAsync();
             if (existedName != null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht with name: " + pageRequest.Name + " already exists");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Yacht with name: " + pageRequest.Name + " already exists");
             }
             string imageUrL = null;
             if (pageRequest.ImageFiles.Count > 0)
@@ -70,7 +70,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWorks.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while creating yacht");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error while creating yacht");
             }
         }
         
@@ -130,7 +130,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (yacht == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Detail Yacht not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Detail Yacht not found");
             }
             var result = _mapper.Map<YachtDto>(yacht);
             List<string> imgUrlList = new List<string>();
@@ -149,7 +149,7 @@ namespace YBS.Service.Services.Implements
             var existedYacht = await _unitOfWorks.YachRepository.Find(yacht => yacht.Id == id).FirstOrDefaultAsync();
             if (existedYacht == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Yacht not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Yacht not found");
             }
             if (pageRequest.YachtTypeId > 0)
             {
@@ -207,7 +207,7 @@ namespace YBS.Service.Services.Implements
             var result = await _unitOfWorks.SaveChangesAsync();
             if (result <= 0)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Error while saving yacht");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Error while saving yacht");
             }
         }
 

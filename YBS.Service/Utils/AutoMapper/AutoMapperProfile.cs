@@ -3,6 +3,8 @@ using YBS.Data.Models;
 using YBS.Service.Dtos;
 using YBS.Service.Dtos.InputDtos;
 using YBS.Service.Dtos.ListingDtos;
+using YBS.Service.Dtos.PageResponses;
+using YBS.Service.Exceptions;
 using YBS.Services.Dtos;
 using YBS.Services.Dtos.InputDtos;
 
@@ -178,6 +180,9 @@ namespace YBS.Service.Utils.AutoMapper
             CreateMap<ActivityPlaceInputDto, ActivityPlace>()
                 .ForMember(activityPlaceInputDto => activityPlaceInputDto.FromDockId, options => options.Ignore())
                 .ForMember(activityPlaceInputDto => activityPlaceInputDto.ToDockId, options => options.Ignore());
+            //CommonErrorResponse
+            CreateMap<APIException,CommonErrorResponse>();
+            CreateMap<ValidateAPIException,ValidateErrorResponse>();
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Google.Apis.Util;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -47,7 +48,7 @@ namespace YBS.Service.Services.Implements
                 .FirstOrDefaultAsync();
             if (dock == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Detail Dock not found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Detail Dock not found");
             }
             var result = _mapper.Map<DockDto>(dock);
             List<string> imgUrlList = new List<string>();
@@ -68,10 +69,9 @@ namespace YBS.Service.Services.Implements
             var company = await _unitOfWork.CompanyRepository
               .Find(company => company.Id == companyId)
               .FirstOrDefaultAsync();
-
             if (company == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Company not found.");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest,"Company not found.");
             }
             string imageUrL = null;
             if (pageRequest.ImageFiles.Count > 0)
@@ -137,7 +137,7 @@ namespace YBS.Service.Services.Implements
                                                             .Include(dock => dock.DockYachtTypes).FirstOrDefaultAsync();
             if (existedDock == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Dock Not Found Or Company are not allowed to update this dock");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Dock Not Found Or Company are not allowed to update this dock");
             }
             existedDock.CompanyId = companyId;
             existedDock.Name = pageRequest.Name;

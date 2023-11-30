@@ -69,7 +69,7 @@ namespace YBS.Service.Services.Implements
                                                 .FirstOrDefaultAsync();
             if (existedAccount == null)
             {
-                throw new APIException((int)HttpStatusCode.BadRequest, "Account Not Found");
+                throw new SingleAPIException((int)HttpStatusCode.BadRequest, "Account Not Found");
             }
             switch (existedAccount.Role.Name)
             {

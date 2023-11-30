@@ -87,9 +87,14 @@ namespace YBS.Service.Services.Implements
             var route = await _unitOfWork.RouteRepository
                 .Find(route => route.Id == routeId)
                 .FirstOrDefaultAsync();
+            List<APIException> exceptionList = new List<APIException>();
             if(route == null)
             {
-                throw new APIException((int)HttpStatusCode.NotFound, "Route not found");
+                exceptionList.Add(new APIException( "Route not found"));
+            }
+            if (exceptionList.Count > 0)
+            {
+                throw new AggregateAPIException(exceptionList, (int)HttpStatusCode.BadRequest,"Error while updating route priority");
             }
             route.Priority = priority;
             await _unitOfWork.SaveChangesAsync();
